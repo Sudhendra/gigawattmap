@@ -1,6 +1,6 @@
 # 001 — Monorepo scaffold (pnpm + turbo)
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 000
 **Estimate:** 45 min
 
