@@ -1,0 +1,77 @@
+[project]
+name = "gigawattmap-pipeline"
+version = "0.1.0"
+description = "Data pipeline for Gigawatt Map: ingest, normalize, tile."
+requires-python = ">=3.11"
+dependencies = [
+  "httpx>=0.27",
+  "tenacity>=9.0",
+  "geopandas>=1.0",
+  "shapely>=2.0",
+  "pyarrow>=17",
+  "pydantic>=2.8",
+  "rich>=13",
+  "typer>=0.12",
+  "overpy>=0.7",
+  "rapidfuzz>=3.9",
+  "boto3>=1.34",
+]
+
+[project.scripts]
+opendc = "opendc.cli:app"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["opendc"]
+
+[tool.uv]
+
+[dependency-groups]
+dev = [
+  "ruff>=0.6",
+  "pytest>=8",
+  "mypy>=1.11",
+]
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+# A pragmatic, opinionated default. We pick rule families that catch real
+# bugs and stylistic drift without forcing us to fight the linter on every
+# commit. If a check becomes noise on real code we tune it down here, not
+# by sprinkling per-line ignores.
+select = [
+  "E",    # pycodestyle errors
+  "F",    # pyflakes
+  "I",    # isort
+  "N",    # pep8-naming
+  "UP",   # pyupgrade
+  "B",    # bugbear
+  "C4",   # comprehensions
+  "SIM",  # simplify
+  "RUF",  # ruff-specific
+]
+ignore = [
+  "E501",  # line length is enforced by the formatter, not the linter
+]
+
+[tool.ruff.lint.per-file-ignores]
+"tests/*" = ["N802"]  # test names may use camelCase to mirror behavior names
+
+[tool.mypy]
+python_version = "3.11"
+strict = true
+# Third-party geo libs lack stubs; suppressing missing-imports is preferable
+# to broad `Any` annotations through our own code.
+ignore_missing_imports = true
+warn_unused_ignores = true
+warn_return_any = true
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
