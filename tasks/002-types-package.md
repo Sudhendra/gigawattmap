@@ -1,6 +1,6 @@
 # 002 — @gigawattmap/types package
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 001
 **Estimate:** 1 hour
 
