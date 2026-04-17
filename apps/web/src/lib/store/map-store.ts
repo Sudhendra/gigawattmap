@@ -43,6 +43,15 @@ type MapStore = {
    */
   visibleBbox: Bbox | null;
   setVisibleBbox: (next: Bbox) => void;
+  /**
+   * Per-layer visibility. Only `datacenters` is wired to a real WebGL layer
+   * in v1; the rest are placeholders surfaced in the layer-controls panel
+   * so visitors can see what's coming. The map reads `layers.datacenters`
+   * to drive deck.gl visibility; placeholder toggles never mutate this map
+   * (their UI shows a transient "coming in v1" hint instead).
+   */
+  layers: Record<LayerId, boolean>;
+  setLayerVisible: (id: LayerId, next: boolean) => void;
 };
 
 export const useMapStore = create<MapStore>((set) => ({
@@ -56,4 +65,14 @@ export const useMapStore = create<MapStore>((set) => ({
   setHudCollapsed: (next) => set({ hudCollapsed: next }),
   visibleBbox: null,
   setVisibleBbox: (next) => set({ visibleBbox: next }),
+  layers: {
+    datacenters: true,
+    cables: false,
+    powerplants: false,
+    opposition: false,
+    cloud_regions: false,
+    water_stress: false,
+  },
+  setLayerVisible: (id, next) =>
+    set((state) => ({ layers: { ...state.layers, [id]: next } })),
 }));

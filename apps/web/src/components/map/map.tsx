@@ -47,6 +47,7 @@ export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const setViewport = useMapStore((s) => s.setViewport);
   const setVisibleBbox = useMapStore((s) => s.setVisibleBbox);
+  const datacentersVisible = useMapStore((s) => s.layers.datacenters);
 
   // Stable lookup for flyTo. Recomputed only when data identity changes.
   const featureById = useMemo(() => {
@@ -118,11 +119,12 @@ export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element
       layers: [
         createDatacentersLayer(data, {
           selectedId,
+          visible: datacentersVisible,
           onClick: (feature) => onSelect(feature.properties.id),
         }),
       ],
     });
-  }, [data, selectedId, onSelect]);
+  }, [data, selectedId, onSelect, datacentersVisible]);
 
   // --- Fly-to when selection changes externally (URL load, deep link). ------
   useEffect(() => {

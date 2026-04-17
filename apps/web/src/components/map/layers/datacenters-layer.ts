@@ -46,6 +46,8 @@ export type CreateDatacentersLayerOptions = {
   onClick?: (feature: AiCampusFeature) => void;
   /** Id of the currently selected feature, if any — drawn with a focus ring. */
   selectedId?: string | null;
+  /** Whether the layer is rendered. Defaults to true. */
+  visible?: boolean;
 };
 
 /**
@@ -57,10 +59,11 @@ export function createDatacentersLayer(
   data: AiCampusCollection,
   options: CreateDatacentersLayerOptions = {},
 ): ScatterplotLayer<AiCampusFeature> {
-  const { selectedId = null, onClick } = options;
+  const { selectedId = null, onClick, visible = true } = options;
   return new ScatterplotLayer<AiCampusFeature>({
     id: 'ai-campuses',
     data: data.features,
+    visible,
     pickable: true,
     stroked: true,
     filled: true,
