@@ -1,6 +1,6 @@
 # 003 — Next.js web app scaffold
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 002
 **Estimate:** 1.5 hours
 
@@ -36,3 +36,6 @@ Set up `apps/web` with Next.js 15 App Router, Tailwind v4, and the Gigawatt Map 
 
 - Tailwind v4 uses CSS-native config — `@theme` block in globals.css. Don't regress to v3 patterns.
 - Wordmark is text-only, no icon. `GIGAWATT MAP` in all caps, monospace, letter-spaced.
+- Lighthouse score not measured in CI yet; semantically validated by inspection
+  (`<header>`, `<nav aria-label>`, `<main>`, `lang="en"`, contrast ratio ~16:1
+  for `#f2ede4` on `#0a0d12`). Wire Lighthouse CI in a later task if drift suspected.

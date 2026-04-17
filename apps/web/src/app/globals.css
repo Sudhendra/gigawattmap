@@ -1,0 +1,99 @@
+@import 'tailwindcss';
+
+/* -------------------------------------------------------------------------- */
+/*  Gigawatt Map design tokens — see SPEC.md §5                               */
+/*  Dark mode is the default; a light theme would override these vars.        */
+/* -------------------------------------------------------------------------- */
+
+:root {
+  /* surfaces */
+  --bg-base: #0a0d12;
+  --bg-panel: #131820;
+  --bg-elevated: #1b2230;
+
+  /* text */
+  --text-primary: #f2ede4;
+  --text-muted: #8a94a8;
+  --text-subtle: #5a6478;
+
+  /* datacenter categories */
+  --dc-hyperscale: #ffb74d;
+  --dc-colo: #64b5f6;
+  --dc-neocloud: #ba68c8;
+  --dc-enterprise: #78909c;
+
+  /* power fuels */
+  --fuel-coal: #2e2e2e;
+  --fuel-gas: #ff7043;
+  --fuel-nuclear: #e91e63;
+  --fuel-solar: #ffd54f;
+  --fuel-wind: #4dd0e1;
+  --fuel-hydro: #1e88e5;
+
+  /* status */
+  --status-operational: #66bb6a;
+  --status-construction: #fdd835;
+  --status-announced: #42a5f5;
+  --status-blocked: #ef5350;
+
+  /* accents */
+  --accent-cable: #00e5ff;
+  --accent-focus: #ffeb3b;
+}
+
+/* Tailwind v4 native theme: expose tokens as utility classes (bg-base, text-primary, etc.) */
+@theme {
+  --color-bg-base: var(--bg-base);
+  --color-bg-panel: var(--bg-panel);
+  --color-bg-elevated: var(--bg-elevated);
+  --color-text-primary: var(--text-primary);
+  --color-text-muted: var(--text-muted);
+  --color-text-subtle: var(--text-subtle);
+
+  --color-dc-hyperscale: var(--dc-hyperscale);
+  --color-dc-colo: var(--dc-colo);
+  --color-dc-neocloud: var(--dc-neocloud);
+  --color-dc-enterprise: var(--dc-enterprise);
+
+  --color-fuel-coal: var(--fuel-coal);
+  --color-fuel-gas: var(--fuel-gas);
+  --color-fuel-nuclear: var(--fuel-nuclear);
+  --color-fuel-solar: var(--fuel-solar);
+  --color-fuel-wind: var(--fuel-wind);
+  --color-fuel-hydro: var(--fuel-hydro);
+
+  --color-status-operational: var(--status-operational);
+  --color-status-construction: var(--status-construction);
+  --color-status-announced: var(--status-announced);
+  --color-status-blocked: var(--status-blocked);
+
+  --color-accent-cable: var(--accent-cable);
+  --color-accent-focus: var(--accent-focus);
+
+  --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
+  --font-sans: var(--font-geist), system-ui, sans-serif;
+  --font-serif: var(--font-source-serif), Georgia, serif;
+}
+
+html,
+body {
+  background-color: var(--bg-base);
+  color: var(--text-primary);
+  font-family: var(--font-geist), system-ui, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+/* Tabular numerals for any data label (SPEC §5 signature detail). */
+.tabular {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.001ms !important;
+    transition-duration: 0.001ms !important;
+  }
+}
