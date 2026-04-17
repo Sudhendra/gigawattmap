@@ -1,6 +1,6 @@
 # 014 — Expand curated AI campus dataset
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 010
 **Estimate:** 3 hours (mostly research)
 
