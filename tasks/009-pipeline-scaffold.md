@@ -1,6 +1,6 @@
 # 009 — Python data-pipeline scaffold
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 001
 **Estimate:** 1 hour
 
