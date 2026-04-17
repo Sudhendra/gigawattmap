@@ -1,6 +1,6 @@
 # 007 — Viewport HUD
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 005
 **Estimate:** 1.5 hours
 

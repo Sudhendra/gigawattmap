@@ -3,6 +3,7 @@
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import { Toaster } from 'sonner';
 import { Map } from '@/components/map/map';
+import { ViewportHud } from '@/components/map/viewport-hud';
 import { IntelligenceCard } from '@/components/intelligence-card/intelligence-card';
 import { useSelectedDcUrlSync } from '@/lib/hooks/use-selected-dc-url-sync';
 import { useMapStore } from '@/lib/store/map-store';
@@ -67,7 +68,10 @@ function MapViewInner(): React.JSX.Element {
 
   return (
     <>
-      <Map data={data} selectedId={selectedId} onSelect={handleSelect} />
+      <div className="relative h-[calc(100vh-3rem)] w-full">
+        <Map data={data} selectedId={selectedId} onSelect={handleSelect} />
+        <ViewportHud data={data} />
+      </div>
       <IntelligenceCard feature={selectedFeature} onClose={handleClose} />
       <Toaster
         theme="dark"

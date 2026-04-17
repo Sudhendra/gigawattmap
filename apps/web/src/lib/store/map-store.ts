@@ -1,5 +1,6 @@
 import { create } from 'zustand';
 import type { LayerId } from '@gigawattmap/types';
+import type { Bbox } from '@/lib/stats';
 
 /** A serializable MapLibre viewport — drives URL persistence and HUD calculations. */
 export type Viewport = {
@@ -32,6 +33,16 @@ type MapStore = {
    */
   selectedDcId: string | null;
   setSelectedDcId: (id: string | null) => void;
+  /** Viewport HUD collapse state. Persisted only for the lifetime of the tab. */
+  hudCollapsed: boolean;
+  setHudCollapsed: (next: boolean) => void;
+  /**
+   * Geographic bounds of the visible map, pushed by the `Map` component on
+   * `moveend`. `null` until the map mounts and emits its first event. The
+   * HUD reads this to filter features client-side.
+   */
+  visibleBbox: Bbox | null;
+  setVisibleBbox: (next: Bbox) => void;
 };
 
 export const useMapStore = create<MapStore>((set) => ({
@@ -41,4 +52,8 @@ export const useMapStore = create<MapStore>((set) => ({
   setSelectedLayer: (layer) => set({ selectedLayer: layer }),
   selectedDcId: null,
   setSelectedDcId: (id) => set({ selectedDcId: id }),
+  hudCollapsed: false,
+  setHudCollapsed: (next) => set({ hudCollapsed: next }),
+  visibleBbox: null,
+  setVisibleBbox: (next) => set({ visibleBbox: next }),
 }));

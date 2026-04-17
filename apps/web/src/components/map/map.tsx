@@ -46,6 +46,7 @@ export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const setViewport = useMapStore((s) => s.setViewport);
+  const setVisibleBbox = useMapStore((s) => s.setVisibleBbox);
 
   // Stable lookup for flyTo. Recomputed only when data identity changes.
   const featureById = useMemo(() => {
@@ -81,6 +82,18 @@ export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element
         bearing: map.getBearing(),
         pitch: map.getPitch(),
       });
+      // Push the visible bounds for the HUD's stat reducer. MapLibre may
+      // return west > east when the view wraps the antimeridian; the stats
+      // helper handles that case directly.
+      const b = map.getBounds();
+      setVisibleBbox([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+    });
+
+    // Seed the bbox once the style has loaded so the HUD can render before
+    // the user's first interaction.
+    map.once('load', () => {
+      const b = map.getBounds();
+      setVisibleBbox([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
     });
 
     const overlay = new MapboxOverlay({ interleaved: true, layers: [] });
@@ -95,7 +108,7 @@ export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element
       mapRef.current = null;
       overlayRef.current = null;
     };
-  }, [setViewport]);
+  }, [setViewport, setVisibleBbox]);
 
   // --- Layer: rebuild when data or selection changes. ------------------------
   useEffect(() => {
@@ -131,7 +144,7 @@ export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element
   return (
     <div
       ref={containerRef}
-      className="h-[calc(100vh-3rem)] w-full [&_.maplibregl-canvas]:cursor-grab [&_.maplibregl-canvas:active]:cursor-grabbing"
+      className="h-full w-full [&_.maplibregl-canvas]:cursor-grab [&_.maplibregl-canvas:active]:cursor-grabbing"
       role="region"
       aria-label="World datacenter map"
     />
