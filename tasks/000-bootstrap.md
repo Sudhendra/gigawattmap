@@ -1,6 +1,6 @@
 # 000 — Bootstrap repo
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** none
 **Estimate:** 30 min
 
