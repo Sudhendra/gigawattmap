@@ -1,6 +1,6 @@
 # 004 — MapLibre hello world + PMTiles protocol
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 003
 **Estimate:** 2 hours
 

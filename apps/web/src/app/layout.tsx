@@ -40,7 +40,7 @@ export default function RootLayout({
     >
       <body className="min-h-screen bg-bg-base text-text-primary">
         <AppHeader />
-        <main className="mx-auto max-w-screen-2xl">{children}</main>
+        <main>{children}</main>
       </body>
     </html>
   );
