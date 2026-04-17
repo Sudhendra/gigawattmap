@@ -1,6 +1,6 @@
 # 011 — Global Energy Monitor power plants ingestion
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 009
 **Estimate:** 3 hours
 
