@@ -1,6 +1,6 @@
 # 013 — PMTiles build + R2 upload
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 010, 011, 012
 **Estimate:** 3 hours
 
