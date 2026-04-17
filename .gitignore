@@ -1,0 +1,72 @@
+# Node
+node_modules/
+.pnpm-store/
+.pnpm-debug.log*
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+.yarn/
+.npm/
+
+# Build artifacts
+dist/
+build/
+out/
+.next/
+.turbo/
+.vercel/
+.wrangler/
+*.tsbuildinfo
+
+# Test / coverage
+coverage/
+.nyc_output/
+playwright-report/
+test-results/
+
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.egg-info/
+.eggs/
+.venv/
+venv/
+env/
+.python-version
+.mypy_cache/
+.pytest_cache/
+.ruff_cache/
+.ipynb_checkpoints/
+
+# uv
+.uv/
+
+# Env
+.env
+.env.*
+!.env.example
+
+# Data pipeline outputs (large artifacts go to R2)
+data-pipeline/out/
+data-pipeline/.cache/
+*.pmtiles
+*.mbtiles
+*.pbf
+
+# Editors
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+
+# Logs
+logs/
+*.log
+
+# Temp
+tmp/
+.tmp/
