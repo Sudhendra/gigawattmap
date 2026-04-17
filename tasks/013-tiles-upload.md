@@ -1,6 +1,6 @@
 # 013 — PMTiles build + R2 upload
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 010, 011, 012
 **Estimate:** 3 hours
 
@@ -10,18 +10,18 @@ Turn the interim GeoJSONs into PMTiles via `tippecanoe`, upload to Cloudflare R2
 
 ## Acceptance criteria
 
-- [ ] `tippecanoe` available in the build environment (documented in `docs/dev-setup.md`: macOS `brew install tippecanoe`, Linux build-from-source)
-- [ ] `data-pipeline/opendc/tiles/build.py` (callable as `python -m opendc.cli tiles build`):
-  - Reads `out/interim/datacenters.geojson` → `out/tiles/datacenters.pmtiles` with the tippecanoe command from `SPEC.md §4.2`
+- [x] `tippecanoe` available in the build environment (documented in `docs/dev-setup.md`: macOS `brew install tippecanoe`, Linux build-from-source)
+- [x] `data-pipeline/opendc/tiles/build.py` (callable as `python -m opendc.cli tiles build`):
+  - Reads `out/interim/osm-datacenters.geojson` → `out/tiles/datacenters.pmtiles` with the tippecanoe command from `SPEC.md §4.2`
   - Reads `out/interim/powerplants.geojson` → `out/tiles/powerplants.pmtiles` (min zoom 3, max 12)
   - Reads `out/interim/cables.geojson` → `out/tiles/cables.pmtiles` (min zoom 1, max 8)
-- [ ] `data-pipeline/opendc/tiles/upload.py` (callable as `python -m opendc.cli tiles upload`):
+- [x] `data-pipeline/opendc/tiles/upload.py` (callable as `python -m opendc.cli tiles upload`):
   - Uploads every `out/tiles/*.pmtiles` to `r2://gigawattmap/v1/` via boto3 (R2 S3-compat)
   - Sets `Cache-Control: public, max-age=300, stale-while-revalidate=3600`
   - Emits a public URL list to stdout
-- [ ] `--dry-run` flag prints what would be uploaded without doing it
-- [ ] Web app reads `NEXT_PUBLIC_PMTILES_BASE` from env; falls back to seed GeoJSON if unset (dev mode)
-- [ ] Full pipeline `ingest osm → transform → tiles build → tiles upload` works end-to-end with a smoke test
+- [x] `--dry-run` flag prints what would be uploaded without doing it
+- [x] Web app reads `NEXT_PUBLIC_PMTILES_BASE` from env; falls back to seed GeoJSON if unset (dev mode)
+- [x] Full pipeline `ingest osm → transform → tiles build → tiles upload` works end-to-end with a smoke test
 
 ## Files to touch
 

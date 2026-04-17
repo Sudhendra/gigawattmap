@@ -17,6 +17,8 @@ from opendc.manifest import make_entry, write_entry
 from opendc.sources import gem as gem_source
 from opendc.sources import osm as osm_source
 from opendc.sources import telegeography as tg_source
+from opendc.tiles import build as tiles_build
+from opendc.tiles import upload as tiles_upload
 
 app = typer.Typer(
     name="opendc",
@@ -132,10 +134,59 @@ def transform() -> None:
     _stub("transform")
 
 
-@app.command()
-def tiles() -> None:
-    """Build PMTiles archives from the normalized GeoJSON."""
-    _stub("tiles")
+tiles_app = typer.Typer(
+    name="tiles",
+    help="Build and upload PMTiles archives.",
+    no_args_is_help=True,
+)
+app.add_typer(tiles_app, name="tiles")
+
+
+@tiles_app.command("build")
+def tiles_build_cmd() -> None:
+    """Build PMTiles archives from interim GeoJSON via tippecanoe."""
+    try:
+        produced = tiles_build.build_all()
+    except tiles_build.TippecanoeError as exc:
+        console.print(f"[red]tiles build: {exc}[/red]")
+        raise typer.Exit(1) from exc
+    if not produced:
+        console.print(
+            "[yellow]tiles build: no inputs found under out/interim/. "
+            "Run `opendc ingest` first.[/yellow]"
+        )
+        return
+    for path in produced:
+        console.print(f"[green]built {path}[/green]")
+
+
+@tiles_app.command("upload")
+def tiles_upload_cmd(
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Print what would be uploaded without calling R2."
+    ),
+    tiles_dir: Path = typer.Option(
+        Path("out/tiles"), "--tiles-dir", help="Directory containing built .pmtiles files."
+    ),
+) -> None:
+    """Upload built PMTiles to Cloudflare R2."""
+    paths = sorted(tiles_dir.glob("*.pmtiles"))
+    if not paths:
+        console.print(
+            f"[yellow]tiles upload: no *.pmtiles files in {tiles_dir}. "
+            "Run `opendc tiles build` first.[/yellow]"
+        )
+        return
+    try:
+        # Dry-run never touches the network; load_config still runs so the
+        # caller learns about missing env early.
+        config = tiles_upload.load_config()
+    except tiles_upload.R2ConfigError as exc:
+        console.print(f"[red]tiles upload: {exc}[/red]")
+        raise typer.Exit(1) from exc
+    lines = tiles_upload.upload_all(paths, config=config, dry_run=dry_run)
+    for line in lines:
+        console.print(f"[green]{line}[/green]")
 
 
 @app.command()
