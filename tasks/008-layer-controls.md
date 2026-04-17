@@ -1,6 +1,6 @@
 # 008 — Layer controls
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 005
 **Estimate:** 1 hour
 
