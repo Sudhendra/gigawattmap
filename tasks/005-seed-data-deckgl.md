@@ -1,6 +1,6 @@
 # 005 — Seed dataset + deck.gl layer
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 004
 **Estimate:** 2 hours
 
