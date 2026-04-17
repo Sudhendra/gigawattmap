@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useRef } from 'react';
+import { useEffect, useMemo, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
 import { Protocol } from 'pmtiles';
 import { MapboxOverlay } from '@deck.gl/mapbox';
@@ -27,20 +27,35 @@ function ensurePmtilesProtocol(): void {
  */
 const BASEMAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 
-/** Path is relative to /public, served at /seed/ai-campuses.geojson. */
-const SEED_URL = '/seed/ai-campuses.geojson';
+export type MapProps = {
+  /** AI-campus seed collection. Owner is responsible for fetching it. */
+  data: AiCampusCollection | null;
+  /** Currently selected feature id, or null. Drives flyTo + layer highlight. */
+  selectedId: string | null;
+  /** Click handler for a campus dot. Pass `null` to clear. */
+  onSelect: (id: string | null) => void;
+};
 
 /**
- * Full-bleed MapLibre map. Owns the maplibregl.Map instance, hosts a
- * deck.gl MapboxOverlay in interleaved mode for the AI-campus layer, and
- * pushes viewport changes into the Zustand store on `moveend`.
+ * Full-bleed MapLibre + deck.gl map. Stateless wrt selection — the parent
+ * owns it. The map reacts to `selectedId` by flying to the feature and
+ * re-renders the layer so the selected dot can be highlighted.
  */
-export function Map(): React.JSX.Element {
+export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const setViewport = useMapStore((s) => s.setViewport);
 
+  // Stable lookup for flyTo. Recomputed only when data identity changes.
+  const featureById = useMemo(() => {
+    // Disambiguate from the React component named `Map` in this module.
+    const m = new globalThis.Map<string, AiCampusFeature>();
+    if (data) for (const f of data.features) m.set(f.properties.id, f);
+    return m;
+  }, [data]);
+
+  // --- Map lifecycle: create once, destroy on unmount. -----------------------
   useEffect(() => {
     if (!containerRef.current) return;
     ensurePmtilesProtocol();
@@ -68,44 +83,50 @@ export function Map(): React.JSX.Element {
       });
     });
 
-    // Interleaved mode: deck.gl draws into MapLibre's WebGL context so layer
-    // ordering with native style layers is correct (e.g. labels stay on top
-    // of dots later if we want them to). Empty layers array up front; we
-    // populate after the seed fetch resolves.
     const overlay = new MapboxOverlay({ interleaved: true, layers: [] });
     map.addControl(overlay);
 
     mapRef.current = map;
     overlayRef.current = overlay;
 
-    let cancelled = false;
-    void (async () => {
-      try {
-        const res = await fetch(SEED_URL);
-        if (!res.ok) throw new Error(`Seed fetch failed: ${res.status}`);
-        const data = (await res.json()) as AiCampusCollection;
-        if (cancelled) return;
-        const handleClick = (feature: AiCampusFeature): void => {
-          // Drawer integration lands in task 006. Logging is the contract
-          // declared by the 005 acceptance criteria.
-          // eslint-disable-next-line no-console
-          console.log('campus clicked', feature);
-        };
-        overlay.setProps({ layers: [createDatacentersLayer(data, { onClick: handleClick })] });
-      } catch (err) {
-        // eslint-disable-next-line no-console
-        console.error('Failed to load AI-campus seed', err);
-      }
-    })();
-
     return () => {
-      cancelled = true;
       overlay.finalize();
       map.remove();
       mapRef.current = null;
       overlayRef.current = null;
     };
   }, [setViewport]);
+
+  // --- Layer: rebuild when data or selection changes. ------------------------
+  useEffect(() => {
+    const overlay = overlayRef.current;
+    if (!overlay || !data) return;
+    overlay.setProps({
+      layers: [
+        createDatacentersLayer(data, {
+          selectedId,
+          onClick: (feature) => onSelect(feature.properties.id),
+        }),
+      ],
+    });
+  }, [data, selectedId, onSelect]);
+
+  // --- Fly-to when selection changes externally (URL load, deep link). ------
+  useEffect(() => {
+    const map = mapRef.current;
+    if (!map || !selectedId) return;
+    const f = featureById.get(selectedId);
+    if (!f) return;
+    const [lon, lat] = f.geometry.coordinates;
+    if (typeof lon !== 'number' || typeof lat !== 'number') return;
+    map.flyTo({
+      center: [lon, lat],
+      zoom: Math.max(map.getZoom(), 7),
+      speed: 1.2,
+      curve: 1.4,
+      essential: true, // honors prefers-reduced-motion at the maplibre level
+    });
+  }, [selectedId, featureById]);
 
   return (
     <div

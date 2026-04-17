@@ -1,6 +1,6 @@
 # 006 — Intelligence Card drawer
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 005
 **Estimate:** 3 hours
 

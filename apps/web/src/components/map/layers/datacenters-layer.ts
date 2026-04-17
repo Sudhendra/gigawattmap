@@ -44,6 +44,8 @@ function colorForTier(tier: DatacenterTier | undefined): [number, number, number
 export type CreateDatacentersLayerOptions = {
   /** Called when a dot is clicked. The drawer wiring lands in task 006. */
   onClick?: (feature: AiCampusFeature) => void;
+  /** Id of the currently selected feature, if any — drawn with a focus ring. */
+  selectedId?: string | null;
 };
 
 /**
@@ -55,6 +57,7 @@ export function createDatacentersLayer(
   data: AiCampusCollection,
   options: CreateDatacentersLayerOptions = {},
 ): ScatterplotLayer<AiCampusFeature> {
+  const { selectedId = null, onClick } = options;
   return new ScatterplotLayer<AiCampusFeature>({
     id: 'ai-campuses',
     data: data.features,
@@ -63,6 +66,12 @@ export function createDatacentersLayer(
     filled: true,
     radiusUnits: 'pixels',
     lineWidthUnits: 'pixels',
+    // Force a re-render when selection changes — deck.gl shallow-compares
+    // accessor outputs, so we tag the props.
+    updateTriggers: {
+      getLineColor: selectedId,
+      getLineWidth: selectedId,
+    },
     getPosition: (f) => {
       const [lon, lat] = f.geometry.coordinates;
       // Coordinates are validated when the seed file is parsed (every feature
@@ -72,10 +81,13 @@ export function createDatacentersLayer(
     },
     getRadius: (f) => radiusForMw(f.properties.est_mw_mid),
     getFillColor: (f) => colorForTier(f.properties.tier),
-    getLineColor: [10, 13, 18, 220], // --bg-base, near-opaque, draws the rim
-    getLineWidth: 1,
+    getLineColor: (f) =>
+      f.properties.id === selectedId
+        ? [255, 235, 59, 255] // --accent-focus
+        : [10, 13, 18, 220], // --bg-base, near-opaque, default rim
+    getLineWidth: (f) => (f.properties.id === selectedId ? 3 : 1),
     onClick: ({ object }) => {
-      if (object && options.onClick) options.onClick(object as AiCampusFeature);
+      if (object && onClick) onClick(object as AiCampusFeature);
     },
   });
 }
