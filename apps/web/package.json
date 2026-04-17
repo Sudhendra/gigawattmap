@@ -11,8 +11,11 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
+    "@deck.gl/layers": "^9.3.0",
+    "@deck.gl/mapbox": "^9.3.0",
     "@gigawattmap/types": "workspace:*",
     "clsx": "^2.1.1",
+    "deck.gl": "^9.3.0",
     "lucide-react": "^0.453.0",
     "maplibre-gl": "^5.0.0",
     "next": "^15.0.3",
@@ -24,6 +27,7 @@
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4.0.0-beta.4",
+    "@types/geojson": "^7946.0.14",
     "@types/node": "^22.8.7",
     "@types/react": "^19.0.0",
     "@types/react-dom": "^19.0.0",

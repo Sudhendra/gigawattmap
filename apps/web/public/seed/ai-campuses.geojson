@@ -1,0 +1,286 @@
+{
+  "type": "FeatureCollection",
+  "_comment": "Hand-curated seed of high-profile AI campuses. See tasks/005 for source table. Tier rule: hyperscale = Amazon/Google/Microsoft/Meta/Oracle; neocloud = CoreWeave/Nebius/xAI/Crusoe; colo = Equinix/Digital Realty/QTS/Vantage; else enterprise. Replaced by the real pipeline output once tasks 010-014 land.",
+  "features": [
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-99.7331, 32.4487] },
+      "properties": {
+        "id": "crusoe-abilene-tx",
+        "name": "Stargate I — Abilene",
+        "operator": "Crusoe",
+        "tenant": "OpenAI/Oracle",
+        "tier": "neocloud",
+        "est_mw_mid": 1200,
+        "status": "construction",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-91.7000, 32.3900] },
+      "properties": {
+        "id": "meta-hyperion-la",
+        "name": "Meta Hyperion",
+        "operator": "Meta",
+        "tenant": "Meta",
+        "tier": "hyperscale",
+        "est_mw_mid": 5000,
+        "status": "construction",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-82.5000, 40.2000] },
+      "properties": {
+        "id": "meta-prometheus-oh",
+        "name": "Meta Prometheus",
+        "operator": "Meta",
+        "tenant": "Meta",
+        "tier": "hyperscale",
+        "est_mw_mid": 1000,
+        "status": "announced",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-85.7600, 38.2900] },
+      "properties": {
+        "id": "amazon-project-rainier",
+        "name": "Amazon Project Rainier",
+        "operator": "Amazon",
+        "tenant": "Anthropic",
+        "tier": "hyperscale",
+        "est_mw_mid": 2200,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-99.1900, 32.7000] },
+      "properties": {
+        "id": "vantage-frontier-tx",
+        "name": "Vantage Frontier",
+        "operator": "Vantage",
+        "tenant": "(unknown)",
+        "tier": "colo",
+        "est_mw_mid": 1400,
+        "status": "construction",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-76.0100, 40.2100] },
+      "properties": {
+        "id": "talen-susquehanna-aws",
+        "name": "Talen Susquehanna (AWS)",
+        "operator": "Talen",
+        "tenant": "AWS",
+        "tier": "enterprise",
+        "est_mw_mid": 1920,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-79.6000, 40.5300] },
+      "properties": {
+        "id": "homer-city-redev",
+        "name": "Homer City Redevelopment",
+        "operator": "Homer City Redev.",
+        "tenant": "(multiple)",
+        "tier": "enterprise",
+        "est_mw_mid": 4500,
+        "status": "announced",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-90.0500, 35.0500] },
+      "properties": {
+        "id": "xai-colossus-memphis",
+        "name": "xAI Colossus Memphis",
+        "operator": "xAI",
+        "tenant": "xAI",
+        "tier": "neocloud",
+        "est_mw_mid": 250,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-90.0700, 34.9500] },
+      "properties": {
+        "id": "xai-colossus-2",
+        "name": "xAI Colossus 2",
+        "operator": "xAI",
+        "tenant": "xAI",
+        "tier": "neocloud",
+        "est_mw_mid": 1000,
+        "status": "construction",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-87.9000, 42.7200] },
+      "properties": {
+        "id": "microsoft-mount-pleasant-wi",
+        "name": "Microsoft Mount Pleasant",
+        "operator": "Microsoft",
+        "tenant": "OpenAI",
+        "tier": "hyperscale",
+        "est_mw_mid": 900,
+        "status": "construction",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-95.8600, 41.2300] },
+      "properties": {
+        "id": "google-council-bluffs-ia",
+        "name": "Google Council Bluffs",
+        "operator": "Google",
+        "tenant": "Google",
+        "tier": "hyperscale",
+        "est_mw_mid": 650,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-96.7000, 33.0200] },
+      "properties": {
+        "id": "coreweave-plano-tx",
+        "name": "CoreWeave Plano",
+        "operator": "CoreWeave",
+        "tenant": "(multiple)",
+        "tier": "neocloud",
+        "est_mw_mid": 60,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-75.0260, 39.4860] },
+      "properties": {
+        "id": "nebius-vineland-nj",
+        "name": "Nebius Vineland NJ",
+        "operator": "Nebius",
+        "tenant": "(multiple)",
+        "tier": "neocloud",
+        "est_mw_mid": 300,
+        "status": "construction",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-112.0700, 33.4300] },
+      "properties": {
+        "id": "oracle-cloud-az",
+        "name": "Oracle Cloud Arizona",
+        "operator": "Oracle",
+        "tenant": "Oracle",
+        "tier": "hyperscale",
+        "est_mw_mid": 400,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-77.5300, 39.0200] },
+      "properties": {
+        "id": "qts-ashburn-va",
+        "name": "QTS Ashburn VA",
+        "operator": "QTS/Blackstone",
+        "tenant": "(multiple)",
+        "tier": "colo",
+        "est_mw_mid": 450,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-77.5400, 39.0100] },
+      "properties": {
+        "id": "equinix-dc11-ashburn",
+        "name": "Equinix DC11 Ashburn",
+        "operator": "Equinix",
+        "tenant": "(multiple)",
+        "tier": "colo",
+        "est_mw_mid": 32,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-87.9970, 41.9850] },
+      "properties": {
+        "id": "digital-realty-ord11-elk-grove",
+        "name": "Digital Realty ORD11 Elk Grove",
+        "operator": "Digital Realty",
+        "tenant": "(multiple)",
+        "tier": "colo",
+        "est_mw_mid": 47,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-77.4800, 39.0400] },
+      "properties": {
+        "id": "microsoft-mt-shadow-va",
+        "name": "Microsoft Mt Shadow VA",
+        "operator": "Microsoft",
+        "tenant": "Microsoft",
+        "tier": "hyperscale",
+        "est_mw_mid": 100,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-77.4500, 38.9500] },
+      "properties": {
+        "id": "aws-us-east-1-va",
+        "name": "AWS us-east-1 N. Virginia",
+        "operator": "Amazon",
+        "tenant": "AWS",
+        "tier": "hyperscale",
+        "est_mw_mid": 1500,
+        "status": "operational",
+        "country": "US"
+      }
+    },
+    {
+      "type": "Feature",
+      "geometry": { "type": "Point", "coordinates": [-91.7100, 32.3800] },
+      "properties": {
+        "id": "meta-richland-parish-la",
+        "name": "Meta Richland Parish",
+        "operator": "Meta",
+        "tenant": "Meta",
+        "tier": "hyperscale",
+        "est_mw_mid": 2000,
+        "status": "construction",
+        "country": "US"
+      }
+    }
+  ]
+}
