@@ -1,6 +1,6 @@
 # 003 — Next.js web app scaffold
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 002
 **Estimate:** 1.5 hours
 
