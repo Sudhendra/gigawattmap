@@ -1,0 +1,19 @@
+GEM unit/phase ID,Project name,Type,Capacity (MW),Latitude,Longitude,Operator,Start year
+G-001,Big Coal Plant,coal,1200,40.1,-83.0,Acme Power,1995
+G-002,Lignite Power,lignite,800,51.3,12.4,East Energy,1988
+G-003,Riverside Nuclear,nuclear,1450,33.5,-81.5,Westinghouse,2010
+G-004,Solar Sun Farm,solar PV,250,35.0,-115.4,SunGrid,2018
+G-005,Concentrated Tower,CSP,150,37.6,-2.3,SunGrid,2015
+G-006,Cape Wind,offshore wind,400,41.4,-70.5,Iberdrola,2024
+G-007,Plains Wind,onshore wind,300,41.0,-101.5,NextEra,2017
+G-008,Hoover Hydro,hydroelectric,2080,36.0,-114.7,USBR,1936
+G-009,Dinorwig,pumped storage,1800,53.1,-4.1,Drax,1984
+G-010,Moss Landing,battery storage,400,36.8,-121.8,Vistra,2021
+G-011,Cogen Site,cogeneration,300,33.9,-117.4,Edison,2009
+G-012,Kemper Gas,natural gas,580,32.6,-89.1,Mississippi Power,2014
+G-013,Geysers,geothermal,725,38.8,-122.8,Calpine,1985
+G-014,Hartwell Bio,biomass,110,34.3,-83.0,Drax,2013
+G-015,Tiny Solar,solar PV,5,33.0,-117.0,SmallCo,2020
+G-016,Bad Coords,gas,500,200.0,500.0,BadOp,2010
+G-017,Origin Sentinel,gas,500,0.0,0.0,UnknownOp,2010
+G-018,Year Range,gas,500,40.0,-100.0,RangeOp,2025-2027

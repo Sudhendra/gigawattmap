@@ -14,6 +14,7 @@ from rich.console import Console
 
 from opendc import __version__
 from opendc.manifest import make_entry, write_entry
+from opendc.sources import gem as gem_source
 from opendc.sources import osm as osm_source
 
 app = typer.Typer(
@@ -46,25 +47,49 @@ def ingest(
     out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
 ) -> None:
     """Fetch raw data from a source (OSM, GEM, TeleGeography, ...)."""
-    if source not in {"osm", "all"}:
-        # Other sources land in tasks 011/012 — keep the surface stable.
+    if source not in {"osm", "gem", "all"}:
+        # Other sources land in tasks 012+ — keep the surface stable.
         console.print(f"[yellow]opendc ingest {source}: not implemented yet[/yellow]")
         return
-    console.print(f"[cyan]Fetching OSM datacenters{' (sample)' if sample else ''}...[/cyan]")
-    geojson_path, count, duration = osm_source.run(sample=sample, out_dir=out_dir)
-    write_entry(
-        out_dir / "manifest.json",
-        make_entry(
-            source="osm-datacenters",
-            feature_count=count,
-            duration_s=duration,
-            url=osm_source.OVERPASS_URL,
-            notes="sample=DFW" if sample else None,
-        ),
-    )
-    console.print(
-        f"[green]wrote {geojson_path} ({count} features, {duration:.1f}s)[/green]"
-    )
+    if source in {"osm", "all"}:
+        console.print(
+            f"[cyan]Fetching OSM datacenters{' (sample)' if sample else ''}...[/cyan]"
+        )
+        geojson_path, count, duration = osm_source.run(sample=sample, out_dir=out_dir)
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="osm-datacenters",
+                feature_count=count,
+                duration_s=duration,
+                url=osm_source.OVERPASS_URL,
+                notes="sample=DFW" if sample else None,
+            ),
+        )
+        console.print(
+            f"[green]wrote {geojson_path} ({count} features, {duration:.1f}s)[/green]"
+        )
+    if source in {"gem", "all"}:
+        console.print("[cyan]Normalizing GEM power plants...[/cyan]")
+        try:
+            geojson_path, count, duration = gem_source.run(out_dir=out_dir)
+        except gem_source.DataSourceError as exc:
+            console.print(f"[red]gem: {exc}[/red]")
+            if source == "gem":
+                raise typer.Exit(1) from exc
+            return
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="gem-powerplants",
+                feature_count=count,
+                duration_s=duration,
+                url=gem_source.GEM_LANDING_URL,
+            ),
+        )
+        console.print(
+            f"[green]wrote {geojson_path} ({count} features, {duration:.1f}s)[/green]"
+        )
 
 
 @app.command()
