@@ -25,12 +25,20 @@ importers:
         version: 5.9.3
 
   apps/web:
+    dependencies:
+      '@gigawattmap/types':
+        specifier: workspace:*
+        version: link:../../packages/types
     devDependencies:
       typescript:
         specifier: ^5.6.3
         version: 5.9.3
 
   packages/types:
+    dependencies:
+      '@types/geojson':
+        specifier: ^7946.0.14
+        version: 7946.0.16
     devDependencies:
       typescript:
         specifier: ^5.6.3
@@ -74,6 +82,9 @@ packages:
     cpu: [arm64]
     os: [win32]
 
+  '@types/geojson@7946.0.16':
+    resolution: {integrity: sha512-6C8nqWur3j98U6+lXDfTUWIfgvZU+EumvpHKcYjujKH7woYyLj2sUmff0tRhrqM7BohUw7Pz3ZB1jj2gW9Fvmg==}
+
   prettier@3.8.3:
     resolution: {integrity: sha512-7igPTM53cGHMW8xWuVTydi2KO233VFiTNyF5hLJqpilHfmn8C8gPf+PS7dUT64YcXFbiMGZxS9pCSxL/Dxm/Jw==}
     engines: {node: '>=14'}
@@ -107,6 +118,8 @@ snapshots:
 
   '@turbo/windows-arm64@2.9.6':
     optional: true
+
+  '@types/geojson@7946.0.16': {}
 
   prettier@3.8.3: {}
 
