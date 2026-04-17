@@ -1,0 +1,90 @@
+{
+  "cable_metadata": {
+    "marea": {
+      "id": "marea",
+      "name": "MAREA",
+      "length": "6,605 km",
+      "landing_points": [
+        {"id": "bilbao-spain", "name": "Bilbao, Spain", "country": "Spain", "is_tbd": null},
+        {"id": "virginia-beach-va-united-states", "name": "Virginia Beach, VA, United States", "country": "United States", "is_tbd": null}
+      ],
+      "owners": "Meta, Microsoft, Telxius",
+      "suppliers": "SubCom",
+      "rfs": "2018 May",
+      "rfs_year": 2018,
+      "is_planned": false,
+      "url": "http://www.telxius.com",
+      "notes": null
+    },
+    "apricot": {
+      "id": "apricot",
+      "name": "Apricot",
+      "length": "11,972 km",
+      "landing_points": [
+        {"id": "tuas-singapore", "name": "Tuas, Singapore", "country": "Singapore", "is_tbd": null},
+        {"id": "minamiboso-japan", "name": "Minamiboso, Japan", "country": "Japan", "is_tbd": null}
+      ],
+      "owners": "Google, Meta, NTT",
+      "suppliers": "SubCom",
+      "rfs": "2025 Q4",
+      "rfs_year": 2025,
+      "is_planned": false,
+      "url": null,
+      "notes": null
+    }
+  },
+  "cable_geo": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {"id": "marea", "name": "MAREA", "color": "#abc123", "feature_id": "marea-0"},
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [[[-75.97, 36.85], [-40.0, 40.0], [-2.93, 43.26]]]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {"id": "apricot", "name": "Apricot", "color": "#def456", "feature_id": "apricot-0"},
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [[[103.65, 1.35], [120.0, 15.0], [139.83, 35.13]]]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {"id": "apricot", "name": "Apricot", "color": "#def456", "feature_id": "apricot-1"},
+        "geometry": {
+          "type": "MultiLineString",
+          "coordinates": [[[120.5, 15.5], [125.0, 20.0], [121.7, 24.85]]]
+        }
+      }
+    ]
+  },
+  "landing_geo": {
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {"id": "bilbao-spain", "name": "Bilbao, Spain", "is_tbd": false},
+        "geometry": {"type": "Point", "coordinates": [-2.93, 43.26]}
+      },
+      {
+        "type": "Feature",
+        "properties": {"id": "virginia-beach-va-united-states", "name": "Virginia Beach, VA, United States", "is_tbd": false},
+        "geometry": {"type": "Point", "coordinates": [-75.97, 36.85]}
+      },
+      {
+        "type": "Feature",
+        "properties": {"id": "tuas-singapore", "name": "Tuas, Singapore", "is_tbd": false},
+        "geometry": {"type": "Point", "coordinates": [103.65, 1.35]}
+      },
+      {
+        "type": "Feature",
+        "properties": {"id": "minamiboso-japan", "name": "Minamiboso, Japan", "is_tbd": false},
+        "geometry": {"type": "Point", "coordinates": [139.83, 35.13]}
+      }
+    ]
+  }
+}

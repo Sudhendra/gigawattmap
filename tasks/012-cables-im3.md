@@ -1,6 +1,6 @@
 # 012 — Submarine cables ingestion (TeleGeography + IM3 fallback)
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 009
 **Estimate:** 3 hours
 

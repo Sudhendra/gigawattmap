@@ -16,6 +16,7 @@ from opendc import __version__
 from opendc.manifest import make_entry, write_entry
 from opendc.sources import gem as gem_source
 from opendc.sources import osm as osm_source
+from opendc.sources import telegeography as tg_source
 
 app = typer.Typer(
     name="opendc",
@@ -47,8 +48,8 @@ def ingest(
     out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
 ) -> None:
     """Fetch raw data from a source (OSM, GEM, TeleGeography, ...)."""
-    if source not in {"osm", "gem", "all"}:
-        # Other sources land in tasks 012+ — keep the surface stable.
+    if source not in {"osm", "gem", "telegeography", "all"}:
+        # Other sources land in tasks 013+ — keep the surface stable.
         console.print(f"[yellow]opendc ingest {source}: not implemented yet[/yellow]")
         return
     if source in {"osm", "all"}:
@@ -89,6 +90,39 @@ def ingest(
         )
         console.print(
             f"[green]wrote {geojson_path} ({count} features, {duration:.1f}s)[/green]"
+        )
+    if source in {"telegeography", "all"}:
+        console.print(
+            f"[cyan]Fetching TeleGeography submarine cables{' (sample)' if sample else ''}...[/cyan]"
+        )
+        cables_path, landings_path, cable_count, landing_count, duration = tg_source.run(
+            out_dir=out_dir, sample=sample
+        )
+        # One manifest entry per artifact, both flagged with the licence note
+        # so /about and audit tooling can read it without a second source.
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="telegeography-cables",
+                feature_count=cable_count,
+                duration_s=duration,
+                url=tg_source.CABLE_GEO_URL,
+                notes=tg_source.LICENSE_NOTE,
+            ),
+        )
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="telegeography-landings",
+                feature_count=landing_count,
+                duration_s=duration,
+                url=tg_source.LANDING_GEO_URL,
+                notes=tg_source.LICENSE_NOTE,
+            ),
+        )
+        console.print(
+            f"[green]wrote {cables_path} ({cable_count} cables) and "
+            f"{landings_path} ({landing_count} landings) in {duration:.1f}s[/green]"
         )
 
 
