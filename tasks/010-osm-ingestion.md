@@ -1,6 +1,6 @@
 # 010 — OSM datacenter ingestion
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 009
 **Estimate:** 4 hours
 
