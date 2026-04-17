@@ -19,9 +19,10 @@ from tenacity import (
 
 # Identifies our crawler to upstreams. URL is included so a sysop seeing
 # our requests in their logs can find us without hunting. If you fork the
-# project, change this — leaving it pointed at gigawattmap would be rude
+# project, change this - leaving it pointed at gigawattmap would be rude
 # and would mis-attribute load against our reputation budget.
-USER_AGENT = "Gigawatt Map / 0.1 — https://gigawattmap.com"
+# ASCII-only: httpx encodes headers as ASCII by default, so no em-dashes.
+USER_AGENT = "Gigawatt Map / 0.1 (+https://gigawattmap.com)"
 
 # 30s is generous for HTTP fetches but Overpass commonly needs more for
 # country-scale queries; modules that need longer pass their own timeout

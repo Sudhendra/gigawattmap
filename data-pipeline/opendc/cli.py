@@ -7,10 +7,14 @@ docs, deploy scripts) can wire against a stable command surface.
 
 from __future__ import annotations
 
+from pathlib import Path
+
 import typer
 from rich.console import Console
 
 from opendc import __version__
+from opendc.manifest import make_entry, write_entry
+from opendc.sources import osm as osm_source
 
 app = typer.Typer(
     name="opendc",
@@ -39,10 +43,28 @@ def _stub(command: str) -> None:
 def ingest(
     source: str = typer.Argument("all", help="Source name or 'all'."),
     sample: bool = typer.Option(False, "--sample", help="Fetch a small sample only."),
+    out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
 ) -> None:
     """Fetch raw data from a source (OSM, GEM, TeleGeography, ...)."""
-    _ = source, sample  # quiets the unused-argument lint until implemented
-    _stub("ingest")
+    if source not in {"osm", "all"}:
+        # Other sources land in tasks 011/012 — keep the surface stable.
+        console.print(f"[yellow]opendc ingest {source}: not implemented yet[/yellow]")
+        return
+    console.print(f"[cyan]Fetching OSM datacenters{' (sample)' if sample else ''}...[/cyan]")
+    geojson_path, count, duration = osm_source.run(sample=sample, out_dir=out_dir)
+    write_entry(
+        out_dir / "manifest.json",
+        make_entry(
+            source="osm-datacenters",
+            feature_count=count,
+            duration_s=duration,
+            url=osm_source.OVERPASS_URL,
+            notes="sample=DFW" if sample else None,
+        ),
+    )
+    console.print(
+        f"[green]wrote {geojson_path} ({count} features, {duration:.1f}s)[/green]"
+    )
 
 
 @app.command()

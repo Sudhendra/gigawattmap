@@ -63,6 +63,11 @@ ignore = [
 [tool.ruff.lint.per-file-ignores]
 "tests/*" = ["N802"]  # test names may use camelCase to mirror behavior names
 
+[tool.ruff.lint.flake8-bugbear]
+# Typer's idiom requires `typer.Option(...)`/`typer.Argument(...)` as default
+# values. Treat them as immutable factories so B008 doesn't fire on every CLI.
+extend-immutable-calls = ["typer.Option", "typer.Argument"]
+
 [tool.mypy]
 python_version = "3.11"
 strict = true

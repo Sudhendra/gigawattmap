@@ -1,0 +1,61 @@
+# Schema: id,name,aliases,ticker,tier,headquarters_country
+# - id: stable slug, never change once assigned (joins downstream depend on it)
+# - name: canonical display name
+# - aliases: ';'-separated alternate names (subsidiaries, abbreviations, common misspellings)
+# - ticker: public-market ticker, empty for private operators
+# - tier: hyperscale | colo | neocloud | enterprise
+# - headquarters_country: ISO 3166-1 alpha-2
+#
+# Curation policy: only operators with a non-trivial AI / cloud datacenter
+# footprint (>=1 named site). Subsidiaries collapse into the parent (e.g.
+# AWS into amazon) so cross-references resolve cleanly.
+id,name,aliases,ticker,tier,headquarters_country
+amazon,Amazon Web Services,AWS;Amazon;Amazon Data Services;AWS Data Services,AMZN,hyperscale,US
+microsoft,Microsoft,Microsoft Azure;Azure;MSFT,MSFT,hyperscale,US
+google,Google,Google Cloud;GCP;Alphabet;Google LLC,GOOGL,hyperscale,US
+meta,Meta Platforms,Meta;Facebook;FB,META,hyperscale,US
+oracle,Oracle,Oracle Cloud;OCI;Oracle Corp,ORCL,hyperscale,US
+apple,Apple,Apple Inc;Apple Computer,AAPL,hyperscale,US
+ibm,IBM,International Business Machines;IBM Cloud;Kyndryl,IBM,hyperscale,US
+alibaba,Alibaba Cloud,Aliyun;Alibaba Group;Ant Group,BABA,hyperscale,CN
+tencent,Tencent,Tencent Cloud;TCloud,0700.HK,hyperscale,CN
+baidu,Baidu,Baidu AI Cloud,BIDU,hyperscale,CN
+huawei,Huawei,Huawei Cloud,,hyperscale,CN
+yandex,Yandex,Yandex Cloud,YDEX,hyperscale,RU
+equinix,Equinix,Equinix Inc;EQIX;Equinix IBX,EQIX,colo,US
+digitalrealty,Digital Realty,Digital Realty Trust;DLR;Interxion,DLR,colo,US
+cyrusone,CyrusOne,Cyrus One,,colo,US
+qts,QTS Realty Trust,QTS;Quality Technology Services,,colo,US
+coresite,CoreSite,CoreSite Realty,,colo,US
+iron-mountain,Iron Mountain,Iron Mountain Data Centers;IRM,IRM,colo,US
+ntt,NTT Global Data Centers,NTT;NTT Communications;NTT Ltd;NTT GDC,9432.T,colo,JP
+keppel,Keppel DC REIT,Keppel Data Centres;Keppel,,colo,SG
+stack,Stack Infrastructure,Stack;Stack IT,,colo,US
+vantage,Vantage Data Centers,Vantage,,colo,US
+aligned,Aligned Data Centers,Aligned,,colo,US
+compass,Compass Datacenters,Compass DC;Compass,,colo,US
+edgeconnex,EdgeConneX,Edge ConneX;Edge-ConneX,,colo,US
+flexential,Flexential,Flexential Corp,,colo,US
+cologix,Cologix,Cologix Inc,,colo,US
+global-switch,Global Switch,GlobalSwitch,,colo,GB
+data4,Data4 Group,Data 4;Data4,,colo,FR
+atman,Atman,Atman Sp;Atman SA,,colo,PL
+coreweave,CoreWeave,Core Weave,CRWV,neocloud,US
+nebius,Nebius,Nebius Group;NBIS,NBIS,neocloud,NL
+lambda,Lambda Labs,Lambda;Lambda Cloud,,neocloud,US
+nscale,Nscale,Nscale Ltd,,neocloud,GB
+crusoe,Crusoe Energy,Crusoe;Crusoe Cloud,,neocloud,US
+applied-digital,Applied Digital,Applied Blockchain;APLD,APLD,neocloud,US
+iris-energy,Iris Energy,IREN;Iris,IREN,neocloud,AU
+cerebras,Cerebras Systems,Cerebras,,neocloud,US
+groq,Groq,Groq Inc,,neocloud,US
+voltage-park,Voltage Park,Voltage,,neocloud,US
+gcore,Gcore,G-core;G-Core Labs,,neocloud,LU
+yotta,Yotta Infrastructure,Yotta;Hiranandani Yotta,,colo,IN
+adani,Adani Connex,Adani Enterprises;Adani,ADANIENT.NS,colo,IN
+sify,Sify Technologies,Sify;Sify Infinit,SIFY,colo,IN
+softbank,SoftBank,SoftBank Group;SBG,9984.T,enterprise,JP
+rakuten,Rakuten,Rakuten Symphony;Rakuten Mobile,4755.T,enterprise,JP
+xai,xAI,xAI Corp;X.AI,,neocloud,US
+openai,OpenAI,OpenAI LP;OpenAI Stargate;Stargate,,neocloud,US
+anthropic,Anthropic,Anthropic PBC,,neocloud,US
