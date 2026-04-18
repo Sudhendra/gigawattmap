@@ -148,3 +148,32 @@ const EMPTY_TARGETS: TickerFilterTargets = {
   operators: new Set<string>(),
   cloudProviders: new Set<CloudProvider>(),
 };
+
+/**
+ * Inverse of `OPERATORS_BY_TICKER`: resolve a campus operator's display
+ * name (as it appears in `properties.operator` on the AI-campus seed) to
+ * the ticker symbol that most directly represents it.
+ *
+ * When an operator is listed under multiple tickers (e.g. "Amazon" under
+ * AMZN as a hyperscaler and TLN as a power offtake counterparty), the
+ * earlier declaration wins — `OPERATORS_BY_TICKER` is intentionally
+ * ordered hyperscalers → neoclouds → REITs → power producers, so direct
+ * ownership beats indirect exposure.
+ *
+ * Returns `null` for operators with no public ticker (private companies,
+ * sovereigns) or unknown names.
+ */
+const TICKER_BY_OPERATOR: ReadonlyMap<string, string> = (() => {
+  const map = new Map<string, string>();
+  for (const [symbol, operators] of Object.entries(OPERATORS_BY_TICKER)) {
+    for (const op of operators) {
+      if (!map.has(op)) map.set(op, symbol);
+    }
+  }
+  return map;
+})();
+
+export function tickerForOperator(operatorDisplayName: string): string | null {
+  if (!operatorDisplayName) return null;
+  return TICKER_BY_OPERATOR.get(operatorDisplayName) ?? null;
+}

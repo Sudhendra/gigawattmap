@@ -1,14 +1,27 @@
 'use client';
 
-import { useEffect } from 'react';
+import { useEffect, useMemo } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
+import { useQuery } from '@tanstack/react-query';
 import { Share2, X } from 'lucide-react';
 import { toast } from 'sonner';
 import type { AiCampusFeature } from '@/components/map/layers/datacenters-layer';
+import {
+  ANNOUNCEMENTS_STALE_TIME_MS,
+  fetchAnnouncements,
+} from '@/components/announcements-feed/announcements-query';
+import { SEARCH_INDEX_URL } from '@/lib/env';
+import type { SearchCorpus } from '@/lib/search';
+import { useMapStore } from '@/lib/store/map-store';
+import { TICKER_META_BY_SYMBOL, SECTION_LABEL } from '@/lib/ticker-map';
 import { cn } from '@/lib/cn';
 import { FieldRow } from './field-row';
 import { StatusBadge } from './status-badge';
+import {
+  selectAnnouncementsForCampus,
+  tickerForOperator,
+} from './intelligence-card-helpers';
 
 type IntelligenceCardProps = {
   feature: AiCampusFeature | null;
@@ -180,17 +193,18 @@ function CardBody({
         </Section>
 
         <Section title="Context">
-          <Placeholder>Press and announcement notes attach when the deals feed lands (task 021).</Placeholder>
+          <ContextSection campus={feature} />
         </Section>
 
         <Section title="Market exposure">
-          <Placeholder>Ticker links activate with the market panel (task 020).</Placeholder>
+          <MarketExposureSection operatorDisplayName={p.operator} />
         </Section>
 
         <Section title="Sources">
           <p className="text-xs leading-relaxed text-[var(--text-muted)]">
-            Hand-curated seed dataset · Cross-checked against operator press releases ·
-            OpenStreetMap (ODbL) once the pipeline lands.
+            Hand-curated CSV of ~50 campuses · cross-checked against operator
+            press releases · substation enrichment from OpenStreetMap (ODbL)
+            and the Global Energy Monitor power-plant database (CC BY 4.0).
           </p>
         </Section>
       </div>
@@ -291,4 +305,127 @@ function PowerSection({
 
 function titleCase(s: string): string {
   return s.length === 0 ? s : s[0]!.toUpperCase() + s.slice(1);
+}
+
+const SEARCH_INDEX_SEED_URL = '/seed/search-index.json';
+
+async function fetchSearchCorpus(): Promise<SearchCorpus> {
+  const url = SEARCH_INDEX_URL ?? SEARCH_INDEX_SEED_URL;
+  const res = await fetch(url);
+  if (!res.ok) throw new Error(`search-index ${res.status}`);
+  return (await res.json()) as SearchCorpus;
+}
+
+const ANNOUNCEMENT_CATEGORY_LABEL: Record<string, string> = {
+  deal: 'deal',
+  launch: 'launch',
+  milestone: 'milestone',
+  opposition: 'opposition',
+  policy: 'policy',
+};
+
+/**
+ * "CONTEXT" section. Shows up to 3 most recent announcements joined to
+ * this campus by either `datacenter_id` or `operator_id`. Operator-id
+ * resolution requires a display-name → slug lookup, which we get from
+ * the same search-index payload `useSearchIndex` consumes (cached for
+ * the session via TanStack Query). When the corpus hasn't loaded yet we
+ * still surface direct datacenter_id matches.
+ */
+function ContextSection({ campus }: { campus: AiCampusFeature }): React.JSX.Element {
+  const announcementsQuery = useQuery({
+    queryKey: ['announcements'],
+    queryFn: fetchAnnouncements,
+    staleTime: ANNOUNCEMENTS_STALE_TIME_MS,
+  });
+  const corpusQuery = useQuery({
+    queryKey: ['search-corpus'],
+    queryFn: fetchSearchCorpus,
+    staleTime: 60 * 60 * 1000,
+  });
+
+  const operatorId = useMemo(() => {
+    const corpus = corpusQuery.data;
+    if (!corpus) return null;
+    const display = campus.properties.operator;
+    return corpus.operators.find((o) => o.name === display)?.id ?? null;
+  }, [corpusQuery.data, campus.properties.operator]);
+
+  const items = useMemo(
+    () =>
+      selectAnnouncementsForCampus(
+        announcementsQuery.data ?? [],
+        campus.properties.id,
+        operatorId,
+        3,
+      ),
+    [announcementsQuery.data, campus.properties.id, operatorId],
+  );
+
+  if (announcementsQuery.isLoading) {
+    return <p className="text-xs text-[var(--text-muted)]">Loading announcements…</p>;
+  }
+  if (items.length === 0) {
+    return <p className="text-xs text-[var(--text-muted)]">No recent announcements.</p>;
+  }
+  return (
+    <ul className="space-y-2">
+      {items.map((a) => (
+        <li key={a.id} className="text-xs leading-snug">
+          <div className="flex items-center gap-2 text-[10px] uppercase tracking-[0.12em] text-[var(--text-subtle)] tabular">
+            <time dateTime={a.date}>{a.date}</time>
+            <span>·</span>
+            <span>{ANNOUNCEMENT_CATEGORY_LABEL[a.category] ?? a.category}</span>
+          </div>
+          <a
+            href={a.source_url}
+            target="_blank"
+            rel="noreferrer"
+            className="mt-0.5 block text-[var(--text-primary)] underline-offset-2 hover:underline focus-visible:underline focus-visible:outline-none"
+          >
+            {a.title}
+          </a>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+/**
+ * "MARKET EXPOSURE" section. Renders a clickable ticker chip when the
+ * operator has a public listing in our editorial map. Clicking calls
+ * `setTickerFilter(symbol)` — the same store action the ticker panel
+ * uses, so the map dim/highlight behavior is identical and the user
+ * sees the panel reflect the selection.
+ */
+function MarketExposureSection({
+  operatorDisplayName,
+}: {
+  operatorDisplayName: string;
+}): React.JSX.Element {
+  const setTickerFilter = useMapStore((s) => s.setTickerFilter);
+  const symbol = tickerForOperator(operatorDisplayName);
+  if (!symbol) {
+    return <p className="text-xs text-[var(--text-muted)]">No public ticker linked.</p>;
+  }
+  const meta = TICKER_META_BY_SYMBOL.get(symbol);
+  return (
+    <button
+      type="button"
+      onClick={() => setTickerFilter(symbol)}
+      className={cn(
+        'inline-flex items-center gap-2 rounded border border-[var(--bg-elevated)] bg-[var(--bg-base)]/40 px-3 py-1.5 text-xs',
+        'text-[var(--text-primary)] transition hover:border-[var(--accent-focus)] hover:bg-[var(--bg-elevated)]',
+        'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-focus)]',
+      )}
+      aria-label={`Filter map by ${symbol}`}
+    >
+      <span className="font-display font-semibold tabular">${symbol}</span>
+      {meta ? (
+        <span className="text-[var(--text-muted)]">
+          {meta.name} · {SECTION_LABEL[meta.section]}
+        </span>
+      ) : null}
+    </button>
+  );
 }
