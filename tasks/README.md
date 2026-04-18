@@ -31,7 +31,8 @@ Tasks are numbered and executed in order. Each card is one commit.
 ## Week 3 — intelligence + launch
 
 - [020 — Ticker panel](./020-ticker-panel.md) · market overlay + Finnhub proxy
-- [021 — Announcements feed](./021-announcements-feed.md) · curated news strip
+- [021 — Announcements feed](./021-announcements-feed.md) · curated news strip (engineering + 10-entry seed)
+- [021b — Announcements editorial backfill](./021b-announcements-backfill.md) · grow seed from 10 → ≥50 entries
 - [022 — Cmd+K search](./022-search.md) · Fuse.js-powered command palette
 - [023 — About page](./023-about-page.md) · methodology + attribution
 - [024 — Downloads + public API](./024-downloads-api.md) · data as first-class output

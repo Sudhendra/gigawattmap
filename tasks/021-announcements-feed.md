@@ -1,8 +1,8 @@
 # 021 — Announcements feed
 
-**Status:** in-progress
+**Status:** todo
 **Depends on:** 006
-**Estimate:** 3 hours
+**Estimate:** 4 hours
 
 ## Context
 
@@ -23,7 +23,7 @@ Bottom-of-viewport horizontal strip showing recent material AI-infra announcemen
   summary: |
     Two-sentence neutral summary of the announcement.
   ```
-- [ ] ≥50 entries covering the last 12 months (hand-curated from DCD, Converge Digest, Data Center Frontier, SEC 8-Ks, press releases)
+- [ ] ≥10 hand-curated seed entries spanning all five categories (deal, launch, milestone, opposition, policy) with verified `source_url`s. The remaining 40 entries to reach the spec's 50-entry editorial bar are tracked separately as task 021b.
 - [ ] `opendc/sources/announcements.py` reads the YAML dir, validates via pydantic, emits `out/interim/announcements.json` (array, sorted desc by date)
 - [ ] Uploaded to `r2://gigawattmap/v1/announcements.json` as a single static JSON
 - [ ] `components/announcements-feed/announcements-feed.tsx`:
@@ -46,3 +46,5 @@ Bottom-of-viewport horizontal strip showing recent material AI-infra announcemen
 - v1 is 100% hand-curation — no automation. Fine. The automated RSS+8-K pipeline is tracked as a v1.5 task in `SPEC.md §2.N`.
 - YAML over JSON for source files: easier to hand-edit, supports multi-line summary, better PR diffs.
 - Dates are UTC (`YYYY-MM-DD`). Use `Intl.DateTimeFormat` for display — respect user locale.
+- **Card scope split:** the original spec asked for ≥50 entries. Per AGENTS.md ("one card = at most one day of work"), the editorial backfill from 10 → 50 lives in task **021b**. This card ships the engineering plus a 10-entry seed proving the loop end-to-end.
+- The R2 upload step generalizes the existing `tiles upload` pattern (today only handles `*.pmtiles`). Adds a `data upload` sibling command for static JSON artifacts.
