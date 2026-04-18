@@ -69,8 +69,8 @@ _ODBL = (
     "ODbL-1.0",
     "https://opendatacommons.org/licenses/odbl/1-0/",
     "© OpenStreetMap contributors",
-    True,   # share_alike
-    True,   # commercial_use
+    True,  # share_alike
+    True,  # commercial_use
 )
 # TeleGeography submarine cables are CC BY-NC-SA 3.0 (NON-commercial).
 # AGENTS.md mandates per-source downloads and a license-revocation plan
@@ -289,6 +289,7 @@ def publish_all(
         client = tile_upload._make_client(config)
 
     messages: list[str] = []
+    uploaded_count = 0
     for spec in PUBLICATION_CATALOG:
         local = out_dir / spec.source_relpath
         if not local.exists():
@@ -307,6 +308,7 @@ def publish_all(
         messages.append(msg)
 
         if dry_run:
+            uploaded_count += 1
             continue
 
         meta = compute_artifact_metadata(local)
@@ -328,5 +330,21 @@ def publish_all(
             source_group=spec.source_group,
         )
         write_artifact(manifest_path, entry)
+        uploaded_count += 1
+
+    # Upload manifest.json LAST so /data can fetch a coherent snapshot
+    # of every artifact that just shipped. Skip when nothing was uploaded
+    # to avoid publishing a stale or empty manifest. Dry-run announces
+    # intent even though the manifest hasn't been written to disk yet.
+    if uploaded_count > 0 and (dry_run or manifest_path.exists()):
+        msg = tile_upload.upload_one(
+            manifest_path,
+            config,
+            prefix=DOWNLOADS_PREFIX,
+            client=client,
+            dry_run=dry_run,
+            content_type="application/json",
+        )
+        messages.append(msg)
 
     return messages

@@ -162,10 +162,11 @@ class TestPublishAllRealRun:
             skip_merge=True,
         )
 
-        # One upload per catalog entry.
-        assert len(client.calls) == len(PUBLICATION_CATALOG)
+        # One upload per catalog entry, plus the manifest itself last.
+        assert len(client.calls) == len(PUBLICATION_CATALOG) + 1
         keys = {call["Key"] for call in client.calls}
         assert "v1/downloads/datacenters.geojson" in keys
+        assert "v1/downloads/manifest.json" in keys
 
         # Manifest captured every artifact with sha256 + size.
         manifest = json.loads(manifest_path.read_text())
@@ -198,7 +199,91 @@ class TestPublishAllRealRun:
             skip_merge=True,
         )
 
-        # Exactly one upload; the rest produce SKIP messages.
-        assert len(client.calls) == 1
+        # One artifact upload + one manifest upload; the rest SKIP.
+        assert len(client.calls) == 2
+        assert client.calls[-1]["Key"] == "v1/downloads/manifest.json"
         skips = [m for m in messages if m.startswith("SKIP")]
         assert len(skips) == len(PUBLICATION_CATALOG) - 1
+
+
+class TestManifestUpload:
+    """The manifest itself must be uploaded so /data can fetch it at build time.
+
+    Without this, the Downloads UI would have no way to discover what's on R2
+    short of LIST permissions or a hardcoded table. The manifest goes to the
+    same prefix as the artifacts (``v1/downloads/manifest.json``) with
+    ``application/json`` and the ``manifest`` content type so it surfaces
+    distinctly in logs.
+    """
+
+    def test_manifest_uploaded_after_artifacts(
+        self, tmp_path: Path, fake_env: dict[str, str]
+    ) -> None:
+        body = b'{"type":"FeatureCollection","features":[]}'
+        for spec in PUBLICATION_CATALOG:
+            _seed_artifact(tmp_path, spec.source_relpath, body)
+
+        client = _FakeS3Client()
+        manifest_path = tmp_path / "manifest.json"
+
+        messages = publish_all(
+            out_dir=tmp_path,
+            manifest_path=manifest_path,
+            env=fake_env,
+            client=client,
+            skip_merge=True,
+        )
+
+        # Last upload should be the manifest itself.
+        manifest_calls = [c for c in client.calls if c["Key"].endswith("manifest.json")]
+        assert len(manifest_calls) == 1, "manifest must be uploaded exactly once"
+        manifest_call = manifest_calls[0]
+        assert manifest_call["Key"] == "v1/downloads/manifest.json"
+        assert manifest_call["Bucket"] == "gigawattmap-test"
+        assert manifest_call["ExtraArgs"]["ContentType"] == "application/json"
+        # Total calls = catalog + 1 (manifest).
+        assert len(client.calls) == len(PUBLICATION_CATALOG) + 1
+        # Manifest upload happens last so it reflects every preceding entry.
+        assert client.calls[-1]["Key"].endswith("manifest.json")
+        # Log line acknowledges the manifest upload distinctly.
+        assert any("manifest.json" in m for m in messages)
+
+    def test_dry_run_does_not_upload_manifest(
+        self, tmp_path: Path, fake_env: dict[str, str]
+    ) -> None:
+        for spec in PUBLICATION_CATALOG:
+            _seed_artifact(tmp_path, spec.source_relpath, b"x")
+
+        client = _FakeS3Client()
+        manifest_path = tmp_path / "manifest.json"
+
+        messages = publish_all(
+            out_dir=tmp_path,
+            manifest_path=manifest_path,
+            env=fake_env,
+            client=client,
+            dry_run=True,
+            skip_merge=True,
+        )
+
+        assert client.calls == []
+        # But dry-run should still announce intent for the manifest.
+        assert any("DRY-RUN" in m and "manifest.json" in m for m in messages)
+
+    def test_no_manifest_upload_when_zero_artifacts_succeeded(
+        self, tmp_path: Path, fake_env: dict[str, str]
+    ) -> None:
+        # Seed nothing; every spec SKIPs.
+        client = _FakeS3Client()
+        manifest_path = tmp_path / "manifest.json"
+
+        messages = publish_all(
+            out_dir=tmp_path,
+            manifest_path=manifest_path,
+            env=fake_env,
+            client=client,
+            skip_merge=True,
+        )
+
+        assert client.calls == []
+        assert all(m.startswith("SKIP") for m in messages)
