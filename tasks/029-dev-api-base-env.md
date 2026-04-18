@@ -1,6 +1,6 @@
 # 029 — Document NEXT_PUBLIC_API_BASE for local dev
 
-**Status:** todo
+**Status:** done
 **Depends on:** none
 **Estimate:** 10m
 
