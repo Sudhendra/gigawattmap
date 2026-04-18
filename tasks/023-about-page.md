@@ -1,6 +1,6 @@
 # 023 — About page + attribution
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 013, 018
 **Estimate:** 2 hours
 
