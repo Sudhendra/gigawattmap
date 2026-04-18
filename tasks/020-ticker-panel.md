@@ -1,6 +1,6 @@
 # 020 — Ticker panel (market intelligence overlay)
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 003
 **Estimate:** 3 hours
 
@@ -10,18 +10,18 @@ Collapsible top-right panel showing real-time-ish prices for the AI-infra public
 
 ## Acceptance criteria
 
-- [ ] `apps/api/src/routes/tickers.ts` — Cloudflare Worker endpoint `GET /api/v1/tickers` proxies Finnhub `/quote` for the ticker list, caches responses for 10 minutes in Workers KV, returns a single JSON array `[{ symbol, price, change_pct, change_abs, as_of }]`
-- [ ] Ticker list hardcoded in `apps/api/src/config/tickers.ts`: `EQIX, DLR, IRM, VRT, ETN, NVT, SU, MOD, JCI, NVDA, AVGO, AMD, MRVL, MU, TLN, VST, CEG, NRG, CRWV, NBIS, MSFT, GOOGL, AMZN, META, ORCL`
-- [ ] `components/ticker-panel/ticker-panel.tsx`:
+- [x] `apps/api/src/routes/tickers.ts` — Cloudflare Worker endpoint `GET /api/v1/tickers` proxies Finnhub `/quote` for the ticker list, caches responses for 10 minutes in Workers KV, returns a single JSON array `[{ symbol, price, change_pct, change_abs, as_of }]`
+- [x] Ticker list hardcoded in `apps/api/src/config/tickers.ts`: `EQIX, DLR, IRM, VRT, ETN, NVT, SU, MOD, JCI, NVDA, AVGO, AMD, MRVL, MU, TLN, VST, CEG, NRG, CRWV, NBIS, MSFT, GOOGL, AMZN, META, ORCL`
+- [x] `components/ticker-panel/ticker-panel.tsx`:
   - Fetches via TanStack Query with `staleTime: 300_000` (5 min)
   - Groups tickers into 4 sections: REITs / Picks & Shovels / Silicon / Power & Neoclouds
   - Each row: `symbol`, `price` (tabular-nums), `change_pct` (green/red arrow)
   - Clicking a ticker sets `mapStore.tickerFilter = symbol`
   - Filter applies to deck.gl layers: only facilities whose operator links to that ticker remain fully opaque; others fade to 20% opacity
-- [ ] Ticker-to-operator mapping lives in `apps/web/src/lib/ticker-map.ts` (e.g. `META` → Meta facilities; `TLN` → Susquehanna + AWS campuses it powers; `VRT` → facilities with known Vertiv cooling installs — for v1, conservative matches only; default to "no filter applied" if unsure)
-- [ ] Panel collapses to a slim vertical strip; state persisted in Zustand
-- [ ] Clearly labeled "15-min delayed · via Finnhub" with tiny attribution link
-- [ ] `FINNHUB_TOKEN` in `.env`, never exposed to client
+- [x] Ticker-to-operator mapping lives in `apps/web/src/lib/ticker-map.ts` (e.g. `META` → Meta facilities; `TLN` → Susquehanna + AWS campuses it powers; `VRT` → facilities with known Vertiv cooling installs — for v1, conservative matches only; default to "no filter applied" if unsure)
+- [x] Panel collapses to a slim vertical strip; state persisted in Zustand
+- [x] Clearly labeled "15-min delayed · via Finnhub" with tiny attribution link
+- [x] `FINNHUB_TOKEN` in `.env`, never exposed to client
 
 ## Files to touch
 

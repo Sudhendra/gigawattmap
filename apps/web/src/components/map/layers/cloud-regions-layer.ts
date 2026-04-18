@@ -48,7 +48,21 @@ export type CreateCloudRegionsLayerOptions = {
   onClick?: (feature: CloudRegionFeature) => void;
   /** Whether the layer is rendered. Defaults to true. */
   visible?: boolean;
+  /**
+   * Cloud providers that should remain fully lit when a ticker filter is
+   * active. Empty/null disables filtering. See ticker-map.ts for the
+   * editorial mapping that produces this set.
+   */
+  highlightProviders?: ReadonlySet<CloudProvider> | null;
 };
+
+const DIMMED_ALPHA = 32;
+
+function dimRgba(
+  rgba: [number, number, number, number],
+): [number, number, number, number] {
+  return [rgba[0], rgba[1], rgba[2], DIMMED_ALPHA];
+}
 
 /**
  * Build a deck.gl ScatterplotLayer for cloud-provider region centroids.
@@ -60,7 +74,9 @@ export function createCloudRegionsLayer(
   data: CloudRegionCollection,
   options: CreateCloudRegionsLayerOptions = {},
 ): ScatterplotLayer<CloudRegionFeature> {
-  const { onClick, visible = true } = options;
+  const { onClick, visible = true, highlightProviders = null } = options;
+  const filterActive =
+    highlightProviders !== null && highlightProviders.size > 0;
   return new ScatterplotLayer<CloudRegionFeature>({
     id: 'cloud-regions',
     data: data.features,
@@ -72,13 +88,29 @@ export function createCloudRegionsLayer(
     radiusMinPixels: MIN_PIXELS,
     radiusMaxPixels: MAX_PIXELS,
     lineWidthUnits: 'pixels',
+    updateTriggers: {
+      getFillColor: filterActive ? Array.from(highlightProviders ?? []) : null,
+      getLineColor: filterActive ? Array.from(highlightProviders ?? []) : null,
+    },
     getPosition: (f) => {
       const [lon, lat] = f.geometry.coordinates;
       return [lon ?? 0, lat ?? 0];
     },
     getRadius: () => BUFFER_RADIUS_METERS,
-    getFillColor: (f) => fillForProvider(f.properties.provider),
-    getLineColor: (f) => strokeForProvider(f.properties.provider),
+    getFillColor: (f) => {
+      const base = fillForProvider(f.properties.provider);
+      if (!filterActive) return base;
+      return highlightProviders?.has(f.properties.provider)
+        ? base
+        : dimRgba(base);
+    },
+    getLineColor: (f) => {
+      const base = strokeForProvider(f.properties.provider);
+      if (!filterActive) return base;
+      return highlightProviders?.has(f.properties.provider)
+        ? base
+        : dimRgba(base);
+    },
     getLineWidth: () => 1.5,
     onClick: ({ object }) => {
       if (object && onClick) onClick(object as CloudRegionFeature);

@@ -29,6 +29,7 @@ import {
   useAnimationClock,
   usePrefersReducedMotion,
 } from '@/lib/hooks/use-animation-clock';
+import { targetsForTicker } from '@/lib/ticker-map';
 
 // Register the pmtiles:// protocol once per module load. Idempotent across HMR.
 let protocolRegistered = false;
@@ -92,6 +93,14 @@ export function Map({
   const cloudRegionsVisible = useMapStore((s) => s.layers.cloud_regions);
   const oppositionVisible = useMapStore((s) => s.layers.opposition);
   const cablesVisible = useMapStore((s) => s.layers.cables);
+  const tickerFilter = useMapStore((s) => s.tickerFilter);
+
+  // Resolve the ticker filter into highlight sets once per render. Pure
+  // derivation; cheap enough not to bother memoising.
+  const highlightTargets = useMemo(
+    () => targetsForTicker(tickerFilter),
+    [tickerFilter],
+  );
 
   // Animation clock for the cables TripsLayer. Disabled when the user
   // prefers reduced motion or the cables layer itself is off — no point
@@ -174,6 +183,7 @@ export function Map({
       layers.push(
         createCloudRegionsLayer(cloudRegions, {
           visible: cloudRegionsVisible,
+          highlightProviders: highlightTargets.cloudProviders,
           onClick: (feature) => onSelectCloudRegion?.(feature),
         }),
       );
@@ -195,6 +205,7 @@ export function Map({
         createDatacentersLayer(data, {
           selectedId,
           visible: datacentersVisible,
+          highlightOperators: highlightTargets.operators,
           onClick: (feature) => onSelect(feature.properties.id),
         }),
       );
@@ -225,6 +236,7 @@ export function Map({
     oppositionVisible,
     cablesVisible,
     animationClockMs,
+    highlightTargets,
   ]);
 
   // --- Fly-to when selection changes externally (URL load, deep link). ------

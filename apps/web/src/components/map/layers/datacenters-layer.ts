@@ -52,7 +52,17 @@ export type CreateDatacentersLayerOptions = {
   selectedId?: string | null;
   /** Whether the layer is rendered. Defaults to true. */
   visible?: boolean;
+  /**
+   * Operator names that should remain fully lit when a ticker filter is
+   * active. When `null`, no filter is applied (every dot is opaque).
+   * When a non-null Set is supplied, dots whose `operator` is *not* in the
+   * set fade to ~25% opacity so the highlighted operator visually pops.
+   */
+  highlightOperators?: ReadonlySet<string> | null;
 };
+
+/** Alpha (0-255) applied to dimmed features when a ticker filter is active. */
+const DIMMED_ALPHA = 64;
 
 /**
  * Build a deck.gl ScatterplotLayer for AI campus points. Pure factory —
@@ -63,7 +73,16 @@ export function createDatacentersLayer(
   data: AiCampusCollection,
   options: CreateDatacentersLayerOptions = {},
 ): ScatterplotLayer<AiCampusFeature> {
-  const { selectedId = null, onClick, visible = true } = options;
+  const {
+    selectedId = null,
+    onClick,
+    visible = true,
+    highlightOperators = null,
+  } = options;
+  // Pre-derive a stable boolean: filter is "active" only when a non-empty
+  // set is supplied. Empty sets mean "ticker has no editorial links" — we
+  // treat that as a no-op rather than dimming everything.
+  const filterActive = highlightOperators !== null && highlightOperators.size > 0;
   return new ScatterplotLayer<AiCampusFeature>({
     id: 'ai-campuses',
     data: data.features,
@@ -73,11 +92,12 @@ export function createDatacentersLayer(
     filled: true,
     radiusUnits: 'pixels',
     lineWidthUnits: 'pixels',
-    // Force a re-render when selection changes — deck.gl shallow-compares
-    // accessor outputs, so we tag the props.
+    // Force a re-render when selection or filter changes — deck.gl shallow-
+    // compares accessor outputs, so we tag the props.
     updateTriggers: {
       getLineColor: selectedId,
       getLineWidth: selectedId,
+      getFillColor: filterActive ? Array.from(highlightOperators ?? []) : null,
     },
     getPosition: (f) => {
       const [lon, lat] = f.geometry.coordinates;
@@ -87,7 +107,13 @@ export function createDatacentersLayer(
       return [lon ?? 0, lat ?? 0];
     },
     getRadius: (f) => radiusForMw(f.properties.est_mw_mid),
-    getFillColor: (f) => colorForTier(f.properties.tier),
+    getFillColor: (f) => {
+      const base = colorForTier(f.properties.tier);
+      if (!filterActive) return base;
+      const matches = highlightOperators?.has(f.properties.operator) ?? false;
+      if (matches) return base;
+      return [base[0], base[1], base[2], DIMMED_ALPHA];
+    },
     getLineColor: (f) =>
       f.properties.id === selectedId
         ? [255, 235, 59, 255] // --accent-focus

@@ -1,6 +1,7 @@
 import type { Metadata } from 'next';
 import { JetBrains_Mono, Geist, Source_Serif_4 } from 'next/font/google';
 import { AppHeader } from '@/components/app-header';
+import { QueryProvider } from './_components/query-provider';
 import { cn } from '@/lib/cn';
 import './globals.css';
 
@@ -39,8 +40,10 @@ export default function RootLayout({
       className={cn(jetbrainsMono.variable, geist.variable, sourceSerif.variable)}
     >
       <body className="min-h-screen bg-bg-base text-text-primary">
-        <AppHeader />
-        <main>{children}</main>
+        <QueryProvider>
+          <AppHeader />
+          <main>{children}</main>
+        </QueryProvider>
       </body>
     </html>
   );

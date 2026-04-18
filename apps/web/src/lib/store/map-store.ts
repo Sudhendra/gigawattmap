@@ -52,7 +52,45 @@ type MapStore = {
    */
   layers: Record<LayerId, boolean>;
   setLayerVisible: (id: LayerId, next: boolean) => void;
+  /**
+   * Stock symbol the user has filtered the map by, or null when no filter
+   * is active. Mapped to operators / cloud providers via `lib/ticker-map.ts`;
+   * matching features render at full opacity, others fade. Lives in the
+   * store rather than the URL so deep-linking stays focused on geography.
+   */
+  tickerFilter: string | null;
+  setTickerFilter: (symbol: string | null) => void;
+  /**
+   * Whether the ticker panel is in its slim collapsed strip state. Persisted
+   * for the lifetime of the tab via sessionStorage so a casual visitor isn't
+   * pestered with the full panel after they hide it.
+   */
+  tickerPanelCollapsed: boolean;
+  setTickerPanelCollapsed: (next: boolean) => void;
 };
+
+/**
+ * sessionStorage-backed seed for `tickerPanelCollapsed`. Returns false during
+ * SSR or when the storage call fails (private mode, quota, etc.) so the
+ * panel always defaults to "expanded" on first paint.
+ */
+function readPersistedCollapsed(): boolean {
+  if (typeof window === 'undefined') return false;
+  try {
+    return window.sessionStorage.getItem('gwm.tickerPanelCollapsed') === '1';
+  } catch {
+    return false;
+  }
+}
+
+function writePersistedCollapsed(next: boolean): void {
+  if (typeof window === 'undefined') return;
+  try {
+    window.sessionStorage.setItem('gwm.tickerPanelCollapsed', next ? '1' : '0');
+  } catch {
+    // Best-effort: a failed write should never break interaction.
+  }
+}
 
 export const useMapStore = create<MapStore>((set) => ({
   viewport: DEFAULT_VIEWPORT,
@@ -75,4 +113,11 @@ export const useMapStore = create<MapStore>((set) => ({
   },
   setLayerVisible: (id, next) =>
     set((state) => ({ layers: { ...state.layers, [id]: next } })),
+  tickerFilter: null,
+  setTickerFilter: (symbol) => set({ tickerFilter: symbol }),
+  tickerPanelCollapsed: readPersistedCollapsed(),
+  setTickerPanelCollapsed: (next) => {
+    writePersistedCollapsed(next);
+    set({ tickerPanelCollapsed: next });
+  },
 }));

@@ -46,6 +46,8 @@ env/
 .env
 .env.*
 !.env.example
+.dev.vars
+!.dev.vars.example
 
 # Data pipeline outputs (large artifacts go to R2)
 data-pipeline/out/

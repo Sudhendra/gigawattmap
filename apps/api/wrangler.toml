@@ -1,0 +1,21 @@
+# Gigawatt Map API — Cloudflare Worker.
+# The KV namespace caches upstream Finnhub responses (10 min TTL) so the free
+# tier (60 req/min) comfortably covers all visitors, and so the upstream token
+# never reaches the browser.
+#
+# To deploy you must first create the KV namespace and replace the `id` below:
+#   wrangler kv:namespace create TICKERS_CACHE
+#   wrangler kv:namespace create TICKERS_CACHE --preview
+# Local `wrangler dev` uses Miniflare's in-memory KV automatically.
+name = "gigawattmap-api"
+main = "src/index.ts"
+compatibility_date = "2024-11-12"
+compatibility_flags = ["nodejs_compat"]
+
+[[kv_namespaces]]
+binding = "TICKERS_CACHE"
+id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
+preview_id = "REPLACE_WITH_REAL_PREVIEW_KV_NAMESPACE_ID"
+
+# `FINNHUB_TOKEN` is set as a secret, not in this file:
+#   wrangler secret put FINNHUB_TOKEN

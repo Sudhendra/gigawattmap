@@ -9,6 +9,7 @@ import { CloudRegionCard } from '@/components/map/cloud-region-card';
 import { OppositionCard } from '@/components/intelligence-card/opposition-card';
 import { CableCard } from '@/components/intelligence-card/cable-card';
 import { IntelligenceCard } from '@/components/intelligence-card/intelligence-card';
+import { TickerPanel } from '@/components/ticker-panel/ticker-panel';
 import { useSelectedDcUrlSync } from '@/lib/hooks/use-selected-dc-url-sync';
 import { useMapStore } from '@/lib/store/map-store';
 import type {
@@ -211,6 +212,7 @@ function MapViewInner(): React.JSX.Element {
           onSelectCable={handleSelectCable}
         />
         <LayerControls />
+        <TickerPanel />
         <ViewportHud data={data} />
         <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
         <OppositionCard feature={selectedOpposition} onClose={handleCloseOpposition} />
