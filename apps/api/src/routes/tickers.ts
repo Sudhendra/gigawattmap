@@ -79,7 +79,25 @@ export function createTickersRouter(
       if (result.status === 'rejected') {
         const err = result.reason;
         const msg = err instanceof Error ? err.message : String(err);
-        console.warn(`ticker ${ticker.symbol} failed: ${msg}`);
+        const cause =
+          err instanceof Error && 'cause' in err ? (err as { cause?: unknown }).cause : undefined;
+        const causeMsg =
+          cause instanceof Error
+            ? `${cause.name}: ${cause.message}`
+            : cause === undefined
+              ? ''
+              : (() => {
+                  try {
+                    return JSON.stringify(cause);
+                  } catch {
+                    return String(cause);
+                  }
+                })();
+        console.warn(
+          causeMsg
+            ? `ticker ${ticker.symbol} failed: ${msg} | cause: ${causeMsg}`
+            : `ticker ${ticker.symbol} failed: ${msg}`,
+        );
       }
     }
 

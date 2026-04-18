@@ -1,6 +1,6 @@
-import { describe, expect, it } from 'vitest';
+import { describe, expect, it, vi } from 'vitest';
 import { createTickersRouter, type Env } from './tickers';
-import type { TickerProvider, TickerQuote } from '../providers/types';
+import { TickerProviderError, type TickerProvider, type TickerQuote } from '../providers/types';
 import { TICKERS } from '../config/tickers';
 
 /**
@@ -113,5 +113,32 @@ describe('GET /api/v1/tickers', () => {
     const router = createTickersRouter({ providerFactory: () => provider });
     const res = await router.request('/', {}, env);
     expect(res.status).toBe(502);
+  });
+
+  it('logs the underlying cause when a provider error wraps one', async () => {
+    const warn = vi.spyOn(console, 'warn').mockImplementation(() => {});
+    const provider: TickerProvider = {
+      name: 'fake',
+      async fetchQuote(symbol) {
+        if (symbol === 'NVDA') {
+          throw new TickerProviderError(
+            `Finnhub fetch failed for ${symbol}`,
+            new Error('ECONNREFUSED 1.2.3.4:443'),
+          );
+        }
+        return fakeQuote(symbol);
+      },
+    };
+    const env = makeEnv(provider);
+    const router = createTickersRouter({ providerFactory: () => provider });
+    await router.request('/', {}, env);
+    const nvdaCall = warn.mock.calls.find((args) =>
+      args.some((a) => typeof a === 'string' && a.includes('NVDA')),
+    );
+    expect(nvdaCall, 'expected a warn line for NVDA').toBeDefined();
+    const flat = nvdaCall!.map((a) => (typeof a === 'string' ? a : JSON.stringify(a))).join(' ');
+    expect(flat).toContain('Finnhub fetch failed for NVDA');
+    expect(flat).toContain('ECONNREFUSED 1.2.3.4:443');
+    warn.mockRestore();
   });
 });

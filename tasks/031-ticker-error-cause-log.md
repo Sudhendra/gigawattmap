@@ -1,6 +1,6 @@
 # 031 — Surface upstream cause in ticker error logs
 
-**Status:** todo
+**Status:** done
 **Depends on:** 030
 **Estimate:** 15m
 
