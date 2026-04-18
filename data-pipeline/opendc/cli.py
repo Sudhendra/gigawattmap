@@ -20,6 +20,7 @@ from opendc.manifest import make_entry, write_entry
 from opendc.sources import cloud_regions as cloud_regions_source
 from opendc.sources import curated as curated_source
 from opendc.sources import gem as gem_source
+from opendc.sources import opposition as opposition_source
 from opendc.sources import osm as osm_source
 from opendc.sources import osm_power as osm_power_source
 from opendc.sources import telegeography as tg_source
@@ -70,6 +71,7 @@ def ingest(
         "telegeography",
         "curated",
         "cloud-regions",
+        "opposition",
         "all",
     }:
         # Other sources land in tasks 013+ — keep the surface stable.
@@ -215,6 +217,30 @@ def ingest(
         )
         console.print(
             f"[green]wrote {cr_path} ({cr_count} features, {cr_duration:.2f}s)[/green]"
+        )
+    if source in {"opposition", "all"}:
+        console.print(
+            "[cyan]Fetching datacenter-opposition-tracker (CC BY 4.0)...[/cyan]"
+        )
+        try:
+            op_path, op_count, op_duration = opposition_source.run(out_dir=out_dir)
+        except opposition_source.OppositionError as exc:
+            console.print(f"[red]opposition: {exc}[/red]")
+            if source == "opposition":
+                raise typer.Exit(1) from exc
+            return
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="opposition-fights",
+                feature_count=op_count,
+                duration_s=op_duration,
+                url=opposition_source.UPSTREAM_URL,
+                notes=opposition_source.LICENSE_NOTE,
+            ),
+        )
+        console.print(
+            f"[green]wrote {op_path} ({op_count} features, {op_duration:.2f}s)[/green]"
         )
 
 

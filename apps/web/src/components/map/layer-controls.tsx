@@ -32,7 +32,7 @@ const LAYERS: readonly LayerControl[] = [
   },
   { id: 'cables', label: 'Cables', swatch: 'var(--accent-cable)', placeholder: true },
   { id: 'powerplants', label: 'Power plants', swatch: 'var(--fuel-gas)', placeholder: true },
-  { id: 'opposition', label: 'Opposition', swatch: 'var(--status-blocked)', placeholder: true },
+  { id: 'opposition', label: 'Opposition', swatch: 'var(--status-blocked)', placeholder: false },
 ];
 
 const HINT_DURATION_MS = 2_000;

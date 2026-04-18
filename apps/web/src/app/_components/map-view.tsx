@@ -6,6 +6,7 @@ import { Map } from '@/components/map/map';
 import { LayerControls } from '@/components/map/layer-controls';
 import { ViewportHud } from '@/components/map/viewport-hud';
 import { CloudRegionCard } from '@/components/map/cloud-region-card';
+import { OppositionCard } from '@/components/intelligence-card/opposition-card';
 import { IntelligenceCard } from '@/components/intelligence-card/intelligence-card';
 import { useSelectedDcUrlSync } from '@/lib/hooks/use-selected-dc-url-sync';
 import { useMapStore } from '@/lib/store/map-store';
@@ -17,10 +18,15 @@ import type {
   CloudRegionCollection,
   CloudRegionFeature,
 } from '@/components/map/layers/cloud-regions-layer';
+import type {
+  OppositionFightCollection,
+  OppositionFightFeature,
+} from '@/components/map/layers/opposition-layer';
 
 /** Path is relative to /public, served at /seed/*.geojson. */
 const SEED_URL = '/seed/ai-campuses.geojson';
 const CLOUD_REGIONS_URL = '/seed/cloud-regions.geojson';
+const OPPOSITION_URL = '/seed/opposition.geojson';
 
 /**
  * Orchestrator that owns the AI-campus dataset and wires map clicks ↔ URL ↔
@@ -39,7 +45,9 @@ export function MapView(): React.JSX.Element {
 function MapViewInner(): React.JSX.Element {
   const [data, setData] = useState<AiCampusCollection | null>(null);
   const [cloudRegions, setCloudRegions] = useState<CloudRegionCollection | null>(null);
+  const [oppositionData, setOppositionData] = useState<OppositionFightCollection | null>(null);
   const [selectedCloudRegion, setSelectedCloudRegion] = useState<CloudRegionFeature | null>(null);
+  const [selectedOpposition, setSelectedOpposition] = useState<OppositionFightFeature | null>(null);
   const setSelectedDcId = useSelectedDcUrlSync();
   // The store mirrors the URL — read it here so the drawer + map both
   // observe the same single source of truth.
@@ -84,6 +92,25 @@ function MapViewInner(): React.JSX.Element {
     };
   }, []);
 
+  // Opposition fights — same non-fatal pattern.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch(OPPOSITION_URL);
+        if (!res.ok) throw new Error(`Opposition fetch failed: ${res.status}`);
+        const next = (await res.json()) as OppositionFightCollection;
+        if (!cancelled) setOppositionData(next);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load opposition seed', err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selectedFeature = useMemo<AiCampusFeature | null>(() => {
     if (!data || !selectedId) return null;
     return data.features.find((f) => f.properties.id === selectedId) ?? null;
@@ -92,9 +119,12 @@ function MapViewInner(): React.JSX.Element {
   const handleSelect = useCallback(
     (id: string | null) => {
       setSelectedDcId(id);
-      // Selecting a campus closes any open cloud-region card so we never
-      // show two stacked panels on the right side of the map.
-      if (id) setSelectedCloudRegion(null);
+      // Selecting a campus closes any open cloud-region or opposition card
+      // so we never show two stacked panels on the right side of the map.
+      if (id) {
+        setSelectedCloudRegion(null);
+        setSelectedOpposition(null);
+      }
     },
     [setSelectedDcId],
   );
@@ -102,12 +132,26 @@ function MapViewInner(): React.JSX.Element {
   const handleSelectCloudRegion = useCallback(
     (feature: CloudRegionFeature | null) => {
       setSelectedCloudRegion(feature);
-      // Mutually exclusive with the campus drawer for the same reason.
-      if (feature) setSelectedDcId(null);
+      // Mutually exclusive with the campus + opposition cards.
+      if (feature) {
+        setSelectedDcId(null);
+        setSelectedOpposition(null);
+      }
     },
     [setSelectedDcId],
   );
   const handleCloseCloudRegion = useCallback(() => setSelectedCloudRegion(null), []);
+  const handleSelectOpposition = useCallback(
+    (feature: OppositionFightFeature | null) => {
+      setSelectedOpposition(feature);
+      if (feature) {
+        setSelectedDcId(null);
+        setSelectedCloudRegion(null);
+      }
+    },
+    [setSelectedDcId],
+  );
+  const handleCloseOpposition = useCallback(() => setSelectedOpposition(null), []);
 
   return (
     <>
@@ -115,13 +159,16 @@ function MapViewInner(): React.JSX.Element {
         <Map
           data={data}
           cloudRegions={cloudRegions}
+          oppositionData={oppositionData}
           selectedId={selectedId}
           onSelect={handleSelect}
           onSelectCloudRegion={handleSelectCloudRegion}
+          onSelectOpposition={handleSelectOpposition}
         />
         <LayerControls />
         <ViewportHud data={data} />
         <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
+        <OppositionCard feature={selectedOpposition} onClose={handleCloseOpposition} />
       </div>
       <IntelligenceCard feature={selectedFeature} onClose={handleClose} />
       <Toaster

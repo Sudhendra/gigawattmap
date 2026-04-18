@@ -57,7 +57,13 @@ class TestArgComposition:
 class TestDefaultSpecs:
     def test_layers(self) -> None:
         names = {s.name for s in tile_build.DEFAULT_SPECS}
-        assert names == {"datacenters", "powerplants", "cables", "cloud_regions"}
+        assert names == {
+            "datacenters",
+            "powerplants",
+            "cables",
+            "cloud_regions",
+            "opposition",
+        }
 
     def test_zoom_budgets_match_card(self) -> None:
         by_name = {s.name: s for s in tile_build.DEFAULT_SPECS}
@@ -65,6 +71,7 @@ class TestDefaultSpecs:
         assert (by_name["powerplants"].min_zoom, by_name["powerplants"].max_zoom) == (3, 12)
         assert (by_name["cables"].min_zoom, by_name["cables"].max_zoom) == (1, 8)
         assert (by_name["cloud_regions"].min_zoom, by_name["cloud_regions"].max_zoom) == (2, 12)
+        assert (by_name["opposition"].min_zoom, by_name["opposition"].max_zoom) == (2, 12)
 
 
 class TestBuildOne:

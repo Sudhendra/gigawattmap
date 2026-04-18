@@ -15,6 +15,11 @@ import {
   type CloudRegionCollection,
   type CloudRegionFeature,
 } from './layers/cloud-regions-layer';
+import {
+  createOppositionLayer,
+  type OppositionFightCollection,
+  type OppositionFightFeature,
+} from './layers/opposition-layer';
 
 // Register the pmtiles:// protocol once per module load. Idempotent across HMR.
 let protocolRegistered = false;
@@ -37,12 +42,16 @@ export type MapProps = {
   data: AiCampusCollection | null;
   /** Cloud-region seed collection. Optional; layer is hidden when absent. */
   cloudRegions?: CloudRegionCollection | null;
+  /** Opposition-fight seed collection. Optional; layer is hidden when absent. */
+  oppositionData?: OppositionFightCollection | null;
   /** Currently selected feature id, or null. Drives flyTo + layer highlight. */
   selectedId: string | null;
   /** Click handler for a campus dot. Pass `null` to clear. */
   onSelect: (id: string | null) => void;
   /** Click handler for a cloud-region buffer. Receives the GeoJSON feature. */
   onSelectCloudRegion?: (feature: CloudRegionFeature | null) => void;
+  /** Click handler for an opposition fight. Receives the GeoJSON feature. */
+  onSelectOpposition?: (feature: OppositionFightFeature | null) => void;
 };
 
 /**
@@ -53,9 +62,11 @@ export type MapProps = {
 export function Map({
   data,
   cloudRegions = null,
+  oppositionData = null,
   selectedId,
   onSelect,
   onSelectCloudRegion,
+  onSelectOpposition,
 }: MapProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -64,6 +75,7 @@ export function Map({
   const setVisibleBbox = useMapStore((s) => s.setVisibleBbox);
   const datacentersVisible = useMapStore((s) => s.layers.datacenters);
   const cloudRegionsVisible = useMapStore((s) => s.layers.cloud_regions);
+  const oppositionVisible = useMapStore((s) => s.layers.opposition);
 
   // Stable lookup for flyTo. Recomputed only when data identity changes.
   const featureById = useMemo(() => {
@@ -152,15 +164,28 @@ export function Map({
         }),
       );
     }
+    // Opposition glyphs render on top of campus dots so the red ✕ overlays
+    // any conflicting project — that visual stacking is the point.
+    if (oppositionData) {
+      layers.push(
+        createOppositionLayer(oppositionData, {
+          visible: oppositionVisible,
+          onClick: (feature) => onSelectOpposition?.(feature),
+        }),
+      );
+    }
     overlay.setProps({ layers });
   }, [
     data,
     cloudRegions,
+    oppositionData,
     selectedId,
     onSelect,
     onSelectCloudRegion,
+    onSelectOpposition,
     datacentersVisible,
     cloudRegionsVisible,
+    oppositionVisible,
   ]);
 
   // --- Fly-to when selection changes externally (URL load, deep link). ------

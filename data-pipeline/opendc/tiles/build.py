@@ -93,6 +93,17 @@ DEFAULT_SPECS: tuple[TileSpec, ...] = (
         min_zoom=2,
         max_zoom=12,
     ),
+    TileSpec(
+        name="opposition",
+        # Community-opposition fights (~900 rows, US-only as of 2026-04).
+        # Visible from continental overview down to county-level detail.
+        # No --drop-densest-as-needed because the dataset is small enough
+        # that every fight should remain pickable at every zoom.
+        input_path=Path("out/interim/opposition.geojson"),
+        output_path=Path("out/tiles/opposition.pmtiles"),
+        min_zoom=2,
+        max_zoom=12,
+    ),
 )
 
 
