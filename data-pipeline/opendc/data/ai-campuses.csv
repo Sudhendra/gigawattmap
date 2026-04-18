@@ -1,0 +1,73 @@
+# Schema: id,name,operator,tenant,status,lat,lon,country,region,est_mw_low,est_mw_mid,est_mw_high,gpus,capex_usd_b,announced_date,rfs_date,ppa_counterparty,source_url,notes
+# - id: stable slug, never change once assigned (joins downstream depend on it)
+# - operator: must match an id in operators.csv
+# - status: operational | construction | announced | blocked
+# - lat/lon: WGS84 decimal degrees; coordinates may be approximate when only a city/county is public
+# - country: ISO 3166-1 alpha-2
+# - region: ISO 3166-2 subdivision (e.g. US-TX) or free-form region name
+# - est_mw_low/mid/high: when MW is publicly announced as a single number, all three equal that number;
+#   when only a range is known, low/high bracket it; when truly unknown, leave empty
+# - gpus: total accelerator count if disclosed (e.g. "100000 H100")
+# - capex_usd_b: total capital spend in USD billions, if announced
+# - announced_date / rfs_date: ISO 8601 (YYYY-MM-DD); blank when unknown
+# - ppa_counterparty: utility / generator on the offtake agreement, if disclosed
+# - source_url: primary citation; this CSV is the audit trail — every row must have one
+# - notes: free-form context; keep short
+#
+# Curation policy: only campuses where at least one of (MW, tenant, GPU count, CAPEX) is
+# publicly disclosed beyond OSM's polygon. The hand-curated entries override OSM at merge
+# time when the curated point is within 500m of an OSM feature (see opendc/transform/merge.py).
+id,name,operator,tenant,status,lat,lon,country,region,est_mw_low,est_mw_mid,est_mw_high,gpus,capex_usd_b,announced_date,rfs_date,ppa_counterparty,source_url,notes
+crusoe-abilene-tx,Stargate I — Abilene,crusoe,openai,construction,32.4487,-99.7331,US,US-TX,1200,1200,1200,,,2024-10-01,2026,Lancium,https://en.wikipedia.org/wiki/Stargate_LLC,Lead Stargate site; Crusoe-built Oracle-leased; JPMorgan $2.3B loan
+stargate-shackelford-tx,Stargate Shackelford County,crusoe,openai,announced,32.7000,-99.3500,US,US-TX,,,,,,2025-01-21,,,https://en.wikipedia.org/wiki/Stargate_LLC,Second Stargate site announced alongside Project Stargate launch
+stargate-dona-ana-nm,Stargate Doña Ana County,crusoe,openai,announced,32.3199,-106.7637,US,US-NM,,,,,,2025-09-23,,,https://en.wikipedia.org/wiki/Stargate_LLC,Stargate expansion site; one of five new locations announced Sept 2025
+stargate-lordstown-oh,Stargate Lordstown,sdc,openai,announced,41.1953,-80.8156,US,US-OH,,,,,,2025-09-23,,,https://en.wikipedia.org/wiki/Stargate_LLC,SoftBank-led; partner with SB Energy
+stargate-milam-tx,Stargate Milam County,crusoe,openai,announced,30.7868,-96.9747,US,US-TX,,,,,,2025-09-23,,,https://en.wikipedia.org/wiki/Stargate_LLC,One of five Stargate expansion sites
+stargate-uae,Stargate UAE,g42,openai,construction,24.4539,54.3773,AE,AE-AZ,,,,,,2025-05-22,2026,,https://en.wikipedia.org/wiki/Stargate_LLC,G42/Oracle/SoftBank partnership; first international Stargate
+stargate-argentina,Stargate Argentina,sur-energy,openai,announced,-44.0000,-69.0000,AR,AR-U,500,500,500,,25.0,2025-09-30,,Sur Energy,https://en.wikipedia.org/wiki/Stargate_LLC,$25B Patagonia datacenter; 500MW
+meta-hyperion-la,Meta Hyperion,meta,meta,construction,32.3900,-91.7000,US,US-LA,5000,5000,5000,,,2024-12-01,2030,Entergy,https://en.wikipedia.org/wiki/Meta_Platforms,5GW Richland Parish Louisiana campus
+meta-prometheus-oh,Meta Prometheus,meta,meta,announced,40.2000,-82.5000,US,US-OH,1000,1000,1000,,,2024-01-01,,AEP Ohio,https://www.datacenterdynamics.com/en/news/meta-prometheus-1gw-ohio,New Albany Ohio AI campus
+meta-richland-parish,Meta Richland Parish,meta,meta,construction,32.3800,-91.7100,US,US-LA,2000,2000,2000,,10.0,2024-12-04,2028,Entergy,https://about.fb.com/news/2024/12/north-louisiana-meta-ai-data-center,$10B Louisiana site adjacent to Hyperion
+amazon-rainier-ms,Amazon Project Rainier,amazon,anthropic,operational,38.2900,-85.7600,US,US-IN,2200,2200,2200,,,2024-09-01,2025,,https://www.aboutamazon.com/news/aws/aws-anthropic-data-centers,Anthropic AI training cluster
+amazon-us-east-1-va,AWS us-east-1 N. Virginia,amazon,amazon,operational,38.9500,-77.4500,US,US-VA,1500,1500,1500,,,2006-08-25,,Dominion Energy,https://aws.amazon.com/about-aws/global-infrastructure/regions_az,Largest AWS region
+talen-susquehanna-pa,Talen Susquehanna (AWS),talen,amazon,operational,40.2100,-76.0100,US,US-PA,1920,1920,1920,,,2024-03-04,2024,Talen Energy,https://www.talenenergy.com/news/talen-energy-completes-sale-cumulus-data,Behind-the-meter nuclear PPA with AWS; 960MW initial
+homer-city-pa,Homer City Redevelopment,homer-city,multiple,announced,40.5300,-79.6000,US,US-PA,4500,4500,4500,,10.0,2025-04-01,2027,Kiewit/GE Vernova,https://homercityredevelopment.com,4.5GW gas-fired AI campus on retired coal site
+xai-colossus-1-tn,xAI Colossus Memphis,xai,xai,operational,35.0500,-90.0500,US,US-TN,250,250,250,100000,,2024-07-22,2024-09-01,Memphis Light Gas & Water,https://en.wikipedia.org/wiki/Colossus_(supercomputer),100k H100 cluster brought online in 122 days
+xai-colossus-2-tn,xAI Colossus 2,xai,xai,construction,34.9500,-90.0700,US,US-TN,1000,1000,1000,1000000,,2024-12-01,2026,,https://en.wikipedia.org/wiki/Colossus_(supercomputer),1M GPU target; Musk announced Dec 2024
+microsoft-mt-pleasant-wi,Microsoft Mount Pleasant,microsoft,openai,construction,42.7200,-87.9000,US,US-WI,900,900,900,,3.3,2024-05-08,2026,WE Energies,https://news.microsoft.com/source/features/innovation/wisconsin-investment,Foxconn site converted to Azure AI campus
+microsoft-mt-shadow-va,Microsoft Mt Shadow VA,microsoft,microsoft,operational,39.0400,-77.4800,US,US-VA,100,100,100,,,2018-01-01,2019,Dominion Energy,https://datacenters.microsoft.com/globe,Loudoun County Azure region
+google-council-bluffs-ia,Google Council Bluffs,google,google,operational,41.221583,-95.8638667,US,US-IA,650,650,650,,5.0,2007-04-01,2009,MidAmerican Energy,https://www.google.com/about/datacenters/locations/council-bluffs,Largest Google US datacenter; multiple expansions
+google-the-dalles-or,Google The Dalles,google,google,operational,45.6325111,-121.2022667,US,US-OR,300,300,300,,1.8,2005-02-01,2006,Wasco County PUD,https://www.google.com/about/datacenters/locations/the-dalles,First Google-owned datacenter
+google-lenoir-nc,Google Lenoir,google,google,operational,35.8985500,-81.5473833,US,US-NC,200,200,200,,1.2,2007-01-01,2008,Duke Energy,https://www.google.com/about/datacenters/locations/lenoir,Caldwell County NC
+google-henderson-nv,Google Henderson,google,google,operational,36.0556248,-115.0102258,US,US-NV,150,150,150,,1.0,2018-09-01,2020,NV Energy,https://www.google.com/about/datacenters/locations/henderson,Nevada cloud region
+google-midlothian-tx,Google Midlothian,google,google,operational,32.443170,-97.062324,US,US-TX,200,200,200,,0.6,2019-12-01,2021,Oncor/ERCOT,https://www.google.com/about/datacenters/locations/midlothian,Ellis County TX
+google-moncks-corner-sc,Google Moncks Corner,google,google,operational,33.064111,-80.043361,US,US-SC,200,200,200,,1.2,2007-04-01,2008,Santee Cooper,https://www.google.com/about/datacenters/locations/moncks-corner,Berkeley County SC
+google-pryor-creek-ok,Google Pryor Creek,google,google,operational,36.241139,-95.3300611,US,US-OK,300,300,300,,4.5,2007-08-01,2011,Grand River Dam Authority,https://www.google.com/about/datacenters/locations/pryor,Mayes County OK
+google-new-albany-oh,Google New Albany,google,google,operational,40.0613352,-82.7586278,US,US-OH,200,200,200,,2.0,2019-09-01,2022,AEP Ohio,https://www.google.com/about/datacenters/locations/new-albany,Columbus metro
+google-papillion-ne,Google Papillion,google,google,operational,41.1332915,-96.144178,US,US-NE,150,150,150,,0.6,2019-05-01,2021,OPPD,https://www.google.com/about/datacenters/locations/papillion,Sarpy County NE
+google-atlanta-ga,Google Atlanta,google,google,operational,33.7497333,-84.5848139,US,US-GA,150,150,150,,,2018-03-01,2019,Georgia Power,https://www.google.com/about/datacenters/locations/douglas-county,Douglas County GA
+google-eemshaven-nl,Google Eemshaven,google,google,operational,53.4252171,6.8622574,NL,NL-GR,300,300,300,,2.5,2014-09-23,2016,TenneT,https://www.google.com/about/datacenters/locations/eemshaven,Netherlands hyperscale
+google-fredericia-dk,Google Fredericia,google,google,operational,55.558194,9.655778,DK,DK-83,200,200,200,,0.7,2018-11-20,2020,Energinet,https://www.google.com/about/datacenters/locations/fredericia,Denmark cloud region
+google-hamina-fi,Google Hamina,google,google,operational,60.5365778,27.1170028,FI,FI-09,300,300,300,,2.4,2009-02-01,2011,Fingrid,https://www.google.com/about/datacenters/locations/hamina,Sea-water cooling on former paper mill
+google-ghlin-be,Google Ghlin (St-Ghislain),google,google,operational,50.469333,3.865472,BE,BE-WHT,200,200,200,,1.2,2007-04-01,2010,Elia,https://www.google.com/about/datacenters/locations/st-ghislain,Belgium hyperscale
+google-dublin-ie,Google Dublin,google,google,operational,53.3201083,-6.4420639,IE,IE-D,150,150,150,,1.0,2011-09-19,2013,EirGrid,https://www.google.com/about/datacenters/locations/dublin,Ireland hub
+google-inzai-jp,Google Inzai,google,google,operational,35.8177804,140.1323916,JP,JP-12,150,150,150,,1.0,2023-04-01,2024,TEPCO,https://www.google.com/about/datacenters/locations/inzai,First Google-owned datacenter in Japan
+google-changhua-tw,Google Changhua,google,google,operational,24.138500,120.425722,TW,TW-CHA,300,300,300,,0.6,2011-12-01,2013,Taipower,https://www.google.com/about/datacenters/locations/changhua-county,Largest Google APAC site
+google-singapore-pioneer,Google Singapore Pioneer,google,google,operational,1.3239859,103.693253,SG,SG-05,150,150,150,,0.85,2013-04-01,2015,SP Group,https://www.google.com/about/datacenters/locations/singapore,Singapore region campus 1
+google-singapore-wenya,Google Singapore Wenya,google,google,operational,1.351333,103.709778,SG,SG-05,150,150,150,,0.85,2018-08-01,2020,SP Group,https://www.google.com/about/datacenters/locations/singapore,Singapore region campus 2
+google-visakhapatnam-in,Google Visakhapatnam,google,google,announced,17.6868,83.2185,IN,IN-AP,1000,1000,1000,,15.0,2025-10-15,2028,APTRANSCO,https://blog.google/inside-google/company-announcements/india-ai-hub-visakhapatnam,$15B Andhra Pradesh; 1GW; biggest Google site in Asia
+oracle-cloud-arizona,Oracle Cloud Arizona,oracle,oracle,operational,33.4300,-112.0700,US,US-AZ,400,400,400,,,2018-01-01,2019,APS,https://www.oracle.com/cloud/data-regions,Phoenix region
+qts-ashburn-va,QTS Ashburn VA,qts,multiple,operational,39.0200,-77.5300,US,US-VA,450,450,450,,,2018-01-01,2020,Dominion Energy,https://www.qtsdatacenters.com/data-centers/ashburn,Loudoun County VA flagship
+equinix-dc11-ashburn,Equinix DC11 Ashburn,equinix,multiple,operational,39.0100,-77.5400,US,US-VA,32,32,32,,,2014-01-01,2015,Dominion Energy,https://www.equinix.com/data-centers/americas-colocation/united-states-colocation/washington-data-centers/dc11,Ashburn IBX
+digitalrealty-ord11-elk-grove,Digital Realty ORD11 Elk Grove,digitalrealty,multiple,operational,41.9850,-87.9970,US,US-IL,47,47,47,,,2014-06-01,2015,ComEd,https://www.digitalrealty.com/data-centers/americas/chicago,Chicago metro
+vantage-frontier-tx,Vantage Frontier,vantage,multiple,construction,32.7000,-99.1900,US,US-TX,1400,1400,1400,,,2024-09-01,2026,Oncor/ERCOT,https://vantage-dc.com/news/vantage-frontier-texas,Abilene-area West Texas campus
+coreweave-plano-tx,CoreWeave Plano,coreweave,multiple,operational,33.0200,-96.7000,US,US-TX,60,60,60,,,2023-01-01,2024,Oncor/ERCOT,https://www.coreweave.com/blog/coreweave-plano-data-center,Texas neocloud site
+nebius-vineland-nj,Nebius Vineland NJ,nebius,multiple,construction,39.4860,-75.0260,US,US-NJ,300,300,300,,1.0,2024-09-30,2025,Atlantic City Electric,https://nebius.com/blog/posts/nebius-launches-vineland-new-jersey,First US Nebius site
+crusoe-abilene-tx-2,Crusoe Abilene Phase 2,crusoe,openai,construction,32.4500,-99.7400,US,US-TX,800,800,800,,,2025-03-01,2026,Lancium,https://crusoe.ai/news/abilene-expansion,Phase 2 expansion of Stargate I
+applied-digital-ellendale-nd,Applied Digital Ellendale,applied-digital,multiple,construction,46.0000,-98.5217,US,US-ND,400,400,400,,,2024-06-01,2025,Otter Tail Power,https://www.applieddigital.com/news/applied-digital-ellendale-hpc,400MW HPC campus North Dakota
+iren-childress-tx,IREN Childress,iris-energy,multiple,operational,34.4262,-100.2040,US,US-TX,750,750,750,,,2023-01-01,2024,AEP Texas,https://iren.com/data-centers/childress,Iris Energy Bitcoin + AI hybrid; expanding to AI
+nscale-glomfjord-no,Nscale Glomfjord,nscale,multiple,construction,66.8167,13.9667,NO,NO-18,60,60,60,,,2024-09-01,2025,Statkraft,https://www.nscale.com/news/glomfjord-launch,Norway hydro-powered AI campus
+crusoe-iceland-keflavik,Crusoe Iceland Keflavik,crusoe,multiple,operational,63.9850,-22.6056,IS,IS-2,40,40,40,,,2023-06-01,2023,Landsvirkjun,https://crusoe.ai/news/iceland-expansion,Geothermal-powered AI training
+microsoft-quincy-wa,Microsoft Quincy,microsoft,microsoft,operational,47.2376,-119.8526,US,US-WA,800,800,800,,3.0,2006-09-01,2007,Grant County PUD,https://datacenters.microsoft.com/globe,Original Azure US-West campus
+amazon-columbus-oh,AWS Columbus Ohio,amazon,amazon,operational,40.0992,-83.1141,US,US-OH,500,500,500,,,2016-10-17,2016,AEP Ohio,https://aws.amazon.com/about-aws/global-infrastructure/regions_az,us-east-2 region
+meta-eagle-mountain-ut,Meta Eagle Mountain,meta,meta,operational,40.3144,-112.0103,US,US-UT,400,400,400,,1.5,2018-04-25,2020,Rocky Mountain Power,https://about.fb.com/news/2018/04/eagle-mountain-data-center,Utah hyperscale

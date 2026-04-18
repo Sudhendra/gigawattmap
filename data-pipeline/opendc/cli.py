@@ -14,11 +14,13 @@ from rich.console import Console
 
 from opendc import __version__
 from opendc.manifest import make_entry, write_entry
+from opendc.sources import curated as curated_source
 from opendc.sources import gem as gem_source
 from opendc.sources import osm as osm_source
 from opendc.sources import telegeography as tg_source
 from opendc.tiles import build as tiles_build
 from opendc.tiles import upload as tiles_upload
+from opendc.transform import merge as merge_transform
 
 app = typer.Typer(
     name="opendc",
@@ -50,7 +52,7 @@ def ingest(
     out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
 ) -> None:
     """Fetch raw data from a source (OSM, GEM, TeleGeography, ...)."""
-    if source not in {"osm", "gem", "telegeography", "all"}:
+    if source not in {"osm", "gem", "telegeography", "curated", "all"}:
         # Other sources land in tasks 013+ — keep the surface stable.
         console.print(f"[yellow]opendc ingest {source}: not implemented yet[/yellow]")
         return
@@ -126,12 +128,65 @@ def ingest(
             f"[green]wrote {cables_path} ({cable_count} cables) and "
             f"{landings_path} ({landing_count} landings) in {duration:.1f}s[/green]"
         )
+    if source in {"curated", "all"}:
+        console.print("[cyan]Loading curated AI campuses...[/cyan]")
+        try:
+            curated_path, curated_count, curated_duration = curated_source.run(out_dir=out_dir)
+        except curated_source.CuratedCampusError as exc:
+            console.print(f"[red]curated: {exc}[/red]")
+            if source == "curated":
+                raise typer.Exit(1) from exc
+            return
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="curated-ai-campuses",
+                feature_count=curated_count,
+                duration_s=curated_duration,
+                url="opendc/data/ai-campuses.csv",
+                notes="hand-curated; see CSV row source_url for per-row citations",
+            ),
+        )
+        console.print(
+            f"[green]wrote {curated_path} ({curated_count} features, "
+            f"{curated_duration:.2f}s)[/green]"
+        )
 
 
 @app.command()
-def transform() -> None:
-    """Normalize raw data into schema-validated GeoJSON / Parquet."""
-    _stub("transform")
+def transform(
+    out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
+) -> None:
+    """Merge curated + OSM into a single datacenters FeatureCollection.
+
+    Reads ``out/interim/curated-ai-campuses.geojson`` (from
+    ``opendc ingest curated``) and ``out/interim/osm-datacenters.geojson``
+    (from ``opendc ingest osm``); writes
+    ``out/interim/datacenters-merged.geojson``.
+    """
+    console.print("[cyan]Merging curated + OSM datacenter features...[/cyan]")
+    result = merge_transform.run(out_dir=out_dir)
+    write_entry(
+        out_dir / "manifest.json",
+        make_entry(
+            source="datacenters-merged",
+            feature_count=
+                result.merged_count + result.standalone_curated_count + result.osm_only_count,
+            duration_s=0.0,
+            url=str(result.out_path),
+            notes=(
+                f"merged={result.merged_count} "
+                f"standalone_curated={result.standalone_curated_count} "
+                f"osm_only={result.osm_only_count}"
+            ),
+        ),
+    )
+    console.print(
+        f"[green]wrote {result.out_path} "
+        f"(merged={result.merged_count} "
+        f"standalone_curated={result.standalone_curated_count} "
+        f"osm_only={result.osm_only_count})[/green]"
+    )
 
 
 tiles_app = typer.Typer(
