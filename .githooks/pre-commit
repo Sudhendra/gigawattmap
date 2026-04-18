@@ -1,0 +1,21 @@
+#!/usr/bin/env bash
+# Pre-commit hook: if data-pipeline/opendc/schemas.py is staged, ensure the
+# generated TypeScript types in packages/types/src/generated/ are up to date.
+#
+# Activate once per clone with:
+#   git config core.hooksPath .githooks
+
+set -euo pipefail
+
+if git diff --cached --name-only | grep -q '^data-pipeline/opendc/schemas.py$'; then
+  echo "[pre-commit] schemas.py is staged; verifying generated types are fresh..."
+  if ! command -v uv >/dev/null 2>&1; then
+    echo "[pre-commit] uv not found on PATH; cannot verify generated types." >&2
+    exit 1
+  fi
+  if ! make -C data-pipeline check-types-fresh; then
+    echo ""
+    echo "[pre-commit] Run 'make -C data-pipeline gen-types' and stage the result." >&2
+    exit 1
+  fi
+fi

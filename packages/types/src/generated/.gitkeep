@@ -1,0 +1,5 @@
+# Generated TypeScript types live here.
+#
+# `schema.json` and `schema.ts` are produced by `make gen-types`
+# (data-pipeline/opendc/cli.py::gen_types). Both files are committed so
+# TypeScript consumers do not need a Python toolchain.

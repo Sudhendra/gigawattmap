@@ -1,0 +1,486 @@
+{
+  "$defs": {
+    "Announcement": {
+      "additionalProperties": false,
+      "properties": {
+        "amount_usd": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Amount Usd"
+        },
+        "category": {
+          "enum": [
+            "lease",
+            "ppa",
+            "capex",
+            "opening",
+            "opposition",
+            "permit",
+            "m_and_a",
+            "other"
+          ],
+          "title": "Category",
+          "type": "string"
+        },
+        "datacenter_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Datacenter Id"
+        },
+        "date": {
+          "pattern": "^\\d{4}-\\d{2}-\\d{2}$",
+          "title": "Date",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "operator_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Operator Id"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        },
+        "title": {
+          "title": "Title",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "date",
+        "title",
+        "operator_id",
+        "datacenter_id",
+        "amount_usd",
+        "category",
+        "source_url"
+      ],
+      "title": "Announcement",
+      "type": "object"
+    },
+    "Cable": {
+      "additionalProperties": false,
+      "properties": {
+        "capacity_tbps": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Capacity Tbps"
+        },
+        "geometry": {
+          "additionalProperties": true,
+          "title": "Geometry",
+          "type": "object"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "landing_points": {
+          "items": {
+            "$ref": "#/$defs/CableLanding"
+          },
+          "title": "Landing Points",
+          "type": "array"
+        },
+        "length_km": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Length Km"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "rfs_year": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Rfs Year"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "length_km",
+        "capacity_tbps",
+        "landing_points",
+        "geometry",
+        "rfs_year"
+      ],
+      "title": "Cable",
+      "type": "object"
+    },
+    "CableLanding": {
+      "additionalProperties": false,
+      "properties": {
+        "coordinates": {
+          "maxItems": 2,
+          "minItems": 2,
+          "prefixItems": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "number"
+            }
+          ],
+          "title": "Coordinates",
+          "type": "array"
+        },
+        "country": {
+          "maxLength": 2,
+          "minLength": 2,
+          "title": "Country",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        }
+      },
+      "required": [
+        "name",
+        "country",
+        "coordinates"
+      ],
+      "title": "CableLanding",
+      "type": "object"
+    },
+    "Datacenter": {
+      "additionalProperties": false,
+      "properties": {
+        "confidence": {
+          "enum": [
+            "verified",
+            "osm_only",
+            "press_release",
+            "estimated"
+          ],
+          "title": "Confidence",
+          "type": "string"
+        },
+        "country": {
+          "maxLength": 2,
+          "minLength": 2,
+          "title": "Country",
+          "type": "string"
+        },
+        "est_mw_high": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Est Mw High"
+        },
+        "est_mw_low": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Est Mw Low"
+        },
+        "est_mw_mid": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Est Mw Mid"
+        },
+        "geometry": {
+          "additionalProperties": true,
+          "title": "Geometry",
+          "type": "object"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "mw_source": {
+          "anyOf": [
+            {
+              "enum": [
+                "announcement",
+                "utility-filing",
+                "estimate"
+              ],
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Mw Source"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "operator_id": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Operator Id"
+        },
+        "region": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Region"
+        },
+        "sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "array"
+        },
+        "status": {
+          "enum": [
+            "operational",
+            "construction",
+            "announced",
+            "blocked"
+          ],
+          "title": "Status",
+          "type": "string"
+        },
+        "tier": {
+          "enum": [
+            "hyperscale",
+            "colo",
+            "neocloud",
+            "enterprise"
+          ],
+          "title": "Tier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "operator_id",
+        "tier",
+        "status",
+        "geometry",
+        "est_mw_low",
+        "est_mw_mid",
+        "est_mw_high",
+        "mw_source",
+        "country",
+        "region",
+        "sources",
+        "confidence"
+      ],
+      "title": "Datacenter",
+      "type": "object"
+    },
+    "Operator": {
+      "additionalProperties": false,
+      "properties": {
+        "headquarters_country": {
+          "maxLength": 2,
+          "minLength": 2,
+          "title": "Headquarters Country",
+          "type": "string"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "ticker": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Ticker"
+        },
+        "tier": {
+          "enum": [
+            "hyperscale",
+            "colo",
+            "neocloud",
+            "enterprise"
+          ],
+          "title": "Tier",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "ticker",
+        "tier",
+        "headquarters_country"
+      ],
+      "title": "Operator",
+      "type": "object"
+    },
+    "PowerPlant": {
+      "additionalProperties": false,
+      "properties": {
+        "capacity_mw": {
+          "title": "Capacity Mw",
+          "type": "number"
+        },
+        "commissioning_year": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Commissioning Year"
+        },
+        "fuel_type": {
+          "enum": [
+            "coal",
+            "gas",
+            "nuclear",
+            "solar",
+            "wind",
+            "hydro",
+            "storage",
+            "other"
+          ],
+          "title": "Fuel Type",
+          "type": "string"
+        },
+        "geometry": {
+          "additionalProperties": true,
+          "title": "Geometry",
+          "type": "object"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "operator": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Operator"
+        },
+        "source": {
+          "title": "Source",
+          "type": "string"
+        }
+      },
+      "required": [
+        "id",
+        "name",
+        "fuel_type",
+        "capacity_mw",
+        "geometry",
+        "operator",
+        "commissioning_year",
+        "source"
+      ],
+      "title": "PowerPlant",
+      "type": "object"
+    }
+  },
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "description": "Generated from data-pipeline/opendc/schemas.py. Do not edit by hand \u2014 run `make gen-types`.",
+  "oneOf": [
+    {
+      "$ref": "#/$defs/Announcement"
+    },
+    {
+      "$ref": "#/$defs/Cable"
+    },
+    {
+      "$ref": "#/$defs/CableLanding"
+    },
+    {
+      "$ref": "#/$defs/Datacenter"
+    },
+    {
+      "$ref": "#/$defs/Operator"
+    },
+    {
+      "$ref": "#/$defs/PowerPlant"
+    }
+  ],
+  "title": "GigawattMapSchemas"
+}
