@@ -1,6 +1,6 @@
 # 026 — Build and upload PMTiles to R2
 
-**Status:** todo
+**Status:** done
 **Depends on:** 013 (tile build), 024b (R2 wiring)
 **Estimate:** 1h
 
@@ -19,14 +19,14 @@ the input so the curated 53 datacenters render now; OSM enrichment ships in task
 
 ## Acceptance criteria
 
-- [ ] `DEFAULT_SPECS` datacenters input points at `datacenters-merged.geojson`
-- [ ] Unit test in `tests/test_tiles_build.py` asserts the new input path
-- [ ] `~/.local/bin/uv run python -m opendc.cli tiles build` produces 5 archives in `out/tiles/`
-- [ ] All 5 archives uploaded to R2 under `v1/` prefix via `opendc tiles upload`
-- [ ] `curl -sIL https://pub-f870d3776f47481494c1c9936733d6c1.r2.dev/v1/<layer>.pmtiles`
+- [x] `DEFAULT_SPECS` datacenters input points at `datacenters-merged.geojson`
+- [x] Unit test in `tests/test_tiles_build.py` asserts the new input path
+- [x] `~/.local/bin/uv run python -m opendc.cli tiles build` produces 5 archives in `out/tiles/`
+- [x] All 5 archives uploaded to R2 under `v1/` prefix via `opendc tiles upload`
+- [x] `curl -sIL https://pub-f870d3776f47481494c1c9936733d6c1.r2.dev/v1/<layer>.pmtiles`
       returns HTTP 200 for: datacenters, powerplants, cables, cloud-regions, opposition
-- [ ] `apps/web/.env.local` `NEXT_PUBLIC_PMTILES_BASE` uncommented and set to live base
-- [ ] `pnpm --filter web build` clean
+- [x] `apps/web/.env.local` `NEXT_PUBLIC_PMTILES_BASE` uncommented and set to live base
+- [x] `pnpm --filter web build` clean
 
 ## Files to touch
 

@@ -65,6 +65,15 @@ class TestDefaultSpecs:
             "opposition",
         }
 
+    def test_datacenters_input_is_merged_geojson(self) -> None:
+        """Datacenters tile must read the canonical merged file (curated + OSM),
+        not the OSM-only intermediate. Task 026: keep curated 53 visible even
+        when OSM ingest is stale."""
+        by_name = {s.name: s for s in tile_build.DEFAULT_SPECS}
+        assert by_name["datacenters"].input_path == Path(
+            "out/interim/datacenters-merged.geojson"
+        )
+
     def test_zoom_budgets_match_card(self) -> None:
         by_name = {s.name: s for s in tile_build.DEFAULT_SPECS}
         assert (by_name["datacenters"].min_zoom, by_name["datacenters"].max_zoom) == (2, 14)

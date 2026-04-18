@@ -52,9 +52,10 @@ class TileSpec:
 DEFAULT_SPECS: tuple[TileSpec, ...] = (
     TileSpec(
         name="datacenters",
-        # Source filename matches the OSM ingest output (task 010); rename
-        # if a future ingest source replaces it.
-        input_path=Path("out/interim/osm-datacenters.geojson"),
+        # Canonical merged output of the curated + OSM merge (transform/merge.py).
+        # Using the merged file rather than osm-datacenters.geojson keeps the
+        # curated 53 visible even when an OSM ingest is stale or missing.
+        input_path=Path("out/interim/datacenters-merged.geojson"),
         output_path=Path("out/tiles/datacenters.pmtiles"),
         min_zoom=2,
         max_zoom=14,
