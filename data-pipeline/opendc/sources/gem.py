@@ -78,10 +78,16 @@ class DataSourceError(RuntimeError):
 def _resolve_snapshot() -> Path:
     """Find the human-provided snapshot.
 
-    Resolution order:
-    1. ``GEM_GIPT_PATH`` env var
-    2. ``out/raw/gem-latest.xlsx``
-    3. ``out/raw/gem-latest.csv``
+    Resolution order (high -> low priority):
+    1. ``GEM_GIPT_PATH`` env var (raises if path missing)
+    2. exact ``out/raw/gem-latest.xlsx``
+    3. exact ``out/raw/gem-latest.csv``
+    4. glob ``out/raw/gem-latest*.xlsx`` (newest mtime wins)
+    5. glob ``out/raw/gem-latest*.csv`` (newest mtime wins)
+
+    The dated-glob fallbacks let a human drop a release like
+    ``gem-latest-March-2026.xlsx`` into ``out/raw/`` without renaming,
+    which preserves the download's provenance in the filename.
     """
     env = os.environ.get("GEM_GIPT_PATH")
     if env:
@@ -92,10 +98,19 @@ def _resolve_snapshot() -> Path:
     for candidate in (Path("out/raw/gem-latest.xlsx"), Path("out/raw/gem-latest.csv")):
         if candidate.exists():
             return candidate
+    raw_dir = Path("out/raw")
+    for ext in ("xlsx", "csv"):
+        # ``glob`` with the bare ``*`` pattern would match ``gem-latest.<ext>``
+        # too, but that exact case is already handled above and won't re-enter.
+        matches = sorted(
+            raw_dir.glob(f"gem-latest*.{ext}"), key=lambda p: p.stat().st_mtime, reverse=True
+        )
+        if matches:
+            return matches[0]
     raise DataSourceError(
         "No GEM snapshot found. Download the GIPT release from "
         f"{GEM_LANDING_URL} and either set GEM_GIPT_PATH or save it to "
-        "out/raw/gem-latest.{xlsx,csv}."
+        "out/raw/gem-latest.{xlsx,csv} (or out/raw/gem-latest-<label>.{xlsx,csv})."
     )
 
 
@@ -221,9 +236,7 @@ def normalize(raw_path: Path, *, out_path: Path | None = None) -> Path:
         props = plant.model_dump()
         geometry = props.pop("geometry")
         features.append({"type": "Feature", "geometry": geometry, "properties": props})
-    out_path.write_text(
-        json.dumps({"type": "FeatureCollection", "features": features}, indent=2)
-    )
+    out_path.write_text(json.dumps({"type": "FeatureCollection", "features": features}, indent=2))
     return out_path
 
 
