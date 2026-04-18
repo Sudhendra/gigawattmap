@@ -1,6 +1,6 @@
 # 024a — R2 artifact upload pipeline
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 002, 023
 **Estimate:** 2 hours
 
