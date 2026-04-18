@@ -1,6 +1,6 @@
 # 015 — Generate TypeScript types from Pydantic schemas
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 009, 002
 **Estimate:** 2 hours
 
