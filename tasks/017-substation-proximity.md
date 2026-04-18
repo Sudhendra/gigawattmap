@@ -1,6 +1,6 @@
 # 017 — Substation proximity enrichment
 
-**Status:** todo
+**Status:** done
 **Depends on:** 013
 **Estimate:** 3 hours
 

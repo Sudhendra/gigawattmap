@@ -18,6 +18,10 @@ export type AiCampusProperties = {
   est_mw_mid: number;
   status: DatacenterStatus;
   country: string;
+  /** Substation enrichment from task 017. Null when no substation is within 10 km. */
+  nearest_substation_id?: string | null;
+  nearest_substation_distance_km?: number | null;
+  nearest_substation_voltage_kv?: number | null;
 };
 
 export type AiCampusFeature = Feature<Point, AiCampusProperties>;

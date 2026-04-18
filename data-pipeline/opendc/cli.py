@@ -21,9 +21,11 @@ from opendc.sources import cloud_regions as cloud_regions_source
 from opendc.sources import curated as curated_source
 from opendc.sources import gem as gem_source
 from opendc.sources import osm as osm_source
+from opendc.sources import osm_power as osm_power_source
 from opendc.sources import telegeography as tg_source
 from opendc.tiles import build as tiles_build
 from opendc.tiles import upload as tiles_upload
+from opendc.transform import enrich_substations as enrich_substations_transform
 from opendc.transform import merge as merge_transform
 
 # Repo root resolved from this file rather than CWD so `opendc gen-types`
@@ -61,7 +63,15 @@ def ingest(
     out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
 ) -> None:
     """Fetch raw data from a source (OSM, GEM, TeleGeography, ...)."""
-    if source not in {"osm", "gem", "telegeography", "curated", "cloud-regions", "all"}:
+    if source not in {
+        "osm",
+        "osm-power",
+        "gem",
+        "telegeography",
+        "curated",
+        "cloud-regions",
+        "all",
+    }:
         # Other sources land in tasks 013+ — keep the surface stable.
         console.print(f"[yellow]opendc ingest {source}: not implemented yet[/yellow]")
         return
@@ -82,6 +92,27 @@ def ingest(
         )
         console.print(
             f"[green]wrote {geojson_path} ({count} features, {duration:.1f}s)[/green]"
+        )
+    if source in {"osm-power", "all"}:
+        console.print(
+            f"[cyan]Fetching OSM power infrastructure"
+            f"{' (sample=CONUS)' if sample else ''}...[/cyan]"
+        )
+        op_path, op_count, op_duration = osm_power_source.run(
+            sample=sample, out_dir=out_dir
+        )
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="osm-power",
+                feature_count=op_count,
+                duration_s=op_duration,
+                url=osm_power_source.OVERPASS_URL,
+                notes="sample=CONUS" if sample else None,
+            ),
+        )
+        console.print(
+            f"[green]wrote {op_path} ({op_count} features, {op_duration:.1f}s)[/green]"
         )
     if source in {"gem", "all"}:
         console.print("[cyan]Normalizing GEM power plants...[/cyan]")
@@ -221,6 +252,54 @@ def transform(
         f"standalone_curated={result.standalone_curated_count} "
         f"osm_only={result.osm_only_count})[/green]"
     )
+
+
+@app.command()
+def enrich(
+    out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
+    datacenters: Path = typer.Option(
+        Path("out/interim/datacenters-merged.geojson"),
+        "--datacenters",
+        help="Input datacenters GeoJSON (output of `opendc transform`).",
+    ),
+    substations: Path = typer.Option(
+        Path("out/interim/osm-power.geojson"),
+        "--substations",
+        help="Input OSM power GeoJSON (output of `opendc ingest osm-power`).",
+    ),
+) -> None:
+    """Attach nearest-substation properties to datacenter features.
+
+    Writes ``out/interim/datacenters-enriched.geojson`` with three new
+    properties per feature: ``nearest_substation_id``,
+    ``nearest_substation_distance_km`` (rounded to 0.1, max 10 km), and
+    ``nearest_substation_voltage_kv``.
+    """
+    if not datacenters.exists():
+        console.print(f"[red]enrich: missing {datacenters}. Run `opendc transform` first.[/red]")
+        raise typer.Exit(1)
+    if not substations.exists():
+        console.print(
+            f"[red]enrich: missing {substations}. Run `opendc ingest osm-power` first.[/red]"
+        )
+        raise typer.Exit(1)
+    out_path = out_dir / "interim" / "datacenters-enriched.geojson"
+    console.print("[cyan]Enriching datacenters with substation proximity...[/cyan]")
+    enrich_substations_transform.enrich_datacenters(
+        datacenters, substations, out_path=out_path
+    )
+    feature_count = len(json.loads(out_path.read_text())["features"])
+    write_entry(
+        out_dir / "manifest.json",
+        make_entry(
+            source="datacenters-enriched",
+            feature_count=feature_count,
+            duration_s=0.0,
+            url=str(out_path),
+            notes="nearest substation within 10km from osm power=substation",
+        ),
+    )
+    console.print(f"[green]wrote {out_path} ({feature_count} features)[/green]")
 
 
 tiles_app = typer.Typer(

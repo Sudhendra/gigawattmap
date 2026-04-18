@@ -1,24 +1,39 @@
 {
   "type": "FeatureCollection",
-  "_comment": "Hand-curated seed of high-profile AI campuses. See tasks/005 for source table. Tier rule: hyperscale = Amazon/Google/Microsoft/Meta/Oracle; neocloud = CoreWeave/Nebius/xAI/Crusoe; colo = Equinix/Digital Realty/QTS/Vantage; else enterprise. Replaced by the real pipeline output once tasks 010-014 land.",
+  "_comment": "Hand-curated seed of high-profile AI campuses. See tasks/005 for source table. Tier rule: hyperscale = Amazon/Google/Microsoft/Meta/Oracle; neocloud = CoreWeave/Nebius/xAI/Crusoe; colo = Equinix/Digital Realty/QTS/Vantage; else enterprise. Substation enrichment via OSM power=substation tags joined by tasks/017 enrich_substations transform; voltage_kv is max kV of all tagged voltages at the nearest substation within 10km.",
   "features": [
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-99.7331, 32.4487] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.7331,
+          32.4487
+        ]
+      },
       "properties": {
         "id": "crusoe-abilene-tx",
-        "name": "Stargate I — Abilene",
+        "name": "Stargate I \u2014 Abilene",
         "operator": "Crusoe",
         "tenant": "OpenAI/Oracle",
         "tier": "neocloud",
         "est_mw_mid": 1200,
         "status": "construction",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-516457752",
+        "nearest_substation_distance_km": 3.2,
+        "nearest_substation_voltage_kv": 138
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-91.7000, 32.3900] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -91.7,
+          32.39
+        ]
+      },
       "properties": {
         "id": "meta-hyperion-la",
         "name": "Meta Hyperion",
@@ -27,12 +42,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 5000,
         "status": "construction",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": null,
+        "nearest_substation_distance_km": null,
+        "nearest_substation_voltage_kv": null
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-82.5000, 40.2000] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.5,
+          40.2
+        ]
+      },
       "properties": {
         "id": "meta-prometheus-oh",
         "name": "Meta Prometheus",
@@ -41,12 +65,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 1000,
         "status": "announced",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-1338786242",
+        "nearest_substation_distance_km": 1.9,
+        "nearest_substation_voltage_kv": 69
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-85.7600, 38.2900] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -85.76,
+          38.29
+        ]
+      },
       "properties": {
         "id": "amazon-project-rainier",
         "name": "Amazon Project Rainier",
@@ -55,12 +88,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 2200,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-184393182",
+        "nearest_substation_distance_km": 8.3,
+        "nearest_substation_voltage_kv": 345
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-99.1900, 32.7000] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -99.19,
+          32.7
+        ]
+      },
       "properties": {
         "id": "vantage-frontier-tx",
         "name": "Vantage Frontier",
@@ -69,12 +111,21 @@
         "tier": "colo",
         "est_mw_mid": 1400,
         "status": "construction",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-518641177",
+        "nearest_substation_distance_km": 3.5,
+        "nearest_substation_voltage_kv": 69
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-76.0100, 40.2100] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -76.01,
+          40.21
+        ]
+      },
       "properties": {
         "id": "talen-susquehanna-aws",
         "name": "Talen Susquehanna (AWS)",
@@ -83,12 +134,21 @@
         "tier": "enterprise",
         "est_mw_mid": 1920,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-526610177",
+        "nearest_substation_distance_km": 0.8,
+        "nearest_substation_voltage_kv": 500
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-79.6000, 40.5300] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.6,
+          40.53
+        ]
+      },
       "properties": {
         "id": "homer-city-redev",
         "name": "Homer City Redevelopment",
@@ -97,12 +157,21 @@
         "tier": "enterprise",
         "est_mw_mid": 4500,
         "status": "announced",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-1265313834",
+        "nearest_substation_distance_km": 2.4,
+        "nearest_substation_voltage_kv": 138
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-90.0500, 35.0500] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.05,
+          35.05
+        ]
+      },
       "properties": {
         "id": "xai-colossus-memphis",
         "name": "xAI Colossus Memphis",
@@ -111,12 +180,21 @@
         "tier": "neocloud",
         "est_mw_mid": 250,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-90962732",
+        "nearest_substation_distance_km": 6.0,
+        "nearest_substation_voltage_kv": 500
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-90.0700, 34.9500] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -90.07,
+          34.95
+        ]
+      },
       "properties": {
         "id": "xai-colossus-2",
         "name": "xAI Colossus 2",
@@ -125,12 +203,21 @@
         "tier": "neocloud",
         "est_mw_mid": 1000,
         "status": "construction",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-90962732",
+        "nearest_substation_distance_km": 5.5,
+        "nearest_substation_voltage_kv": 500
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-87.9000, 42.7200] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.9,
+          42.72
+        ]
+      },
       "properties": {
         "id": "microsoft-mount-pleasant-wi",
         "name": "Microsoft Mount Pleasant",
@@ -139,12 +226,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 900,
         "status": "construction",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-156432846",
+        "nearest_substation_distance_km": 3.0,
+        "nearest_substation_voltage_kv": 345
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-95.8600, 41.2300] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.86,
+          41.23
+        ]
+      },
       "properties": {
         "id": "google-council-bluffs-ia",
         "name": "Google Council Bluffs",
@@ -153,12 +249,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 650,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-1010767318",
+        "nearest_substation_distance_km": 6.3,
+        "nearest_substation_voltage_kv": 345
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-96.7000, 33.0200] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.7,
+          33.02
+        ]
+      },
       "properties": {
         "id": "coreweave-plano-tx",
         "name": "CoreWeave Plano",
@@ -167,12 +272,21 @@
         "tier": "neocloud",
         "est_mw_mid": 60,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-172032306",
+        "nearest_substation_distance_km": 4.5,
+        "nearest_substation_voltage_kv": 345
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-75.0260, 39.4860] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -75.026,
+          39.486
+        ]
+      },
       "properties": {
         "id": "nebius-vineland-nj",
         "name": "Nebius Vineland NJ",
@@ -181,12 +295,21 @@
         "tier": "neocloud",
         "est_mw_mid": 300,
         "status": "construction",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-95844720",
+        "nearest_substation_distance_km": 4.9,
+        "nearest_substation_voltage_kv": 138
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-112.0700, 33.4300] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.07,
+          33.43
+        ]
+      },
       "properties": {
         "id": "oracle-cloud-az",
         "name": "Oracle Cloud Arizona",
@@ -195,12 +318,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 400,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-125119950",
+        "nearest_substation_distance_km": 5.1,
+        "nearest_substation_voltage_kv": 269
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-77.5300, 39.0200] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.53,
+          39.02
+        ]
+      },
       "properties": {
         "id": "qts-ashburn-va",
         "name": "QTS Ashburn VA",
@@ -209,12 +341,21 @@
         "tier": "colo",
         "est_mw_mid": 450,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-504125676",
+        "nearest_substation_distance_km": 6.1,
+        "nearest_substation_voltage_kv": 500
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-77.5400, 39.0100] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.54,
+          39.01
+        ]
+      },
       "properties": {
         "id": "equinix-dc11-ashburn",
         "name": "Equinix DC11 Ashburn",
@@ -223,12 +364,21 @@
         "tier": "colo",
         "est_mw_mid": 32,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-45842781",
+        "nearest_substation_distance_km": 5.2,
+        "nearest_substation_voltage_kv": 500
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-87.9970, 41.9850] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.997,
+          41.985
+        ]
+      },
       "properties": {
         "id": "digital-realty-ord11-elk-grove",
         "name": "Digital Realty ORD11 Elk Grove",
@@ -237,12 +387,21 @@
         "tier": "colo",
         "est_mw_mid": 47,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-214219066",
+        "nearest_substation_distance_km": 9.3,
+        "nearest_substation_voltage_kv": 345
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-77.4800, 39.0400] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.48,
+          39.04
+        ]
+      },
       "properties": {
         "id": "microsoft-mt-shadow-va",
         "name": "Microsoft Mt Shadow VA",
@@ -251,12 +410,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 100,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-504125676",
+        "nearest_substation_distance_km": 5.9,
+        "nearest_substation_voltage_kv": 500
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-77.4500, 38.9500] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.45,
+          38.95
+        ]
+      },
       "properties": {
         "id": "aws-us-east-1-va",
         "name": "AWS us-east-1 N. Virginia",
@@ -265,12 +433,21 @@
         "tier": "hyperscale",
         "est_mw_mid": 1500,
         "status": "operational",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": "osm-way-1184372974",
+        "nearest_substation_distance_km": 3.7,
+        "nearest_substation_voltage_kv": 500
       }
     },
     {
       "type": "Feature",
-      "geometry": { "type": "Point", "coordinates": [-91.7100, 32.3800] },
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -91.71,
+          32.38
+        ]
+      },
       "properties": {
         "id": "meta-richland-parish-la",
         "name": "Meta Richland Parish",
@@ -279,7 +456,10 @@
         "tier": "hyperscale",
         "est_mw_mid": 2000,
         "status": "construction",
-        "country": "US"
+        "country": "US",
+        "nearest_substation_id": null,
+        "nearest_substation_distance_km": null,
+        "nearest_substation_voltage_kv": null
       }
     }
   ]

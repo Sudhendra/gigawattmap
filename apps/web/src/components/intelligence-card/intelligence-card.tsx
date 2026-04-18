@@ -169,7 +169,10 @@ function CardBody({
         </Section>
 
         <Section title="Power">
-          <Placeholder>Utility, plant, and substation joins land in task 017.</Placeholder>
+          <PowerSection
+            distanceKm={p.nearest_substation_distance_km}
+            voltageKv={p.nearest_substation_voltage_kv}
+          />
         </Section>
 
         <Section title="Water">
@@ -228,6 +231,61 @@ function Placeholder({ children }: { children: React.ReactNode }): React.JSX.Ele
     <p className="rounded border border-dashed border-[var(--bg-elevated)] px-3 py-2 text-xs italic text-[var(--text-muted)]">
       {children}
     </p>
+  );
+}
+
+/**
+ * "POWER" section content. Renders the nearest substation match from
+ * task 017's enrichment. ≥100 kV is "high voltage" — visually emphasized;
+ * below that, shown but un-highlighted. Null distance means no substation
+ * was found within the 10 km search radius.
+ */
+function PowerSection({
+  distanceKm,
+  voltageKv,
+}: {
+  distanceKm: number | null | undefined;
+  voltageKv: number | null | undefined;
+}): React.JSX.Element {
+  if (distanceKm == null) {
+    return (
+      <Placeholder>
+        No substation data within 10 km. (Common outside the US/EU OSM coverage
+        envelope.)
+      </Placeholder>
+    );
+  }
+  const isHighVoltage = typeof voltageKv === 'number' && voltageKv >= 100;
+  return (
+    <dl>
+      <FieldRow label="Nearest substation">
+        <span className="tabular">{distanceKm.toFixed(1)} km</span>
+        {voltageKv != null ? (
+          <>
+            <span className="text-[var(--text-subtle)]"> · </span>
+            <span
+              className={cn(
+                'tabular',
+                isHighVoltage
+                  ? 'font-medium text-[var(--text-primary)]'
+                  : 'text-[var(--text-muted)]',
+              )}
+            >
+              {voltageKv} kV
+            </span>
+          </>
+        ) : (
+          <>
+            <span className="text-[var(--text-subtle)]"> · </span>
+            <span className="text-[var(--text-muted)]">voltage unknown</span>
+          </>
+        )}
+      </FieldRow>
+      <p className="mt-2 text-[10px] leading-relaxed text-[var(--text-subtle)]">
+        Source: OpenStreetMap (ODbL). Distance is great-circle from the
+        campus centroid to the substation centroid.
+      </p>
+    </dl>
   );
 }
 
