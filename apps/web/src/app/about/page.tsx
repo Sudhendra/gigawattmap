@@ -27,7 +27,7 @@ export default function AboutPage(): React.JSX.Element {
       </a>
       <AppHeader />
       <main id="main" className="mx-auto w-full max-w-[65ch] px-4 py-12 font-serif text-text-primary md:py-16">
-        <header className="mb-12 border-b border-bg-elevated pb-8">
+        <header className="mb-12 pb-8">
           <h1 className="font-sans text-3xl font-semibold tracking-tight md:text-4xl">
             About Gigawatt Map
           </h1>

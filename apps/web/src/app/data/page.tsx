@@ -74,7 +74,7 @@ export default async function DataPage(): Promise<React.JSX.Element> {
         id="main"
         className="mx-auto w-full max-w-[80ch] px-4 py-12 font-serif text-text-primary md:py-16"
       >
-        <header className="mb-10 border-b border-bg-elevated pb-8">
+        <header className="mb-10 pb-8">
           <h1 className="font-sans text-3xl font-semibold tracking-tight md:text-4xl">
             Data
           </h1>

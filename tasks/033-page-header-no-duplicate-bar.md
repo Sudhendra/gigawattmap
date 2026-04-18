@@ -1,6 +1,6 @@
 # 033 — De-duplicate header bars on /data /data/api /about
 
-**Status:** todo
+**Status:** done
 **Depends on:** none
 **Estimate:** 15m
 
