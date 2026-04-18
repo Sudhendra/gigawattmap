@@ -1,6 +1,6 @@
 # 030 — Wire FINNHUB_TOKEN into Worker dev env
 
-**Status:** todo
+**Status:** done
 **Depends on:** 029
 **Estimate:** 10m
 
