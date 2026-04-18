@@ -1,0 +1,3821 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "id": "aws:us-east-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.4558,
+          38.9445
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "us-east-1",
+        "display_name": "US East (N. Virginia)",
+        "country": "US",
+        "launch_year": 2006,
+        "services": [
+          "compute",
+          "storage",
+          "ai",
+          "networking"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:us-east-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.9988,
+          39.9612
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "us-east-2",
+        "display_name": "US East (Ohio)",
+        "country": "US",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:us-west-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.4194,
+          37.7749
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "us-west-1",
+        "display_name": "US West (N. California)",
+        "country": "US",
+        "launch_year": 2009,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:us-west-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.6784,
+          45.5152
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "us-west-2",
+        "display_name": "US West (Oregon)",
+        "country": "US",
+        "launch_year": 2011,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ca-central-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.5674,
+          45.5019
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ca-central-1",
+        "display_name": "Canada (Central)",
+        "country": "CA",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ca-west-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -114.0719,
+          51.0447
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ca-west-1",
+        "display_name": "Canada West (Calgary)",
+        "country": "CA",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:sa-east-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6333,
+          -23.5505
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "sa-east-1",
+        "display_name": "South America (S\u00e3o Paulo)",
+        "country": "BR",
+        "launch_year": 2011,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-west-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2603,
+          53.3498
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-west-1",
+        "display_name": "Europe (Ireland)",
+        "country": "IE",
+        "launch_year": 2007,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-west-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-west-2",
+        "display_name": "Europe (London)",
+        "country": "GB",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-west-3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3522,
+          48.8566
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-west-3",
+        "display_name": "Europe (Paris)",
+        "country": "FR",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-central-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.6821,
+          50.1109
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-central-1",
+        "display_name": "Europe (Frankfurt)",
+        "country": "DE",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-central-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.5417,
+          47.3769
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-central-2",
+        "display_name": "Europe (Zurich)",
+        "country": "CH",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-north-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.0686,
+          59.3293
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-north-1",
+        "display_name": "Europe (Stockholm)",
+        "country": "SE",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-south-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.19,
+          45.4642
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-south-1",
+        "display_name": "Europe (Milan)",
+        "country": "IT",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:eu-south-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.7038,
+          40.4168
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "eu-south-2",
+        "display_name": "Europe (Spain)",
+        "country": "ES",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-northeast-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.6503,
+          35.6762
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-northeast-1",
+        "display_name": "Asia Pacific (Tokyo)",
+        "country": "JP",
+        "launch_year": 2011,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-northeast-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.978,
+          37.5665
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-northeast-2",
+        "display_name": "Asia Pacific (Seoul)",
+        "country": "KR",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-northeast-3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.5023,
+          34.6937
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-northeast-3",
+        "display_name": "Asia Pacific (Osaka)",
+        "country": "JP",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-southeast-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198,
+          1.3521
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-southeast-1",
+        "display_name": "Asia Pacific (Singapore)",
+        "country": "SG",
+        "launch_year": 2010,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-southeast-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          151.2093,
+          -33.8688
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-southeast-2",
+        "display_name": "Asia Pacific (Sydney)",
+        "country": "AU",
+        "launch_year": 2012,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-southeast-3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8456,
+          -6.2088
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-southeast-3",
+        "display_name": "Asia Pacific (Jakarta)",
+        "country": "ID",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-southeast-4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          144.9631,
+          -37.8136
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-southeast-4",
+        "display_name": "Asia Pacific (Melbourne)",
+        "country": "AU",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-south-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8777,
+          19.076
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-south-1",
+        "display_name": "Asia Pacific (Mumbai)",
+        "country": "IN",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-south-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.4867,
+          17.385
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-south-2",
+        "display_name": "Asia Pacific (Hyderabad)",
+        "country": "IN",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:ap-east-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.1694,
+          22.3193
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "ap-east-1",
+        "display_name": "Asia Pacific (Hong Kong)",
+        "country": "HK",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:me-south-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          50.5577,
+          26.0667
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "me-south-1",
+        "display_name": "Middle East (Bahrain)",
+        "country": "BH",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:me-central-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.2708,
+          25.2048
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "me-central-1",
+        "display_name": "Middle East (UAE)",
+        "country": "AE",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:af-south-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.4241,
+          -33.9249
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "af-south-1",
+        "display_name": "Africa (Cape Town)",
+        "country": "ZA",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "aws:il-central-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.7818,
+          32.0853
+        ]
+      },
+      "properties": {
+        "provider": "aws",
+        "code": "il-central-1",
+        "display_name": "Israel (Tel Aviv)",
+        "country": "IL",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.aws.amazon.com/global-infrastructure/latest/regions/aws-regions.html"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:eastus",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.8164,
+          37.3719
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "eastus",
+        "display_name": "East US (Virginia)",
+        "country": "US",
+        "launch_year": 2012,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:eastus2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -78.3889,
+          36.6681
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "eastus2",
+        "display_name": "East US 2 (Virginia)",
+        "country": "US",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:centralus",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -93.6208,
+          41.5908
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "centralus",
+        "display_name": "Central US (Iowa)",
+        "country": "US",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:northcentralus",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.6298,
+          41.8781
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "northcentralus",
+        "display_name": "North Central US (Illinois)",
+        "country": "US",
+        "launch_year": 2009,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:southcentralus",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -98.4936,
+          29.4241
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "southcentralus",
+        "display_name": "South Central US (Texas)",
+        "country": "US",
+        "launch_year": 2008,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:westus",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -122.4194,
+          37.7749
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "westus",
+        "display_name": "West US (California)",
+        "country": "US",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:westus2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -119.8523,
+          47.2529
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "westus2",
+        "display_name": "West US 2 (Washington)",
+        "country": "US",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:westus3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.074,
+          33.4484
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "westus3",
+        "display_name": "West US 3 (Arizona)",
+        "country": "US",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:canadacentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.3832,
+          43.6532
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "canadacentral",
+        "display_name": "Canada Central (Toronto)",
+        "country": "CA",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:canadaeast",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -71.208,
+          46.8139
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "canadaeast",
+        "display_name": "Canada East (Quebec)",
+        "country": "CA",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:brazilsouth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6333,
+          -23.5505
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "brazilsouth",
+        "display_name": "Brazil South (S\u00e3o Paulo)",
+        "country": "BR",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:northeurope",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -6.2603,
+          53.3498
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "northeurope",
+        "display_name": "North Europe (Ireland)",
+        "country": "IE",
+        "launch_year": 2009,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:westeurope",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.9041,
+          52.3676
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "westeurope",
+        "display_name": "West Europe (Netherlands)",
+        "country": "NL",
+        "launch_year": 2010,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:uksouth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "uksouth",
+        "display_name": "UK South (London)",
+        "country": "GB",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:ukwest",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.1791,
+          51.4816
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "ukwest",
+        "display_name": "UK West (Cardiff)",
+        "country": "GB",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:francecentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3522,
+          48.8566
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "francecentral",
+        "display_name": "France Central (Paris)",
+        "country": "FR",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:germanywestcentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.6821,
+          50.1109
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "germanywestcentral",
+        "display_name": "Germany West Central (Frankfurt)",
+        "country": "DE",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:switzerlandnorth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.5417,
+          47.3769
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "switzerlandnorth",
+        "display_name": "Switzerland North (Zurich)",
+        "country": "CH",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:norwayeast",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          10.7522,
+          59.9139
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "norwayeast",
+        "display_name": "Norway East (Oslo)",
+        "country": "NO",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:swedencentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          17.1413,
+          60.6749
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "swedencentral",
+        "display_name": "Sweden Central (G\u00e4vle)",
+        "country": "SE",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:polandcentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.0122,
+          52.2297
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "polandcentral",
+        "display_name": "Poland Central (Warsaw)",
+        "country": "PL",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:italynorth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.19,
+          45.4642
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "italynorth",
+        "display_name": "Italy North (Milan)",
+        "country": "IT",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:spaincentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.7038,
+          40.4168
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "spaincentral",
+        "display_name": "Spain Central (Madrid)",
+        "country": "ES",
+        "launch_year": 2024,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:uaenorth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.2708,
+          25.2048
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "uaenorth",
+        "display_name": "UAE North (Dubai)",
+        "country": "AE",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:qatarcentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.531,
+          25.2854
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "qatarcentral",
+        "display_name": "Qatar Central (Doha)",
+        "country": "QA",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:israelcentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.7818,
+          32.0853
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "israelcentral",
+        "display_name": "Israel Central (Tel Aviv)",
+        "country": "IL",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:southafricanorth",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.0473,
+          -26.2041
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "southafricanorth",
+        "display_name": "South Africa North (Johannesburg)",
+        "country": "ZA",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:australiaeast",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          151.2093,
+          -33.8688
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "australiaeast",
+        "display_name": "Australia East (Sydney)",
+        "country": "AU",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:australiasoutheast",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          144.9631,
+          -37.8136
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "australiasoutheast",
+        "display_name": "Australia Southeast (Melbourne)",
+        "country": "AU",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:japaneast",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.6503,
+          35.6762
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "japaneast",
+        "display_name": "Japan East (Tokyo)",
+        "country": "JP",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:japanwest",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.5023,
+          34.6937
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "japanwest",
+        "display_name": "Japan West (Osaka)",
+        "country": "JP",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:koreacentral",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.978,
+          37.5665
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "koreacentral",
+        "display_name": "Korea Central (Seoul)",
+        "country": "KR",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:southeastasia",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198,
+          1.3521
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "southeastasia",
+        "display_name": "Southeast Asia (Singapore)",
+        "country": "SG",
+        "launch_year": 2010,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:eastasia",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.1694,
+          22.3193
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "eastasia",
+        "display_name": "East Asia (Hong Kong)",
+        "country": "HK",
+        "launch_year": 2010,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:centralindia",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          73.8567,
+          18.5204
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "centralindia",
+        "display_name": "Central India (Pune)",
+        "country": "IN",
+        "launch_year": 2015,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:southindia",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          80.2707,
+          13.0827
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "southindia",
+        "display_name": "South India (Chennai)",
+        "country": "IN",
+        "launch_year": 2015,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "azure:westindia",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8777,
+          19.076
+        ]
+      },
+      "properties": {
+        "provider": "azure",
+        "code": "westindia",
+        "display_name": "West India (Mumbai)",
+        "country": "IN",
+        "launch_year": 2015,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://learn.microsoft.com/en-us/azure/reliability/regions-list"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-east1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -80.0131,
+          33.196
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-east1",
+        "display_name": "South Carolina (us-east1)",
+        "country": "US",
+        "launch_year": 2015,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-east4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.4558,
+          38.9445
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-east4",
+        "display_name": "Northern Virginia (us-east4)",
+        "country": "US",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-east5",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -82.9988,
+          39.9612
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-east5",
+        "display_name": "Columbus, Ohio (us-east5)",
+        "country": "US",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-central1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -95.8608,
+          41.2619
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-central1",
+        "display_name": "Iowa (us-central1)",
+        "country": "US",
+        "launch_year": 2009,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-south1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -96.797,
+          32.7767
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-south1",
+        "display_name": "Dallas, Texas (us-south1)",
+        "country": "US",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-west1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.1787,
+          45.5946
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-west1",
+        "display_name": "Oregon (us-west1)",
+        "country": "US",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-west2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -118.2437,
+          34.0522
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-west2",
+        "display_name": "Los Angeles (us-west2)",
+        "country": "US",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-west3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -111.891,
+          40.7608
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-west3",
+        "display_name": "Salt Lake City (us-west3)",
+        "country": "US",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:us-west4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -115.1398,
+          36.1699
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "us-west4",
+        "display_name": "Las Vegas (us-west4)",
+        "country": "US",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:northamerica-northeast1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.5674,
+          45.5019
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "northamerica-northeast1",
+        "display_name": "Montr\u00e9al (northamerica-northeast1)",
+        "country": "CA",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:northamerica-northeast2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.3832,
+          43.6532
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "northamerica-northeast2",
+        "display_name": "Toronto (northamerica-northeast2)",
+        "country": "CA",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:southamerica-east1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6333,
+          -23.5505
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "southamerica-east1",
+        "display_name": "S\u00e3o Paulo (southamerica-east1)",
+        "country": "BR",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:southamerica-west1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.6693,
+          -33.4489
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "southamerica-west1",
+        "display_name": "Santiago (southamerica-west1)",
+        "country": "CL",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          3.8174,
+          50.4674
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west1",
+        "display_name": "Belgium (europe-west1)",
+        "country": "BE",
+        "launch_year": 2015,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west2",
+        "display_name": "London (europe-west2)",
+        "country": "GB",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.6821,
+          50.1109
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west3",
+        "display_name": "Frankfurt (europe-west3)",
+        "country": "DE",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west4",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          6.8355,
+          53.4386
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west4",
+        "display_name": "Netherlands (europe-west4)",
+        "country": "NL",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.5417,
+          47.3769
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west6",
+        "display_name": "Zurich (europe-west6)",
+        "country": "CH",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west8",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.19,
+          45.4642
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west8",
+        "display_name": "Milan (europe-west8)",
+        "country": "IT",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west9",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3522,
+          48.8566
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west9",
+        "display_name": "Paris (europe-west9)",
+        "country": "FR",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west10",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          13.405,
+          52.52
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west10",
+        "display_name": "Berlin (europe-west10)",
+        "country": "DE",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-west12",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          7.6869,
+          45.0703
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-west12",
+        "display_name": "Turin (europe-west12)",
+        "country": "IT",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-north1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          27.1142,
+          60.5378
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-north1",
+        "display_name": "Finland (europe-north1)",
+        "country": "FI",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-southwest1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.7038,
+          40.4168
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-southwest1",
+        "display_name": "Madrid (europe-southwest1)",
+        "country": "ES",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:europe-central2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          21.0122,
+          52.2297
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "europe-central2",
+        "display_name": "Warsaw (europe-central2)",
+        "country": "PL",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:me-west1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          34.7818,
+          32.0853
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "me-west1",
+        "display_name": "Tel Aviv (me-west1)",
+        "country": "IL",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:me-central1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          51.531,
+          25.2854
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "me-central1",
+        "display_name": "Doha (me-central1)",
+        "country": "QA",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:me-central2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          50.0888,
+          26.4207
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "me-central2",
+        "display_name": "Dammam (me-central2)",
+        "country": "SA",
+        "launch_year": 2023,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:africa-south1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.0473,
+          -26.2041
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "africa-south1",
+        "display_name": "Johannesburg (africa-south1)",
+        "country": "ZA",
+        "launch_year": 2024,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-east1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.5161,
+          24.0518
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-east1",
+        "display_name": "Taiwan (asia-east1)",
+        "country": "TW",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-east2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.1694,
+          22.3193
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-east2",
+        "display_name": "Hong Kong (asia-east2)",
+        "country": "HK",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-northeast1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.6503,
+          35.6762
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-northeast1",
+        "display_name": "Tokyo (asia-northeast1)",
+        "country": "JP",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-northeast2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.5023,
+          34.6937
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-northeast2",
+        "display_name": "Osaka (asia-northeast2)",
+        "country": "JP",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-northeast3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.978,
+          37.5665
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-northeast3",
+        "display_name": "Seoul (asia-northeast3)",
+        "country": "KR",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-southeast1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198,
+          1.3521
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-southeast1",
+        "display_name": "Singapore (asia-southeast1)",
+        "country": "SG",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-southeast2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8456,
+          -6.2088
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-southeast2",
+        "display_name": "Jakarta (asia-southeast2)",
+        "country": "ID",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-south1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8777,
+          19.076
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-south1",
+        "display_name": "Mumbai (asia-south1)",
+        "country": "IN",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:asia-south2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          77.209,
+          28.6139
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "asia-south2",
+        "display_name": "Delhi (asia-south2)",
+        "country": "IN",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:australia-southeast1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          151.2093,
+          -33.8688
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "australia-southeast1",
+        "display_name": "Sydney (australia-southeast1)",
+        "country": "AU",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "gcp:australia-southeast2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          144.9631,
+          -37.8136
+        ]
+      },
+      "properties": {
+        "provider": "gcp",
+        "code": "australia-southeast2",
+        "display_name": "Melbourne (australia-southeast2)",
+        "country": "AU",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://cloud.google.com/about/locations"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:us-ashburn-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.4874,
+          39.0438
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "us-ashburn-1",
+        "display_name": "US East (Ashburn)",
+        "country": "US",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:us-phoenix-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -112.074,
+          33.4484
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "us-phoenix-1",
+        "display_name": "US West (Phoenix)",
+        "country": "US",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:us-sanjose-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.8863,
+          37.3382
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "us-sanjose-1",
+        "display_name": "US West (San Jose)",
+        "country": "US",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:us-chicago-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -87.6298,
+          41.8781
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "us-chicago-1",
+        "display_name": "US Midwest (Chicago)",
+        "country": "US",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ca-toronto-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -79.3832,
+          43.6532
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ca-toronto-1",
+        "display_name": "Canada Southeast (Toronto)",
+        "country": "CA",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ca-montreal-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -73.5674,
+          45.5019
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ca-montreal-1",
+        "display_name": "Canada Southeast (Montreal)",
+        "country": "CA",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:sa-saopaulo-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.6333,
+          -23.5505
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "sa-saopaulo-1",
+        "display_name": "Brazil East (S\u00e3o Paulo)",
+        "country": "BR",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:sa-vinhedo-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -46.9756,
+          -23.0306
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "sa-vinhedo-1",
+        "display_name": "Brazil Southeast (Vinhedo)",
+        "country": "BR",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:sa-santiago-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -70.6693,
+          -33.4489
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "sa-santiago-1",
+        "display_name": "Chile (Santiago)",
+        "country": "CL",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:uk-london-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "uk-london-1",
+        "display_name": "UK South (London)",
+        "country": "GB",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:uk-cardiff-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -2.9977,
+          51.5842
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "uk-cardiff-1",
+        "display_name": "UK West (Newport)",
+        "country": "GB",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-frankfurt-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.6821,
+          50.1109
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-frankfurt-1",
+        "display_name": "Germany Central (Frankfurt)",
+        "country": "DE",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-amsterdam-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          4.9041,
+          52.3676
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-amsterdam-1",
+        "display_name": "Netherlands Northwest (Amsterdam)",
+        "country": "NL",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-zurich-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.5417,
+          47.3769
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-zurich-1",
+        "display_name": "Switzerland North (Zurich)",
+        "country": "CH",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-stockholm-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          18.0686,
+          59.3293
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-stockholm-1",
+        "display_name": "Sweden Central (Stockholm)",
+        "country": "SE",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-milan-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          9.19,
+          45.4642
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-milan-1",
+        "display_name": "Italy Northwest (Milan)",
+        "country": "IT",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-paris-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          2.3522,
+          48.8566
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-paris-1",
+        "display_name": "France Central (Paris)",
+        "country": "FR",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-marseille-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          5.3698,
+          43.2965
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-marseille-1",
+        "display_name": "France South (Marseille)",
+        "country": "FR",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:eu-madrid-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -3.7038,
+          40.4168
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "eu-madrid-1",
+        "display_name": "Spain Central (Madrid)",
+        "country": "ES",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:me-jeddah-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          39.1925,
+          21.4858
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "me-jeddah-1",
+        "display_name": "Saudi Arabia West (Jeddah)",
+        "country": "SA",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:me-dubai-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.2708,
+          25.2048
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "me-dubai-1",
+        "display_name": "UAE East (Dubai)",
+        "country": "AE",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:me-abudhabi-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          54.3773,
+          24.4539
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "me-abudhabi-1",
+        "display_name": "UAE Central (Abu Dhabi)",
+        "country": "AE",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:il-jerusalem-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          35.2137,
+          31.7683
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "il-jerusalem-1",
+        "display_name": "Israel Central (Jerusalem)",
+        "country": "IL",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:af-johannesburg-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          28.0473,
+          -26.2041
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "af-johannesburg-1",
+        "display_name": "South Africa Central (Johannesburg)",
+        "country": "ZA",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-tokyo-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.6503,
+          35.6762
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-tokyo-1",
+        "display_name": "Japan East (Tokyo)",
+        "country": "JP",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-osaka-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          135.5023,
+          34.6937
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-osaka-1",
+        "display_name": "Japan Central (Osaka)",
+        "country": "JP",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-seoul-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.978,
+          37.5665
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-seoul-1",
+        "display_name": "South Korea Central (Seoul)",
+        "country": "KR",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-chuncheon-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          127.7298,
+          37.8813
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-chuncheon-1",
+        "display_name": "South Korea North (Chuncheon)",
+        "country": "KR",
+        "launch_year": 2021,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-mumbai-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8777,
+          19.076
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-mumbai-1",
+        "display_name": "India West (Mumbai)",
+        "country": "IN",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-hyderabad-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          78.4867,
+          17.385
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-hyderabad-1",
+        "display_name": "India South (Hyderabad)",
+        "country": "IN",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-singapore-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198,
+          1.3521
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-singapore-1",
+        "display_name": "Singapore (Singapore)",
+        "country": "SG",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-sydney-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          151.2093,
+          -33.8688
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-sydney-1",
+        "display_name": "Australia East (Sydney)",
+        "country": "AU",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "oracle:ap-melbourne-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          144.9631,
+          -37.8136
+        ]
+      },
+      "properties": {
+        "provider": "oracle",
+        "code": "ap-melbourne-1",
+        "display_name": "Australia Southeast (Melbourne)",
+        "country": "AU",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://docs.oracle.com/en-us/iaas/Content/General/Concepts/regions.htm"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-hangzhou",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.1551,
+          30.2741
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-hangzhou",
+        "display_name": "China (Hangzhou)",
+        "country": "CN",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-shanghai",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          121.4737,
+          31.2304
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-shanghai",
+        "display_name": "China (Shanghai)",
+        "country": "CN",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-beijing",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          116.4074,
+          39.9042
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-beijing",
+        "display_name": "China (Beijing)",
+        "country": "CN",
+        "launch_year": 2013,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-zhangjiakou",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.8867,
+          40.7686
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-zhangjiakou",
+        "display_name": "China North 3 (Zhangjiakou)",
+        "country": "CN",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-huhehaote",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          111.7522,
+          40.8414
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-huhehaote",
+        "display_name": "China North 5 (Hohhot)",
+        "country": "CN",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-wulanchabu",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          113.1133,
+          41.0341
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-wulanchabu",
+        "display_name": "China North 6 (Ulanqab)",
+        "country": "CN",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-shenzhen",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.0579,
+          22.5431
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-shenzhen",
+        "display_name": "China South 1 (Shenzhen)",
+        "country": "CN",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-heyuan",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.6978,
+          23.7461
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-heyuan",
+        "display_name": "China South 2 (Heyuan)",
+        "country": "CN",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-guangzhou",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          113.2644,
+          23.1291
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-guangzhou",
+        "display_name": "China South 3 (Guangzhou)",
+        "country": "CN",
+        "launch_year": 2020,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-chengdu",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          104.0668,
+          30.5728
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-chengdu",
+        "display_name": "China West 1 (Chengdu)",
+        "country": "CN",
+        "launch_year": 2019,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:cn-hongkong",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          114.1694,
+          22.3193
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "cn-hongkong",
+        "display_name": "Hong Kong",
+        "country": "HK",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-southeast-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          103.8198,
+          1.3521
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-southeast-1",
+        "display_name": "Singapore",
+        "country": "SG",
+        "launch_year": 2014,
+        "services": [
+          "compute",
+          "storage",
+          "ai"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-southeast-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          151.2093,
+          -33.8688
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-southeast-2",
+        "display_name": "Australia (Sydney)",
+        "country": "AU",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-southeast-3",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          101.6869,
+          3.139
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-southeast-3",
+        "display_name": "Malaysia (Kuala Lumpur)",
+        "country": "MY",
+        "launch_year": 2017,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-southeast-5",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          106.8456,
+          -6.2088
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-southeast-5",
+        "display_name": "Indonesia (Jakarta)",
+        "country": "ID",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-southeast-6",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          120.9842,
+          14.5995
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-southeast-6",
+        "display_name": "Philippines (Manila)",
+        "country": "PH",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-southeast-7",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          100.5018,
+          13.7563
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-southeast-7",
+        "display_name": "Thailand (Bangkok)",
+        "country": "TH",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-northeast-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          139.6503,
+          35.6762
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-northeast-1",
+        "display_name": "Japan (Tokyo)",
+        "country": "JP",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-northeast-2",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          126.978,
+          37.5665
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-northeast-2",
+        "display_name": "South Korea (Seoul)",
+        "country": "KR",
+        "launch_year": 2022,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:ap-south-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          72.8777,
+          19.076
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "ap-south-1",
+        "display_name": "India (Mumbai)",
+        "country": "IN",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:us-west-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -121.8863,
+          37.3382
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "us-west-1",
+        "display_name": "US (Silicon Valley)",
+        "country": "US",
+        "launch_year": 2015,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:us-east-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -77.4558,
+          38.9445
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "us-east-1",
+        "display_name": "US (Virginia)",
+        "country": "US",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:eu-central-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          8.6821,
+          50.1109
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "eu-central-1",
+        "display_name": "Germany (Frankfurt)",
+        "country": "DE",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:eu-west-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          -0.1278,
+          51.5074
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "eu-west-1",
+        "display_name": "UK (London)",
+        "country": "GB",
+        "launch_year": 2018,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    },
+    {
+      "type": "Feature",
+      "id": "alibaba:me-east-1",
+      "geometry": {
+        "type": "Point",
+        "coordinates": [
+          55.2708,
+          25.2048
+        ]
+      },
+      "properties": {
+        "provider": "alibaba",
+        "code": "me-east-1",
+        "display_name": "UAE (Dubai)",
+        "country": "AE",
+        "launch_year": 2016,
+        "services": [
+          "compute",
+          "storage"
+        ],
+        "source_url": "https://www.alibabacloud.com/help/en/ecs/regions-and-zones"
+      }
+    }
+  ]
+}

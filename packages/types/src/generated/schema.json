@@ -186,6 +186,83 @@
       "title": "CableLanding",
       "type": "object"
     },
+    "CloudRegion": {
+      "additionalProperties": false,
+      "description": "Public cloud provider region.\n\nCloud providers do not publish exact datacenter coordinates for their\nregions for security reasons. We carry hand-curated metro-area\ncentroids and surface them as 10 km buffer circles in the UI so the\napproximation is explicit. ``source_url`` cites the provider's own\nregion documentation page for each row's existence and launch year.",
+      "properties": {
+        "code": {
+          "title": "Code",
+          "type": "string"
+        },
+        "country": {
+          "maxLength": 2,
+          "minLength": 2,
+          "title": "Country",
+          "type": "string"
+        },
+        "display_name": {
+          "title": "Display Name",
+          "type": "string"
+        },
+        "geometry": {
+          "additionalProperties": true,
+          "title": "Geometry",
+          "type": "object"
+        },
+        "launch_year": {
+          "anyOf": [
+            {
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Launch Year"
+        },
+        "provider": {
+          "enum": [
+            "aws",
+            "azure",
+            "gcp",
+            "oracle",
+            "alibaba"
+          ],
+          "title": "Provider",
+          "type": "string"
+        },
+        "services": {
+          "anyOf": [
+            {
+              "items": {
+                "type": "string"
+              },
+              "type": "array"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Services"
+        },
+        "source_url": {
+          "title": "Source Url",
+          "type": "string"
+        }
+      },
+      "required": [
+        "provider",
+        "code",
+        "display_name",
+        "geometry",
+        "country",
+        "launch_year",
+        "services",
+        "source_url"
+      ],
+      "title": "CloudRegion",
+      "type": "object"
+    },
     "Datacenter": {
       "additionalProperties": false,
       "properties": {
@@ -471,6 +548,9 @@
     },
     {
       "$ref": "#/$defs/CableLanding"
+    },
+    {
+      "$ref": "#/$defs/CloudRegion"
     },
     {
       "$ref": "#/$defs/Datacenter"

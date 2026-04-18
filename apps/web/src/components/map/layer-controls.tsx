@@ -21,6 +21,15 @@ type LayerControl = {
  */
 const LAYERS: readonly LayerControl[] = [
   { id: 'datacenters', label: 'Datacenters', swatch: 'var(--dc-hyperscale)', placeholder: false },
+  {
+    id: 'cloud_regions',
+    label: 'Cloud regions',
+    // Mixed-provider gradient communicates the layer carries multiple
+    // brands without privileging any single one.
+    swatch:
+      'linear-gradient(135deg, var(--cloud-aws), var(--cloud-azure), var(--cloud-gcp))',
+    placeholder: false,
+  },
   { id: 'cables', label: 'Cables', swatch: 'var(--accent-cable)', placeholder: true },
   { id: 'powerplants', label: 'Power plants', swatch: 'var(--fuel-gas)', placeholder: true },
   { id: 'opposition', label: 'Opposition', swatch: 'var(--status-blocked)', placeholder: true },

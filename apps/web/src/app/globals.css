@@ -40,6 +40,15 @@
   /* accents */
   --accent-cable: #00e5ff;
   --accent-focus: #ffeb3b;
+
+  /* cloud providers — official-ish brand colors used only as the
+     visual anchor for region buffer circles. We do not display
+     provider logos (licensing). */
+  --cloud-aws: #ff9900;
+  --cloud-azure: #0078d4;
+  --cloud-gcp: #4285f4;
+  --cloud-oracle: #f80000;
+  --cloud-alibaba: #ff6a00;
 }
 
 /* Tailwind v4 native theme: expose tokens as utility classes (bg-base, text-primary, etc.) */
@@ -70,6 +79,12 @@
 
   --color-accent-cable: var(--accent-cable);
   --color-accent-focus: var(--accent-focus);
+
+  --color-cloud-aws: var(--cloud-aws);
+  --color-cloud-azure: var(--cloud-azure);
+  --color-cloud-gcp: var(--cloud-gcp);
+  --color-cloud-oracle: var(--cloud-oracle);
+  --color-cloud-alibaba: var(--cloud-alibaba);
 
   --font-mono: var(--font-jetbrains-mono), ui-monospace, monospace;
   --font-sans: var(--font-geist), system-ui, sans-serif;

@@ -10,6 +10,11 @@ import {
   type AiCampusCollection,
   type AiCampusFeature,
 } from './layers/datacenters-layer';
+import {
+  createCloudRegionsLayer,
+  type CloudRegionCollection,
+  type CloudRegionFeature,
+} from './layers/cloud-regions-layer';
 
 // Register the pmtiles:// protocol once per module load. Idempotent across HMR.
 let protocolRegistered = false;
@@ -30,10 +35,14 @@ const BASEMAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 export type MapProps = {
   /** AI-campus seed collection. Owner is responsible for fetching it. */
   data: AiCampusCollection | null;
+  /** Cloud-region seed collection. Optional; layer is hidden when absent. */
+  cloudRegions?: CloudRegionCollection | null;
   /** Currently selected feature id, or null. Drives flyTo + layer highlight. */
   selectedId: string | null;
   /** Click handler for a campus dot. Pass `null` to clear. */
   onSelect: (id: string | null) => void;
+  /** Click handler for a cloud-region buffer. Receives the GeoJSON feature. */
+  onSelectCloudRegion?: (feature: CloudRegionFeature | null) => void;
 };
 
 /**
@@ -41,13 +50,20 @@ export type MapProps = {
  * owns it. The map reacts to `selectedId` by flying to the feature and
  * re-renders the layer so the selected dot can be highlighted.
  */
-export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element {
+export function Map({
+  data,
+  cloudRegions = null,
+  selectedId,
+  onSelect,
+  onSelectCloudRegion,
+}: MapProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
   const overlayRef = useRef<MapboxOverlay | null>(null);
   const setViewport = useMapStore((s) => s.setViewport);
   const setVisibleBbox = useMapStore((s) => s.setVisibleBbox);
   const datacentersVisible = useMapStore((s) => s.layers.datacenters);
+  const cloudRegionsVisible = useMapStore((s) => s.layers.cloud_regions);
 
   // Stable lookup for flyTo. Recomputed only when data identity changes.
   const featureById = useMemo(() => {
@@ -114,17 +130,38 @@ export function Map({ data, selectedId, onSelect }: MapProps): React.JSX.Element
   // --- Layer: rebuild when data or selection changes. ------------------------
   useEffect(() => {
     const overlay = overlayRef.current;
-    if (!overlay || !data) return;
-    overlay.setProps({
-      layers: [
+    if (!overlay) return;
+    const layers = [];
+    // Cloud-region buffers render below the campus dots so they read as
+    // background context rather than competing for clicks. deck.gl draws
+    // earlier-indexed layers first, so this ordering is intentional.
+    if (cloudRegions) {
+      layers.push(
+        createCloudRegionsLayer(cloudRegions, {
+          visible: cloudRegionsVisible,
+          onClick: (feature) => onSelectCloudRegion?.(feature),
+        }),
+      );
+    }
+    if (data) {
+      layers.push(
         createDatacentersLayer(data, {
           selectedId,
           visible: datacentersVisible,
           onClick: (feature) => onSelect(feature.properties.id),
         }),
-      ],
-    });
-  }, [data, selectedId, onSelect, datacentersVisible]);
+      );
+    }
+    overlay.setProps({ layers });
+  }, [
+    data,
+    cloudRegions,
+    selectedId,
+    onSelect,
+    onSelectCloudRegion,
+    datacentersVisible,
+    cloudRegionsVisible,
+  ]);
 
   // --- Fly-to when selection changes externally (URL load, deep link). ------
   useEffect(() => {

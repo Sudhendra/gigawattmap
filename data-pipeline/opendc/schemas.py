@@ -62,6 +62,7 @@ FuelType = Literal[
 AnnouncementCategory = Literal[
     "lease", "ppa", "capex", "opening", "opposition", "permit", "m_and_a", "other"
 ]
+CloudProvider = Literal["aws", "azure", "gcp", "oracle", "alibaba"]
 
 
 class _Base(BaseModel):
@@ -159,3 +160,35 @@ class Announcement(_Base):
     amount_usd: float | None
     category: AnnouncementCategory
     source_url: str
+
+
+class CloudRegion(_Base):
+    """Public cloud provider region.
+
+    Cloud providers do not publish exact datacenter coordinates for their
+    regions for security reasons. We carry hand-curated metro-area
+    centroids and surface them as 10 km buffer circles in the UI so the
+    approximation is explicit. ``source_url`` cites the provider's own
+    region documentation page for each row's existence and launch year.
+    """
+
+    provider: CloudProvider
+    code: str  # e.g. "us-east-1" (AWS), "westeurope" (Azure)
+    display_name: str  # e.g. "US East (N. Virginia)"
+    geometry: Geometry  # Point — metro-area centroid, NOT exact location
+    country: Annotated[str, Field(min_length=2, max_length=2)]
+    launch_year: int | None
+    services: list[str] | None  # e.g. ["compute", "storage", "ai"]
+    source_url: str
+
+    @field_validator("geometry")
+    @classmethod
+    def _validate_geometry(cls, v: Any) -> Geometry:
+        return _is_geometry(v)
+
+    @field_validator("source_url")
+    @classmethod
+    def _require_url(cls, v: str) -> str:
+        if not v.startswith(("http://", "https://")):
+            raise ValueError("source_url must be an http(s) URL")
+        return v

@@ -1,6 +1,6 @@
 # 016 — Cloud provider regions layer
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 013
 **Estimate:** 2 hours
 

@@ -83,6 +83,16 @@ DEFAULT_SPECS: tuple[TileSpec, ...] = (
         # rendered lines visually continuous at low zoom.
         extra_args=("--coalesce", "--reorder"),
     ),
+    TileSpec(
+        name="cloud_regions",
+        # Hand-curated centroid points (~120 rows total). Visible from a
+        # global overview (z2) all the way to metro detail (z12); we don't
+        # need higher zoom because coordinates are deliberately approximate.
+        input_path=Path("out/interim/cloud-regions.geojson"),
+        output_path=Path("out/tiles/cloud-regions.pmtiles"),
+        min_zoom=2,
+        max_zoom=12,
+    ),
 )
 
 

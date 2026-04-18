@@ -17,6 +17,7 @@ from rich.console import Console
 
 from opendc import __version__, typegen
 from opendc.manifest import make_entry, write_entry
+from opendc.sources import cloud_regions as cloud_regions_source
 from opendc.sources import curated as curated_source
 from opendc.sources import gem as gem_source
 from opendc.sources import osm as osm_source
@@ -60,7 +61,7 @@ def ingest(
     out_dir: Path = typer.Option(Path("out"), "--out-dir", help="Artifact root."),
 ) -> None:
     """Fetch raw data from a source (OSM, GEM, TeleGeography, ...)."""
-    if source not in {"osm", "gem", "telegeography", "curated", "all"}:
+    if source not in {"osm", "gem", "telegeography", "curated", "cloud-regions", "all"}:
         # Other sources land in tasks 013+ — keep the surface stable.
         console.print(f"[yellow]opendc ingest {source}: not implemented yet[/yellow]")
         return
@@ -158,6 +159,31 @@ def ingest(
         console.print(
             f"[green]wrote {curated_path} ({curated_count} features, "
             f"{curated_duration:.2f}s)[/green]"
+        )
+    if source in {"cloud-regions", "all"}:
+        console.print("[cyan]Loading curated cloud provider regions...[/cyan]")
+        try:
+            cr_path, cr_count, cr_duration = cloud_regions_source.run(out_dir=out_dir)
+        except cloud_regions_source.CloudRegionError as exc:
+            console.print(f"[red]cloud-regions: {exc}[/red]")
+            if source == "cloud-regions":
+                raise typer.Exit(1) from exc
+            return
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="cloud-regions",
+                feature_count=cr_count,
+                duration_s=cr_duration,
+                url="opendc/data/cloud-regions.json",
+                notes=(
+                    "hand-curated metro-area centroids; per-row source_url cites "
+                    "provider region docs"
+                ),
+            ),
+        )
+        console.print(
+            f"[green]wrote {cr_path} ({cr_count} features, {cr_duration:.2f}s)[/green]"
         )
 
 

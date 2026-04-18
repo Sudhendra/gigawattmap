@@ -5,7 +5,7 @@
 /**
  * Generated from data-pipeline/opendc/schemas.py. Do not edit by hand — run `make gen-types`.
  */
-export type GigawattMapSchemas = Announcement | Cable | CableLanding | Datacenter | Operator | PowerPlant;
+export type GigawattMapSchemas = Announcement | Cable | CableLanding | CloudRegion | Datacenter | Operator | PowerPlant;
 export type AmountUsd = number | null;
 export type Category = "lease" | "ppa" | "capex" | "opening" | "opposition" | "permit" | "m_and_a" | "other";
 export type DatacenterId = string | null;
@@ -27,8 +27,15 @@ export type LandingPoints = CableLanding[];
 export type LengthKm = number | null;
 export type Name1 = string;
 export type RfsYear = number | null;
-export type Confidence = "verified" | "osm_only" | "press_release" | "estimated";
+export type Code = string;
 export type Country1 = string;
+export type DisplayName = string;
+export type LaunchYear = number | null;
+export type Provider = "aws" | "azure" | "gcp" | "oracle" | "alibaba";
+export type Services = string[] | null;
+export type SourceUrl1 = string;
+export type Confidence = "verified" | "osm_only" | "press_release" | "estimated";
+export type Country2 = string;
 export type EstMwHigh = number | null;
 export type EstMwLow = number | null;
 export type EstMwMid = number | null;
@@ -80,13 +87,35 @@ export interface CableLanding {
   country: Country;
   name: Name;
 }
+/**
+ * Public cloud provider region.
+ *
+ * Cloud providers do not publish exact datacenter coordinates for their
+ * regions for security reasons. We carry hand-curated metro-area
+ * centroids and surface them as 10 km buffer circles in the UI so the
+ * approximation is explicit. ``source_url`` cites the provider's own
+ * region documentation page for each row's existence and launch year.
+ */
+export interface CloudRegion {
+  code: Code;
+  country: Country1;
+  display_name: DisplayName;
+  geometry: Geometry1;
+  launch_year: LaunchYear;
+  provider: Provider;
+  services: Services;
+  source_url: SourceUrl1;
+}
+export interface Geometry1 {
+  [k: string]: unknown;
+}
 export interface Datacenter {
   confidence: Confidence;
-  country: Country1;
+  country: Country2;
   est_mw_high: EstMwHigh;
   est_mw_low: EstMwLow;
   est_mw_mid: EstMwMid;
-  geometry: Geometry1;
+  geometry: Geometry2;
   id: Id2;
   mw_source: MwSource;
   name: Name2;
@@ -96,7 +125,7 @@ export interface Datacenter {
   status: Status;
   tier: Tier;
 }
-export interface Geometry1 {
+export interface Geometry2 {
   [k: string]: unknown;
 }
 export interface Operator {
@@ -110,12 +139,12 @@ export interface PowerPlant {
   capacity_mw: CapacityMw;
   commissioning_year: CommissioningYear;
   fuel_type: FuelType;
-  geometry: Geometry2;
+  geometry: Geometry3;
   id: Id4;
   name: Name4;
   operator: Operator1;
   source: Source;
 }
-export interface Geometry2 {
+export interface Geometry3 {
   [k: string]: unknown;
 }
