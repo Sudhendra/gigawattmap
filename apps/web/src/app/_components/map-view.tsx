@@ -1,6 +1,7 @@
 'use client';
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { Toaster } from 'sonner';
 import { Map } from '@/components/map/map';
 import { LayerControls } from '@/components/map/layer-controls';
@@ -11,7 +12,10 @@ import { CableCard } from '@/components/intelligence-card/cable-card';
 import { IntelligenceCard } from '@/components/intelligence-card/intelligence-card';
 import { AnnouncementsFeed } from '@/components/announcements-feed/announcements-feed';
 import { TickerPanel } from '@/components/ticker-panel/ticker-panel';
+import { CommandPalette } from '@/components/search/command-palette';
 import { useSelectedDcUrlSync } from '@/lib/hooks/use-selected-dc-url-sync';
+import { useOperatorFilterUrlSync } from '@/lib/hooks/use-operator-filter-url-sync';
+import { useSearchIndex } from '@/lib/hooks/use-search-index';
 import { useMapStore } from '@/lib/store/map-store';
 import type {
   AiCampusCollection,
@@ -59,9 +63,27 @@ function MapViewInner(): React.JSX.Element {
   const [selectedOpposition, setSelectedOpposition] = useState<OppositionFightFeature | null>(null);
   const [selectedCable, setSelectedCable] = useState<CableFeature | null>(null);
   const setSelectedDcId = useSelectedDcUrlSync();
+  const setOperatorFilter = useOperatorFilterUrlSync();
+  const router = useRouter();
+  const cmdkOpen = useMapStore((s) => s.cmdkOpen);
+  const setCmdkOpen = useMapStore((s) => s.setCmdkOpen);
+  const searchIndex = useSearchIndex();
   // The store mirrors the URL — read it here so the drawer + map both
   // observe the same single source of truth.
   const selectedId = useMapStore((s) => s.selectedDcId);
+
+  // Cmd/Ctrl+K toggles the palette. We attach to window so the binding fires
+  // regardless of focus (matching Spotlight / Linear / VS Code conventions).
+  useEffect(() => {
+    function onKey(e: KeyboardEvent): void {
+      if ((e.metaKey || e.ctrlKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setCmdkOpen(!useMapStore.getState().cmdkOpen);
+      }
+    }
+    window.addEventListener('keydown', onKey);
+    return () => window.removeEventListener('keydown', onKey);
+  }, [setCmdkOpen]);
 
   // --- Seed fetch (one-shot). -----------------------------------------------
   useEffect(() => {
@@ -198,6 +220,33 @@ function MapViewInner(): React.JSX.Element {
   );
   const handleCloseCable = useCallback(() => setSelectedCable(null), []);
 
+  // Cmd+K actions. Selecting a result closes any other right-side card so
+  // the user lands on a clean view of the chosen entity.
+  const cmdkActions = useMemo(
+    () => ({
+      onSelectDatacenter: (id: string) => {
+        setSelectedDcId(id);
+        setSelectedCloudRegion(null);
+        setSelectedOpposition(null);
+        setSelectedCable(null);
+      },
+      onSelectOperator: (id: string) => {
+        setOperatorFilter(id);
+        setSelectedDcId(null);
+        setSelectedCloudRegion(null);
+        setSelectedOpposition(null);
+        setSelectedCable(null);
+      },
+      // Announcements live on /news today; navigating there lets the user
+      // read the full card with its source link without inventing a new
+      // single-announcement modal.
+      onSelectAnnouncement: (_id: string) => {
+        router.push('/news');
+      },
+    }),
+    [router, setOperatorFilter, setSelectedDcId],
+  );
+
   return (
     <>
       <div className="relative h-[calc(100vh-3rem)] w-full">
@@ -221,6 +270,12 @@ function MapViewInner(): React.JSX.Element {
         <CableCard feature={selectedCable} onClose={handleCloseCable} />
       </div>
       <IntelligenceCard feature={selectedFeature} onClose={handleClose} />
+      <CommandPalette
+        open={cmdkOpen}
+        onOpenChange={setCmdkOpen}
+        index={searchIndex}
+        actions={cmdkActions}
+      />
       <Toaster
         theme="dark"
         position="bottom-left"

@@ -1,6 +1,6 @@
 # 022 — Cmd+K search
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 013, 021
 **Estimate:** 2 hours
 

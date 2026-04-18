@@ -94,13 +94,19 @@ export function Map({
   const oppositionVisible = useMapStore((s) => s.layers.opposition);
   const cablesVisible = useMapStore((s) => s.layers.cables);
   const tickerFilter = useMapStore((s) => s.tickerFilter);
+  const operatorFilter = useMapStore((s) => s.operatorFilter);
 
   // Resolve the ticker filter into highlight sets once per render. Pure
-  // derivation; cheap enough not to bother memoising.
-  const highlightTargets = useMemo(
-    () => targetsForTicker(tickerFilter),
-    [tickerFilter],
-  );
+  // derivation; cheap enough not to bother memoising. The Cmd+K operator
+  // filter (`?operator=`) merges into the same operator set so the existing
+  // dimming logic covers both pathways without inventing a parallel one.
+  const highlightTargets = useMemo(() => {
+    const base = targetsForTicker(tickerFilter);
+    if (!operatorFilter) return base;
+    const operators = new Set(base.operators);
+    operators.add(operatorFilter);
+    return { ...base, operators };
+  }, [tickerFilter, operatorFilter]);
 
   // Animation clock for the cables TripsLayer. Disabled when the user
   // prefers reduced motion or the cables layer itself is off — no point

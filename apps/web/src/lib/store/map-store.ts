@@ -33,6 +33,22 @@ type MapStore = {
    */
   selectedDcId: string | null;
   setSelectedDcId: (id: string | null) => void;
+  /**
+   * Operator slug the user has filtered the map by (driven by the Cmd+K
+   * palette), or null when no filter is active. Source of truth is the
+   * `?operator=` URL param; the URL-sync hook keeps this mirror in step so
+   * the WebGL layer can read it cheaply. Composes with `tickerFilter`: when
+   * either is set, matching operators stay lit and the rest dim.
+   */
+  operatorFilter: string | null;
+  setOperatorFilter: (id: string | null) => void;
+  /**
+   * Whether the Cmd+K command palette is open. Lives in the store so the
+   * keyboard shortcut handler in <MapView/>, the hint button in <AppHeader/>,
+   * and the <CommandPalette/> overlay all stay in sync without prop drilling.
+   */
+  cmdkOpen: boolean;
+  setCmdkOpen: (next: boolean) => void;
   /** Viewport HUD collapse state. Persisted only for the lifetime of the tab. */
   hudCollapsed: boolean;
   setHudCollapsed: (next: boolean) => void;
@@ -99,6 +115,10 @@ export const useMapStore = create<MapStore>((set) => ({
   setSelectedLayer: (layer) => set({ selectedLayer: layer }),
   selectedDcId: null,
   setSelectedDcId: (id) => set({ selectedDcId: id }),
+  operatorFilter: null,
+  setOperatorFilter: (id) => set({ operatorFilter: id }),
+  cmdkOpen: false,
+  setCmdkOpen: (next) => set({ cmdkOpen: next }),
   hudCollapsed: false,
   setHudCollapsed: (next) => set({ hudCollapsed: next }),
   visibleBbox: null,

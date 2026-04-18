@@ -26,6 +26,16 @@ export const ANNOUNCEMENTS_URL: string | null =
   process.env.NEXT_PUBLIC_ANNOUNCEMENTS_URL?.replace(/\/+$/, '') || null;
 
 /**
+ * Full public URL of the search-index JSON artifact on R2.
+ *
+ * Built by `opendc build-index`; consumed by the Cmd+K palette via
+ * TanStack Query. When unset the palette falls back to the bundled seed
+ * JSON at `/seed/search-index.json` so local dev keeps working.
+ */
+export const SEARCH_INDEX_URL: string | null =
+  process.env.NEXT_PUBLIC_SEARCH_INDEX_URL?.replace(/\/+$/, '') || null;
+
+/**
  * Build a full PMTiles URL for a given layer name (e.g. `'datacenters'`),
  * or `null` if no base is configured. Callers should fall back to seed data
  * when this returns `null`.

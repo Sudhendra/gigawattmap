@@ -1,5 +1,6 @@
 import Link from 'next/link';
 import { cn } from '@/lib/cn';
+import { CmdkHintButton } from './cmdk-hint-button';
 
 const NAV = [
   { href: '/', label: 'Map' },
@@ -35,6 +36,7 @@ export function AppHeader(): React.JSX.Element {
               {item.label}
             </Link>
           ))}
+          <CmdkHintButton />
         </nav>
       </div>
     </header>

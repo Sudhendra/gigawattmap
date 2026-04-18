@@ -25,6 +25,7 @@ from opendc.sources import opposition as opposition_source
 from opendc.sources import osm as osm_source
 from opendc.sources import osm_power as osm_power_source
 from opendc.sources import telegeography as tg_source
+from opendc.search import build_index as search_build_index
 from opendc.tiles import build as tiles_build
 from opendc.tiles import upload as tiles_upload
 from opendc.transform import enrich_substations as enrich_substations_transform
@@ -415,6 +416,31 @@ def tiles_upload_cmd(
     lines = tiles_upload.upload_all(paths, config=config, dry_run=dry_run)
     for line in lines:
         console.print(f"[green]{line}[/green]")
+
+
+@data_app.command("build-index")
+def data_build_index_cmd(
+    out_path: Path = typer.Option(
+        Path("out/interim/search-index.json"),
+        "--out",
+        help="Where to write the compact search-index JSON.",
+    ),
+    seed_path: Path = typer.Option(
+        _REPO_ROOT / "apps" / "web" / "public" / "seed" / "search-index.json",
+        "--seed",
+        help="Mirror copy under apps/web/public/seed for local dev fallback.",
+    ),
+) -> None:
+    """Build the Cmd+K search index from curated CSVs + announcements."""
+    written = search_build_index.normalize(out_path=out_path)
+    # Mirror to the web seed dir so `next dev` works without R2 reachability;
+    # production reads ``NEXT_PUBLIC_SEARCH_INDEX_URL`` instead.
+    seed_path.parent.mkdir(parents=True, exist_ok=True)
+    seed_path.write_bytes(written.read_bytes())
+    size_kb = written.stat().st_size / 1024
+    console.print(
+        f"[green]wrote {written} ({size_kb:.1f} KB) and mirrored to {seed_path}[/green]"
+    )
 
 
 @data_app.command("upload")
