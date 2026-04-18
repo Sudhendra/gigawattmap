@@ -17,6 +17,7 @@ from rich.console import Console
 
 from opendc import __version__, typegen
 from opendc.manifest import make_entry, write_entry
+from opendc.sources import announcements as announcements_source
 from opendc.sources import cloud_regions as cloud_regions_source
 from opendc.sources import curated as curated_source
 from opendc.sources import gem as gem_source
@@ -70,6 +71,7 @@ def ingest(
         "gem",
         "telegeography",
         "curated",
+        "announcements",
         "cloud-regions",
         "opposition",
         "all",
@@ -192,6 +194,31 @@ def ingest(
         console.print(
             f"[green]wrote {curated_path} ({curated_count} features, "
             f"{curated_duration:.2f}s)[/green]"
+        )
+    if source in {"announcements", "all"}:
+        console.print("[cyan]Loading curated announcements feed...[/cyan]")
+        try:
+            announcements_path, announcements_count, announcements_duration = announcements_source.run(
+                out_dir=out_dir
+            )
+        except announcements_source.AnnouncementError as exc:
+            console.print(f"[red]announcements: {exc}[/red]")
+            if source == "announcements":
+                raise typer.Exit(1) from exc
+            return
+        write_entry(
+            out_dir / "manifest.json",
+            make_entry(
+                source="announcements",
+                feature_count=announcements_count,
+                duration_s=announcements_duration,
+                url="opendc/data/announcements/*.yaml",
+                notes="hand-curated YAML; uploaded as v1/announcements.json",
+            ),
+        )
+        console.print(
+            f"[green]wrote {announcements_path} ({announcements_count} rows, "
+            f"{announcements_duration:.2f}s)[/green]"
         )
     if source in {"cloud-regions", "all"}:
         console.print("[cyan]Loading curated cloud provider regions...[/cyan]")
@@ -335,6 +362,13 @@ tiles_app = typer.Typer(
 )
 app.add_typer(tiles_app, name="tiles")
 
+data_app = typer.Typer(
+    name="data",
+    help="Upload static JSON data artifacts.",
+    no_args_is_help=True,
+)
+app.add_typer(data_app, name="data")
+
 
 @tiles_app.command("build")
 def tiles_build_cmd() -> None:
@@ -381,6 +415,37 @@ def tiles_upload_cmd(
     lines = tiles_upload.upload_all(paths, config=config, dry_run=dry_run)
     for line in lines:
         console.print(f"[green]{line}[/green]")
+
+
+@data_app.command("upload")
+def data_upload_cmd(
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Print what would be uploaded without calling R2."
+    ),
+    artifact: Path = typer.Option(
+        Path("out/interim/announcements.json"),
+        "--artifact",
+        help="Static JSON artifact to upload.",
+    ),
+) -> None:
+    """Upload a static JSON artifact to Cloudflare R2."""
+    if not artifact.exists():
+        console.print(
+            f"[yellow]data upload: missing {artifact}. Run `opendc ingest announcements` first.[/yellow]"
+        )
+        return
+    try:
+        config = tiles_upload.load_config()
+    except tiles_upload.R2ConfigError as exc:
+        console.print(f"[red]data upload: {exc}[/red]")
+        raise typer.Exit(1) from exc
+    line = tiles_upload.upload_one(
+        artifact,
+        config,
+        dry_run=dry_run,
+        content_type="application/json",
+    )
+    console.print(f"[green]{line}[/green]")
 
 
 @app.command()

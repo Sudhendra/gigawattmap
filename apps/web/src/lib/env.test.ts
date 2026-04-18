@@ -6,6 +6,7 @@ import { afterEach, beforeEach, describe, expect, test, vi } from 'vitest';
  */
 describe('lib/env', () => {
   const original = process.env.NEXT_PUBLIC_PMTILES_BASE;
+  const originalAnnouncements = process.env.NEXT_PUBLIC_ANNOUNCEMENTS_URL;
 
   beforeEach(() => {
     vi.resetModules();
@@ -14,6 +15,9 @@ describe('lib/env', () => {
   afterEach(() => {
     if (original === undefined) delete process.env.NEXT_PUBLIC_PMTILES_BASE;
     else process.env.NEXT_PUBLIC_PMTILES_BASE = original;
+
+    if (originalAnnouncements === undefined) delete process.env.NEXT_PUBLIC_ANNOUNCEMENTS_URL;
+    else process.env.NEXT_PUBLIC_ANNOUNCEMENTS_URL = originalAnnouncements;
   });
 
   test('PMTILES_BASE is null when env var is unset', async () => {
@@ -35,5 +39,18 @@ describe('lib/env', () => {
     expect(mod.pmtilesUrl('datacenters')).toBe(
       'pmtiles://https://pub-abc.r2.dev/v1/datacenters.pmtiles',
     );
+  });
+
+  test('ANNOUNCEMENTS_URL is null when env var is unset', async () => {
+    delete process.env.NEXT_PUBLIC_ANNOUNCEMENTS_URL;
+    const mod = await import('./env');
+    expect(mod.ANNOUNCEMENTS_URL).toBeNull();
+  });
+
+  test('ANNOUNCEMENTS_URL strips trailing slash', async () => {
+    process.env.NEXT_PUBLIC_ANNOUNCEMENTS_URL =
+      'https://pub-abc.r2.dev/v1/announcements.json/';
+    const mod = await import('./env');
+    expect(mod.ANNOUNCEMENTS_URL).toBe('https://pub-abc.r2.dev/v1/announcements.json');
   });
 });

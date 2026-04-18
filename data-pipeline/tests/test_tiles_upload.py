@@ -67,7 +67,7 @@ class TestLoadConfig:
             "R2_SECRET_ACCESS_KEY": "s",
         }
         cfg = tile_upload.load_config(env)
-        assert cfg.bucket == "gigawattmap"
+        assert cfg.bucket == "gigawattapp"
 
     def test_missing_required_raises(self) -> None:
         with pytest.raises(tile_upload.R2ConfigError, match="R2_ACCOUNT_ID"):
@@ -143,3 +143,25 @@ class TestUploadAll:
         assert len(msgs) == 3
         for m in msgs:
             assert m.startswith("DRY-RUN")
+
+
+class TestUploadStaticJson:
+    def test_json_upload_uses_json_content_type(
+        self, fake_env: dict[str, str], tmp_path: Path
+    ) -> None:
+        artifact = tmp_path / "announcements.json"
+        artifact.write_text("[]", encoding="utf-8")
+        cfg = tile_upload.load_config(fake_env)
+        client = _FakeS3Client()
+
+        msg = tile_upload.upload_one(
+            artifact,
+            cfg,
+            client=client,
+            content_type="application/json",
+        )
+
+        assert msg.startswith("uploaded")
+        assert len(client.calls) == 1
+        assert client.calls[0]["Key"] == "v1/announcements.json"
+        assert client.calls[0]["ExtraArgs"]["ContentType"] == "application/json"

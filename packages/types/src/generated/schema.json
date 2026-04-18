@@ -2,6 +2,7 @@
   "$defs": {
     "Announcement": {
       "additionalProperties": false,
+      "description": "A dated, material AI-infrastructure announcement.\n\nSourced from primary filings (SEC 8-Ks, FERC dockets, company press\nreleases) and first-tier secondary outlets (Reuters, Bloomberg, FT,\nWSJ, Data Center Dynamics, Data Center Frontier). Every entry MUST\ncite a working ``source_url`` so the feed is auditable.\n\nThe five editorial categories cover the dominant news-flow shapes\nin AI-infra: ``deal`` (M&A, PPAs, leases, capex commitments),\n``launch`` (new sites breaking ground or going live), ``milestone``\n(capacity / performance / financing milestones for known projects),\n``opposition`` (community / regulatory pushback), and ``policy``\n(CHIPS Act, FERC rulings, moratoriums, tariffs, export controls).\n\nEither ``operator_id`` or ``datacenter_id`` is set when the entry\npins to a specific actor / site so the feed card can fly the map\nthere. Policy entries that span the whole industry leave both null.",
       "properties": {
         "amount_usd": {
           "anyOf": [
@@ -12,18 +13,16 @@
               "type": "null"
             }
           ],
+          "default": null,
           "title": "Amount Usd"
         },
         "category": {
           "enum": [
-            "lease",
-            "ppa",
-            "capex",
-            "opening",
+            "deal",
+            "launch",
+            "milestone",
             "opposition",
-            "permit",
-            "m_and_a",
-            "other"
+            "policy"
           ],
           "title": "Category",
           "type": "string"
@@ -37,6 +36,7 @@
               "type": "null"
             }
           ],
+          "default": null,
           "title": "Datacenter Id"
         },
         "date": {
@@ -57,11 +57,24 @@
               "type": "null"
             }
           ],
+          "default": null,
           "title": "Operator Id"
         },
         "source_url": {
           "title": "Source Url",
           "type": "string"
+        },
+        "summary": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Summary"
         },
         "title": {
           "title": "Title",
@@ -72,9 +85,6 @@
         "id",
         "date",
         "title",
-        "operator_id",
-        "datacenter_id",
-        "amount_usd",
         "category",
         "source_url"
       ],

@@ -1,0 +1,112 @@
+[
+  {
+    "id": "2025-09-23-openai-five-stargate-sites",
+    "date": "2025-09-23",
+    "title": "OpenAI, Oracle, and SoftBank add five new Stargate sites",
+    "operator_id": "openai",
+    "datacenter_id": null,
+    "amount_usd": null,
+    "category": "launch",
+    "source_url": "https://openai.com/index/five-new-stargate-sites/",
+    "summary": "OpenAI, Oracle, and SoftBank said Stargate would add five new US sites across Texas, New Mexico, Ohio, and the Midwest.\nThe partners said the additions lifted Stargate to nearly 7 gigawatts of planned capacity and put the broader program ahead of schedule toward its 10 gigawatt target."
+  },
+  {
+    "id": "2025-07-02-texas-sb6-grid-rules",
+    "date": "2025-07-02",
+    "title": "Texas Senate Bill 6 sets new grid rules for large data center loads",
+    "operator_id": null,
+    "datacenter_id": null,
+    "amount_usd": null,
+    "category": "policy",
+    "source_url": "https://www.datacenterfrontier.com/energy/article/55298872/texas-senate-bill-6-a-bellwether-on-how-states-may-approach-data-center-energy-use",
+    "summary": "Data Center Frontier said Texas Senate Bill 6 created new requirements for large-load customers including data centers, covering grid upgrade cost sharing, backup generation disclosure, and remote disconnect capabilities during emergencies.\nThe article framed the law as a model other states could study as AI-driven power demand accelerates."
+  },
+  {
+    "id": "2025-05-21-crusoe-abilene-financing",
+    "date": "2025-05-21",
+    "title": "Crusoe secures $11.6 billion for Stargate's Abilene campus",
+    "operator_id": "crusoe",
+    "datacenter_id": "crusoe-abilene-tx",
+    "amount_usd": 11600000000.0,
+    "category": "milestone",
+    "source_url": "https://www.datacenterdynamics.com/en/news/crusoe-secures-116bn-in-debt-and-equity-for-openais-stargate-data-center-campus-in-abilene-texas/",
+    "summary": "Data Center Dynamics reported that Crusoe raised $11.6 billion in debt and equity to fund the next phase of its Abilene campus for OpenAI's Stargate effort.\nThe article said the second phase added six buildings and another gigawatt of capacity beyond the site's initial two-building phase."
+  },
+  {
+    "id": "2025-04-02-homer-city-energy-campus",
+    "date": "2025-04-02",
+    "title": "Homer City details a 4.4 GW gas-and-data-center redevelopment",
+    "operator_id": "homer-city",
+    "datacenter_id": "homer-city-pa",
+    "amount_usd": null,
+    "category": "launch",
+    "source_url": "https://homercityredevelopment.com/project-overview",
+    "summary": "Homer City Redevelopment said the former Homer City Generating Station would be turned into a more than 3,200-acre campus combining gas generation and hyperscale data center capacity.\nThe project overview said the site was designed to deliver up to 4.4 gigawatts for AI-driven data centers and local grid needs."
+  },
+  {
+    "id": "2025-03-18-crusoe-abilene-expansion",
+    "date": "2025-03-18",
+    "title": "Crusoe expands its Abilene AI campus to 1.2 GW",
+    "operator_id": "crusoe",
+    "datacenter_id": "crusoe-abilene-tx-2",
+    "amount_usd": null,
+    "category": "milestone",
+    "source_url": "https://www.crusoe.ai/resources/newsroom/crusoe-expands-ai-data-center-campus-in-abilene-to-1-2-gigawatts",
+    "summary": "Crusoe said construction had begun on a second phase at its Abilene campus, adding six buildings and bringing the site to eight buildings and 1.2 gigawatts of planned capacity.\nThe company said the expanded campus would total roughly 4 million square feet and target completion of the new phase in mid-2026."
+  },
+  {
+    "id": "2025-01-21-stargate-project",
+    "date": "2025-01-21",
+    "title": "OpenAI and partners unveil the $500 billion Stargate Project",
+    "operator_id": "openai",
+    "datacenter_id": null,
+    "amount_usd": 500000000000.0,
+    "category": "deal",
+    "source_url": "https://openai.com/index/announcing-the-stargate-project/",
+    "summary": "OpenAI, SoftBank, Oracle, and MGX announced Stargate as a new company meant to invest up to $500 billion in AI infrastructure over four years, with $100 billion slated for immediate deployment.\nThe partners said buildout was already underway in Texas while additional US sites were under evaluation."
+  },
+  {
+    "id": "2025-01-21-openai-community-plan",
+    "date": "2025-01-21",
+    "title": "OpenAI says Stargate projects will \"pay their own way\" on power",
+    "operator_id": "openai",
+    "datacenter_id": null,
+    "amount_usd": null,
+    "category": "policy",
+    "source_url": "https://www.datacenterdynamics.com/en/news/openai-pledges-to-pay-its-own-way-to-power-stargate-data-centers/",
+    "summary": "OpenAI said its Stargate Community plan would fund dedicated energy, storage, and transmission measures intended to avoid shifting grid costs onto existing ratepayers.\nThe company pointed to project-specific arrangements in Wisconsin, Michigan, and Texas as examples of how it planned to handle new load growth."
+  },
+  {
+    "id": "2025-01-13-reno-sierra-club-appeal",
+    "date": "2025-01-13",
+    "title": "Sierra Club appeals approval of Reno's Webb Data Center",
+    "operator_id": null,
+    "datacenter_id": null,
+    "amount_usd": null,
+    "category": "opposition",
+    "source_url": "https://www.datacenterdynamics.com/en/news/sierra-club-appeals-against-82000-sq-ft-data-center-in-reno-nevada/",
+    "summary": "Data Center Dynamics reported that Sierra Club's Toiyabe chapter appealed Reno Planning Commission approval of the proposed 82,000-square-foot Webb Data Center.\nOpponents argued Reno should pause approvals until the city adopts data-center-specific rules and reviews energy and water impacts more closely."
+  },
+  {
+    "id": "2025-01-09-stargate-milam-sb-energy",
+    "date": "2025-01-09",
+    "title": "OpenAI and SoftBank back SB Energy for Stargate's Milam County site",
+    "operator_id": "openai",
+    "datacenter_id": "stargate-milam-tx",
+    "amount_usd": 1000000000.0,
+    "category": "deal",
+    "source_url": "https://openai.com/index/stargate-sb-energy-partnership/",
+    "summary": "OpenAI and SoftBank Group said they would each invest $500 million into SB Energy and named the company to build and operate Stargate's previously announced 1.2 GW site in Milam County, Texas.\nOpenAI also said it had signed a lease for the initial Milam County data center buildout."
+  },
+  {
+    "id": "2022-06-22-groton-moratorium",
+    "date": "2022-06-22",
+    "title": "Groton imposes a one-year moratorium on large data centers",
+    "operator_id": null,
+    "datacenter_id": null,
+    "amount_usd": null,
+    "category": "opposition",
+    "source_url": "https://www.datacenterdynamics.com/en/news/groton-connecticut-announces-year-long-moratorium-on-large-data-centers/",
+    "summary": "Groton, Connecticut officials announced a one-year moratorium on data center applications for facilities larger than 5,000 square feet while the town drafted dedicated regulations.\nThe move followed debate over how data centers should be defined, zoned, and reviewed locally."
+  }
+]

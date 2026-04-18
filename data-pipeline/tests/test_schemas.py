@@ -103,8 +103,9 @@ def test_announcement_round_trip() -> None:
         "operator_id": "meta",
         "datacenter_id": "meta-richland-wa",
         "amount_usd": 1_500_000_000.0,
-        "category": "capex",
+        "category": "deal",
         "source_url": "https://example.com/press",
+        "summary": "Meta disclosed a second Richland phase with new capital commitments.",
     }
     ann = Announcement.model_validate(raw)
     assert ann.model_dump() == raw

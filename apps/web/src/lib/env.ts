@@ -17,6 +17,15 @@ export const PMTILES_BASE: string | null =
   process.env.NEXT_PUBLIC_PMTILES_BASE?.replace(/\/+$/, '') || null;
 
 /**
+ * Full public URL of the announcements JSON artifact on R2.
+ *
+ * When unset the UI falls back to the bundled seed JSON, which keeps local
+ * development file-based before public artifact hosting is configured.
+ */
+export const ANNOUNCEMENTS_URL: string | null =
+  process.env.NEXT_PUBLIC_ANNOUNCEMENTS_URL?.replace(/\/+$/, '') || null;
+
+/**
  * Build a full PMTiles URL for a given layer name (e.g. `'datacenters'`),
  * or `null` if no base is configured. Callers should fall back to seed data
  * when this returns `null`.

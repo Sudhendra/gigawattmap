@@ -7,12 +7,13 @@
  */
 export type GigawattMapSchemas = Announcement | Cable | CableLanding | CloudRegion | Datacenter | Operator | PowerPlant;
 export type AmountUsd = number | null;
-export type Category = "lease" | "ppa" | "capex" | "opening" | "opposition" | "permit" | "m_and_a" | "other";
+export type Category = "deal" | "launch" | "milestone" | "opposition" | "policy";
 export type DatacenterId = string | null;
 export type Date = string;
 export type Id = string;
 export type OperatorId = string | null;
 export type SourceUrl = string;
+export type Summary = string | null;
 export type Title = string;
 export type CapacityTbps = number | null;
 export type Id1 = string;
@@ -60,14 +61,34 @@ export type Name4 = string;
 export type Operator1 = string | null;
 export type Source = string;
 
+/**
+ * A dated, material AI-infrastructure announcement.
+ *
+ * Sourced from primary filings (SEC 8-Ks, FERC dockets, company press
+ * releases) and first-tier secondary outlets (Reuters, Bloomberg, FT,
+ * WSJ, Data Center Dynamics, Data Center Frontier). Every entry MUST
+ * cite a working ``source_url`` so the feed is auditable.
+ *
+ * The five editorial categories cover the dominant news-flow shapes
+ * in AI-infra: ``deal`` (M&A, PPAs, leases, capex commitments),
+ * ``launch`` (new sites breaking ground or going live), ``milestone``
+ * (capacity / performance / financing milestones for known projects),
+ * ``opposition`` (community / regulatory pushback), and ``policy``
+ * (CHIPS Act, FERC rulings, moratoriums, tariffs, export controls).
+ *
+ * Either ``operator_id`` or ``datacenter_id`` is set when the entry
+ * pins to a specific actor / site so the feed card can fly the map
+ * there. Policy entries that span the whole industry leave both null.
+ */
 export interface Announcement {
-  amount_usd: AmountUsd;
+  amount_usd?: AmountUsd;
   category: Category;
-  datacenter_id: DatacenterId;
+  datacenter_id?: DatacenterId;
   date: Date;
   id: Id;
-  operator_id: OperatorId;
+  operator_id?: OperatorId;
   source_url: SourceUrl;
+  summary?: Summary;
   title: Title;
 }
 export interface Cable {

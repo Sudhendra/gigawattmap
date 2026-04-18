@@ -18,6 +18,7 @@ Design notes:
 
 from __future__ import annotations
 
+from datetime import date as date_value
 from typing import Annotated, Any, Literal
 
 from pydantic import BaseModel, ConfigDict, Field, field_validator
@@ -59,9 +60,7 @@ Confidence = Literal["verified", "osm_only", "press_release", "estimated"]
 FuelType = Literal[
     "coal", "gas", "nuclear", "solar", "wind", "hydro", "storage", "other"
 ]
-AnnouncementCategory = Literal[
-    "lease", "ppa", "capex", "opening", "opposition", "permit", "m_and_a", "other"
-]
+AnnouncementCategory = Literal["deal", "launch", "milestone", "opposition", "policy"]
 CloudProvider = Literal["aws", "azure", "gcp", "oracle", "alibaba"]
 
 # Opposition fights — see :class:`OppositionFight` below. The upstream
@@ -174,14 +173,48 @@ class Cable(_Base):
 
 
 class Announcement(_Base):
+    """A dated, material AI-infrastructure announcement.
+
+    Sourced from primary filings (SEC 8-Ks, FERC dockets, company press
+    releases) and first-tier secondary outlets (Reuters, Bloomberg, FT,
+    WSJ, Data Center Dynamics, Data Center Frontier). Every entry MUST
+    cite a working ``source_url`` so the feed is auditable.
+
+    The five editorial categories cover the dominant news-flow shapes
+    in AI-infra: ``deal`` (M&A, PPAs, leases, capex commitments),
+    ``launch`` (new sites breaking ground or going live), ``milestone``
+    (capacity / performance / financing milestones for known projects),
+    ``opposition`` (community / regulatory pushback), and ``policy``
+    (CHIPS Act, FERC rulings, moratoriums, tariffs, export controls).
+
+    Either ``operator_id`` or ``datacenter_id`` is set when the entry
+    pins to a specific actor / site so the feed card can fly the map
+    there. Policy entries that span the whole industry leave both null.
+    """
+
     id: str
     date: Annotated[str, Field(pattern=r"^\d{4}-\d{2}-\d{2}$")]
     title: str
-    operator_id: str | None
-    datacenter_id: str | None
-    amount_usd: float | None
+    operator_id: str | None = None
+    datacenter_id: str | None = None
+    amount_usd: float | None = None
     category: AnnouncementCategory
     source_url: str
+    summary: str | None = None
+
+    @field_validator("date", mode="before")
+    @classmethod
+    def _coerce_date(cls, v: object) -> object:
+        if isinstance(v, date_value):
+            return v.isoformat()
+        return v
+
+    @field_validator("source_url")
+    @classmethod
+    def _require_url(cls, v: str) -> str:
+        if not v.startswith(("http://", "https://")):
+            raise ValueError("source_url must be an http(s) URL")
+        return v
 
 
 class CloudRegion(_Base):

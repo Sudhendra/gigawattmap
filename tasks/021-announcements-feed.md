@@ -1,6 +1,6 @@
 # 021 — Announcements feed
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 006
 **Estimate:** 4 hours
 
@@ -10,7 +10,7 @@ Bottom-of-viewport horizontal strip showing recent material AI-infra announcemen
 
 ## Acceptance criteria
 
-- [ ] `data-pipeline/opendc/data/announcements/` directory holds one YAML file per announcement:
+- [x] `data-pipeline/opendc/data/announcements/` directory holds one YAML file per announcement:
   ```yaml
   id: 2026-04-14-talen-aws-expansion
   date: 2026-04-14
@@ -23,16 +23,16 @@ Bottom-of-viewport horizontal strip showing recent material AI-infra announcemen
   summary: |
     Two-sentence neutral summary of the announcement.
   ```
-- [ ] ≥10 hand-curated seed entries spanning all five categories (deal, launch, milestone, opposition, policy) with verified `source_url`s. The remaining 40 entries to reach the spec's 50-entry editorial bar are tracked separately as task 021b.
-- [ ] `opendc/sources/announcements.py` reads the YAML dir, validates via pydantic, emits `out/interim/announcements.json` (array, sorted desc by date)
-- [ ] Uploaded to `r2://gigawattmap/v1/announcements.json` as a single static JSON
-- [ ] `components/announcements-feed/announcements-feed.tsx`:
+- [x] ≥10 hand-curated seed entries spanning all five categories (deal, launch, milestone, opposition, policy) with verified `source_url`s. The remaining 40 entries to reach the spec's 50-entry editorial bar are tracked separately as task 021b.
+- [x] `opendc/sources/announcements.py` reads the YAML dir, validates via pydantic, emits `out/interim/announcements.json` (array, sorted desc by date)
+- [x] Uploaded as a single static JSON at `r2://gigawattapp/v1/announcements.json` in the current Cloudflare account
+- [x] `components/announcements-feed/announcements-feed.tsx`:
   - Fetches announcements.json via TanStack Query (staleTime: 1 hour)
   - Renders as a horizontal scrollable strip at bottom of viewport (above the HUD, collapsible)
   - Each card: date chip, short title, amount (if present), category badge, location hint
   - Clicking a card: if `datacenter_id` present, flies map to that DC and opens its Intelligence Card; else just shows the card detail inline
   - Keyboard-navigable (left/right arrows)
-- [ ] `/news` route renders the full list with filters (category, date range, operator)
+- [x] `/news` route renders the full list with filters (category, date range, operator)
 
 ## Files to touch
 
@@ -48,3 +48,4 @@ Bottom-of-viewport horizontal strip showing recent material AI-infra announcemen
 - Dates are UTC (`YYYY-MM-DD`). Use `Intl.DateTimeFormat` for display — respect user locale.
 - **Card scope split:** the original spec asked for ≥50 entries. Per AGENTS.md ("one card = at most one day of work"), the editorial backfill from 10 → 50 lives in task **021b**. This card ships the engineering plus a 10-entry seed proving the loop end-to-end.
 - The R2 upload step generalizes the existing `tiles upload` pattern (today only handles `*.pmtiles`). Adds a `data upload` sibling command for static JSON artifacts.
+- Unblocked on 2026-04-18: the Cloudflare R2 token was valid, but the local bucket name was wrong. The live bucket is `gigawattapp`, and `opendc data upload` now publishes `v1/announcements.json` successfully.

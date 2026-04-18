@@ -32,7 +32,8 @@ logger = logging.getLogger(__name__)
 
 CACHE_CONTROL = "public, max-age=300, stale-while-revalidate=3600"
 DEFAULT_PREFIX = "v1"
-DEFAULT_BUCKET = "gigawattmap"
+DEFAULT_BUCKET = "gigawattapp"
+PMTILES_CONTENT_TYPE = "application/vnd.pmtiles"
 
 
 class R2ConfigError(RuntimeError):
@@ -110,6 +111,7 @@ def upload_one(
     prefix: str = DEFAULT_PREFIX,
     client: Any | None = None,
     dry_run: bool = False,
+    content_type: str = PMTILES_CONTENT_TYPE,
 ) -> str:
     """Upload one file; return the (key, url) pair as a single human string."""
     key = object_key(local_path, prefix=prefix)
@@ -123,7 +125,7 @@ def upload_one(
         Bucket=config.bucket,
         Key=key,
         ExtraArgs={
-            "ContentType": "application/vnd.pmtiles",
+            "ContentType": content_type,
             "CacheControl": CACHE_CONTROL,
         },
     )
@@ -144,4 +146,3 @@ def upload_all(
         upload_one(p, config, prefix=prefix, client=client, dry_run=dry_run)
         for p in paths
     ]
-
