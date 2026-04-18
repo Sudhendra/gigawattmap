@@ -20,6 +20,15 @@ import {
   type OppositionFightCollection,
   type OppositionFightFeature,
 } from './layers/opposition-layer';
+import {
+  createCablesLayers,
+  type CableCollection,
+  type CableFeature,
+} from './layers/cables-layer';
+import {
+  useAnimationClock,
+  usePrefersReducedMotion,
+} from '@/lib/hooks/use-animation-clock';
 
 // Register the pmtiles:// protocol once per module load. Idempotent across HMR.
 let protocolRegistered = false;
@@ -44,6 +53,8 @@ export type MapProps = {
   cloudRegions?: CloudRegionCollection | null;
   /** Opposition-fight seed collection. Optional; layer is hidden when absent. */
   oppositionData?: OppositionFightCollection | null;
+  /** Submarine-cable seed collection. Optional; layer is hidden when absent. */
+  cablesData?: CableCollection | null;
   /** Currently selected feature id, or null. Drives flyTo + layer highlight. */
   selectedId: string | null;
   /** Click handler for a campus dot. Pass `null` to clear. */
@@ -52,6 +63,8 @@ export type MapProps = {
   onSelectCloudRegion?: (feature: CloudRegionFeature | null) => void;
   /** Click handler for an opposition fight. Receives the GeoJSON feature. */
   onSelectOpposition?: (feature: OppositionFightFeature | null) => void;
+  /** Click handler for a submarine cable. Receives the GeoJSON feature. */
+  onSelectCable?: (feature: CableFeature | null) => void;
 };
 
 /**
@@ -63,10 +76,12 @@ export function Map({
   data,
   cloudRegions = null,
   oppositionData = null,
+  cablesData = null,
   selectedId,
   onSelect,
   onSelectCloudRegion,
   onSelectOpposition,
+  onSelectCable,
 }: MapProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
@@ -76,6 +91,14 @@ export function Map({
   const datacentersVisible = useMapStore((s) => s.layers.datacenters);
   const cloudRegionsVisible = useMapStore((s) => s.layers.cloud_regions);
   const oppositionVisible = useMapStore((s) => s.layers.opposition);
+  const cablesVisible = useMapStore((s) => s.layers.cables);
+
+  // Animation clock for the cables TripsLayer. Disabled when the user
+  // prefers reduced motion or the cables layer itself is off — no point
+  // burning a rAF loop for a hidden layer.
+  const reducedMotion = usePrefersReducedMotion();
+  const animationEnabled = cablesVisible && !!cablesData && !reducedMotion;
+  const animationClockMs = useAnimationClock(animationEnabled);
 
   // Stable lookup for flyTo. Recomputed only when data identity changes.
   const featureById = useMemo(() => {
@@ -155,6 +178,18 @@ export function Map({
         }),
       );
     }
+    // Cables render after cloud regions but before datacenters so the
+    // animated trails pass behind campus dots — the dots are the
+    // primary subject; cables are connective tissue.
+    if (cablesData) {
+      layers.push(
+        ...createCablesLayers(cablesData, {
+          visible: cablesVisible,
+          currentTimeMs: animationClockMs,
+          onClick: (feature) => onSelectCable?.(feature),
+        }),
+      );
+    }
     if (data) {
       layers.push(
         createDatacentersLayer(data, {
@@ -179,13 +214,17 @@ export function Map({
     data,
     cloudRegions,
     oppositionData,
+    cablesData,
     selectedId,
     onSelect,
     onSelectCloudRegion,
     onSelectOpposition,
+    onSelectCable,
     datacentersVisible,
     cloudRegionsVisible,
     oppositionVisible,
+    cablesVisible,
+    animationClockMs,
   ]);
 
   // --- Fly-to when selection changes externally (URL load, deep link). ------

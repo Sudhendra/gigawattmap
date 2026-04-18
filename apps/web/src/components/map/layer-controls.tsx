@@ -30,7 +30,7 @@ const LAYERS: readonly LayerControl[] = [
       'linear-gradient(135deg, var(--cloud-aws), var(--cloud-azure), var(--cloud-gcp))',
     placeholder: false,
   },
-  { id: 'cables', label: 'Cables', swatch: 'var(--accent-cable)', placeholder: true },
+  { id: 'cables', label: 'Cables', swatch: 'var(--accent-cable)', placeholder: false },
   { id: 'powerplants', label: 'Power plants', swatch: 'var(--fuel-gas)', placeholder: true },
   { id: 'opposition', label: 'Opposition', swatch: 'var(--status-blocked)', placeholder: false },
 ];

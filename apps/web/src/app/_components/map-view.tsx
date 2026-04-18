@@ -7,6 +7,7 @@ import { LayerControls } from '@/components/map/layer-controls';
 import { ViewportHud } from '@/components/map/viewport-hud';
 import { CloudRegionCard } from '@/components/map/cloud-region-card';
 import { OppositionCard } from '@/components/intelligence-card/opposition-card';
+import { CableCard } from '@/components/intelligence-card/cable-card';
 import { IntelligenceCard } from '@/components/intelligence-card/intelligence-card';
 import { useSelectedDcUrlSync } from '@/lib/hooks/use-selected-dc-url-sync';
 import { useMapStore } from '@/lib/store/map-store';
@@ -22,11 +23,16 @@ import type {
   OppositionFightCollection,
   OppositionFightFeature,
 } from '@/components/map/layers/opposition-layer';
+import type {
+  CableCollection,
+  CableFeature,
+} from '@/components/map/layers/cables-layer';
 
 /** Path is relative to /public, served at /seed/*.geojson. */
 const SEED_URL = '/seed/ai-campuses.geojson';
 const CLOUD_REGIONS_URL = '/seed/cloud-regions.geojson';
 const OPPOSITION_URL = '/seed/opposition.geojson';
+const CABLES_URL = '/seed/cables.geojson';
 
 /**
  * Orchestrator that owns the AI-campus dataset and wires map clicks ↔ URL ↔
@@ -46,8 +52,10 @@ function MapViewInner(): React.JSX.Element {
   const [data, setData] = useState<AiCampusCollection | null>(null);
   const [cloudRegions, setCloudRegions] = useState<CloudRegionCollection | null>(null);
   const [oppositionData, setOppositionData] = useState<OppositionFightCollection | null>(null);
+  const [cablesData, setCablesData] = useState<CableCollection | null>(null);
   const [selectedCloudRegion, setSelectedCloudRegion] = useState<CloudRegionFeature | null>(null);
   const [selectedOpposition, setSelectedOpposition] = useState<OppositionFightFeature | null>(null);
+  const [selectedCable, setSelectedCable] = useState<CableFeature | null>(null);
   const setSelectedDcId = useSelectedDcUrlSync();
   // The store mirrors the URL — read it here so the drawer + map both
   // observe the same single source of truth.
@@ -111,6 +119,26 @@ function MapViewInner(): React.JSX.Element {
     };
   }, []);
 
+  // Submarine cables — same non-fatal pattern. The 2 MB payload is
+  // accepted in dev mode; production swaps in PMTiles per task 013.
+  useEffect(() => {
+    let cancelled = false;
+    void (async () => {
+      try {
+        const res = await fetch(CABLES_URL);
+        if (!res.ok) throw new Error(`Cables fetch failed: ${res.status}`);
+        const next = (await res.json()) as CableCollection;
+        if (!cancelled) setCablesData(next);
+      } catch (err) {
+        // eslint-disable-next-line no-console
+        console.error('Failed to load cables seed', err);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, []);
+
   const selectedFeature = useMemo<AiCampusFeature | null>(() => {
     if (!data || !selectedId) return null;
     return data.features.find((f) => f.properties.id === selectedId) ?? null;
@@ -119,11 +147,12 @@ function MapViewInner(): React.JSX.Element {
   const handleSelect = useCallback(
     (id: string | null) => {
       setSelectedDcId(id);
-      // Selecting a campus closes any open cloud-region or opposition card
-      // so we never show two stacked panels on the right side of the map.
+      // Selecting a campus closes any other right-side card so we never
+      // show two stacked panels.
       if (id) {
         setSelectedCloudRegion(null);
         setSelectedOpposition(null);
+        setSelectedCable(null);
       }
     },
     [setSelectedDcId],
@@ -132,10 +161,11 @@ function MapViewInner(): React.JSX.Element {
   const handleSelectCloudRegion = useCallback(
     (feature: CloudRegionFeature | null) => {
       setSelectedCloudRegion(feature);
-      // Mutually exclusive with the campus + opposition cards.
+      // Mutually exclusive with the campus + opposition + cable cards.
       if (feature) {
         setSelectedDcId(null);
         setSelectedOpposition(null);
+        setSelectedCable(null);
       }
     },
     [setSelectedDcId],
@@ -147,11 +177,24 @@ function MapViewInner(): React.JSX.Element {
       if (feature) {
         setSelectedDcId(null);
         setSelectedCloudRegion(null);
+        setSelectedCable(null);
       }
     },
     [setSelectedDcId],
   );
   const handleCloseOpposition = useCallback(() => setSelectedOpposition(null), []);
+  const handleSelectCable = useCallback(
+    (feature: CableFeature | null) => {
+      setSelectedCable(feature);
+      if (feature) {
+        setSelectedDcId(null);
+        setSelectedCloudRegion(null);
+        setSelectedOpposition(null);
+      }
+    },
+    [setSelectedDcId],
+  );
+  const handleCloseCable = useCallback(() => setSelectedCable(null), []);
 
   return (
     <>
@@ -160,15 +203,18 @@ function MapViewInner(): React.JSX.Element {
           data={data}
           cloudRegions={cloudRegions}
           oppositionData={oppositionData}
+          cablesData={cablesData}
           selectedId={selectedId}
           onSelect={handleSelect}
           onSelectCloudRegion={handleSelectCloudRegion}
           onSelectOpposition={handleSelectOpposition}
+          onSelectCable={handleSelectCable}
         />
         <LayerControls />
         <ViewportHud data={data} />
         <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
         <OppositionCard feature={selectedOpposition} onClose={handleCloseOpposition} />
+        <CableCard feature={selectedCable} onClose={handleCloseCable} />
       </div>
       <IntelligenceCard feature={selectedFeature} onClose={handleClose} />
       <Toaster
