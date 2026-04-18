@@ -1,6 +1,6 @@
 # 021 — Announcements feed
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 006
 **Estimate:** 4 hours
 
