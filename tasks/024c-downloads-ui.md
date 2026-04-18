@@ -1,6 +1,6 @@
 # 024c — Downloads page + API docs page
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 024a, 024b
 **Estimate:** 1.5 hours
 
@@ -12,23 +12,23 @@ Sub-card of 024. The user-facing surface for the public dataset and API. Reads t
 
 **Downloads page (`/data`):**
 
-- [ ] Shows a table of downloadable artifacts grouped by source, sourced from R2 manifest at build time:
+- [x] Shows a table of downloadable artifacts grouped by source, sourced from R2 manifest at build time:
   - Full merged GeoJSON (`datacenters.geojson`)
   - Full merged CSV (`datacenters.csv`) — flat subset of fields
   - Per-source raw: `osm.geojson`, `gem-powerplants.geojson`, `telegeography-cables.geojson` (flagged non-commercial), `curated-ai-campuses.csv`, `opposition.geojson`, `cloud-regions.geojson`
   - PMTiles for each layer
-- [ ] Each row shows: filename, size, feature count, last updated, license badge, copy-curl button, download link
-- [ ] All download links resolve to R2 `v1/downloads/<filename>` and serve with `Content-Disposition: attachment` (configured in R2 metadata at upload time, 024a)
-- [ ] License warnings are loud: cables row shows a non-commercial warning in bold; ODbL rows show share-alike notice
-- [ ] Example `curl` command shown per artifact
-- [ ] Link to the GitHub repo
+- [x] Each row shows: filename, size, feature count, last updated, license badge, copy-curl button, download link
+- [x] All download links resolve to R2 `v1/downloads/<filename>` and serve with `Content-Disposition: attachment` (configured in R2 metadata at upload time, 024a)
+- [x] License warnings are loud: cables row shows a non-commercial warning in bold; ODbL rows show share-alike notice
+- [x] Example `curl` command shown per artifact
+- [x] Link to the GitHub repo
 
 **API docs (`/data/api`):**
 
-- [ ] Documents every endpoint shipped in 024b with request/response examples
-- [ ] States the rate limit prominently (60 req/min/IP)
-- [ ] Links to `/api/v1/openapi.json`
-- [ ] Renders an example response for each endpoint as a syntax-highlighted JSON block
+- [x] Documents every endpoint shipped in 024b with request/response examples
+- [x] States the rate limit prominently (60 req/min/IP)
+- [x] Links to `/api/v1/openapi.json`
+- [x] Renders an example response for each endpoint as a syntax-highlighted JSON block
 
 ## Files to touch
 

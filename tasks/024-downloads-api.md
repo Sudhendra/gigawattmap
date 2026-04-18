@@ -1,6 +1,6 @@
 # 024 — Downloads page + public API (umbrella)
 
-**Status:** split
+**Status:** done (split into 024a R2 upload, 024b public API, 024c downloads + API docs UI)
 **Depends on:** 013, 023
 **Estimate:** 5 hours total
 **Split into:** 024a, 024b, 024c

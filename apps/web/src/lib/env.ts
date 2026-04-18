@@ -36,6 +36,19 @@ export const SEARCH_INDEX_URL: string | null =
   process.env.NEXT_PUBLIC_SEARCH_INDEX_URL?.replace(/\/+$/, '') || null;
 
 /**
+ * Full public URL of the publish manifest on R2.
+ *
+ * Written by `opendc publish` (data-pipeline) and read at build time by
+ * the `/data` and `/data/api` pages. The manifest enumerates every
+ * downloadable artifact with size, sha256, license, and the public URL
+ * to fetch it. When unset, those pages render an empty-state notice
+ * instead of failing the build, which keeps local dev unblocked before
+ * R2 is provisioned.
+ */
+export const MANIFEST_URL: string | null =
+  process.env.NEXT_PUBLIC_MANIFEST_URL?.replace(/\/+$/, '') || null;
+
+/**
  * Build a full PMTiles URL for a given layer name (e.g. `'datacenters'`),
  * or `null` if no base is configured. Callers should fall back to seed data
  * when this returns `null`.
