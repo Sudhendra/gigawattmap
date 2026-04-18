@@ -1,6 +1,6 @@
 # 027 — Upload search-index.json to R2
 
-**Status:** todo
+**Status:** done
 **Depends on:** 020 (Cmd+K palette), 024b (R2 wiring)
 **Estimate:** 20m
 
@@ -17,12 +17,12 @@ env wiring.
 
 ## Acceptance criteria
 
-- [ ] `~/.local/bin/uv run python -m opendc.cli data build-index` regenerates the index
-- [ ] Upload via `opendc data upload --artifact out/interim/search-index.json`
-- [ ] `curl -sI https://pub-f870d3776f47481494c1c9936733d6c1.r2.dev/v1/search-index.json`
+- [x] `~/.local/bin/uv run python -m opendc.cli data build-index` regenerates the index
+- [x] Upload via `opendc data upload --artifact out/interim/search-index.json`
+- [x] `curl -sI https://pub-f870d3776f47481494c1c9936733d6c1.r2.dev/v1/search-index.json`
       returns HTTP 200
-- [ ] `apps/web/.env.local` `NEXT_PUBLIC_SEARCH_INDEX_URL` set to live URL
-- [ ] `pnpm --filter web build` clean
+- [x] `apps/web/.env.local` `NEXT_PUBLIC_SEARCH_INDEX_URL` set to live URL
+- [x] `pnpm --filter web build` clean
 
 ## Files to touch
 
