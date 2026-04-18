@@ -11,6 +11,10 @@ import {
 export type Env = {
   FINNHUB_TOKEN: string;
   TICKERS_CACHE: KVNamespace;
+  /** Public download artifacts bucket (populated by `opendc publish`). */
+  ARTIFACTS: R2Bucket;
+  /** Dev-only: when set, the API reads artifacts from disk under this path. */
+  DEV_ARTIFACT_DIR?: string;
 };
 
 /** Cache TTL. KV stores at edge for 10 minutes; clients refresh every 5. */

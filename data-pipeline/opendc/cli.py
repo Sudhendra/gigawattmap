@@ -481,6 +481,50 @@ def upload() -> None:
 
 
 @app.command()
+def publish(
+    out_dir: Path = typer.Option(
+        Path("out"),
+        "--out-dir",
+        help="Pipeline output directory (source of artifacts to publish).",
+    ),
+    manifest_path: Path = typer.Option(
+        Path("out/manifest.json"),
+        "--manifest",
+        help="Manifest file to update with artifact metadata.",
+    ),
+    dry_run: bool = typer.Option(
+        False, "--dry-run", help="Print intended uploads without touching R2."
+    ),
+    skip_merge: bool = typer.Option(
+        False,
+        "--skip-merge",
+        help="Skip the merge+export step; only upload existing artifacts.",
+    ),
+) -> None:
+    """Publish public artifacts to R2 (merge → export → upload → manifest).
+
+    The single command users actually run to release a fresh dataset.
+    Without ``--skip-merge``, this rebuilds ``datacenters.geojson`` and
+    ``datacenters.csv`` from the latest interim merge before uploading.
+    """
+    from opendc import publish as publish_mod
+
+    messages = publish_mod.publish_all(
+        out_dir=out_dir,
+        manifest_path=manifest_path,
+        dry_run=dry_run,
+        skip_merge=skip_merge,
+    )
+    for msg in messages:
+        if msg.startswith("SKIP"):
+            console.print(f"[yellow]{msg}[/yellow]")
+        elif msg.startswith("DRY-RUN"):
+            console.print(f"[cyan]{msg}[/cyan]")
+        else:
+            console.print(f"[green]{msg}[/green]")
+
+
+@app.command()
 def version() -> None:
     """Print the pipeline version."""
     console.print(__version__)

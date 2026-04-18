@@ -29,6 +29,7 @@ function makeEnv(provider: TickerProvider): Env {
   return {
     FINNHUB_TOKEN: 'unused-in-tests',
     TICKERS_CACHE: createKv(),
+    ARTIFACTS: {} as unknown as R2Bucket,
   };
 }
 

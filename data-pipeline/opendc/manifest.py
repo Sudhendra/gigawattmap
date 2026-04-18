@@ -19,6 +19,18 @@ from datetime import UTC, datetime
 from pathlib import Path
 from typing import Any
 
+from opendc.schemas import ArtifactEntry
+
+# Re-exported so callers can ``from opendc.manifest import ArtifactEntry``
+# alongside ``SourceEntry`` without learning where each one is defined.
+__all__ = [
+    "ArtifactEntry",
+    "SourceEntry",
+    "make_entry",
+    "write_artifact",
+    "write_entry",
+]
+
 # Process-local guard. The CLI is single-threaded today, but a future
 # Typer command that fans out to threads/asyncio shouldn't corrupt the file.
 _LOCK = threading.Lock()
@@ -77,3 +89,23 @@ def make_entry(
         url=url,
         notes=notes,
     )
+
+
+def write_artifact(manifest_path: Path, entry: ArtifactEntry) -> None:
+    """Insert/replace ``entry`` in the manifest's ``artifacts`` map.
+
+    Coexists with :func:`write_entry` (which writes ``sources``). The two
+    have different lifecycles: ``sources`` records ingestion freshness,
+    ``artifacts`` records what's currently published on R2. Same lock,
+    same file, same atomicity guarantees.
+    """
+    with _LOCK:
+        if manifest_path.exists():
+            data: dict[str, Any] = json.loads(manifest_path.read_text())
+        else:
+            data = {}
+        artifacts = data.setdefault("artifacts", {})
+        artifacts[entry.filename] = entry.model_dump()
+        data["updated_at"] = _now_iso()
+        manifest_path.parent.mkdir(parents=True, exist_ok=True)
+        manifest_path.write_text(json.dumps(data, indent=2, sort_keys=True))

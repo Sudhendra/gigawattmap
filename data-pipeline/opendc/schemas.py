@@ -318,3 +318,50 @@ class OppositionFight(_Base):
     @classmethod
     def _uppercase_state(cls, v: str) -> str:
         return v.upper()
+
+
+# --- Publication artifacts -------------------------------------------------
+
+
+class ArtifactEntry(_Base):
+    """One published file in the public download bundle.
+
+    Captures the integrity (``size_bytes``, ``sha256``), provenance
+    (``license``, ``license_url``, ``attribution``), and reuse posture
+    (``share_alike``, ``commercial_use``) of every artifact we put on
+    R2. The /about and /downloads pages render directly off this record,
+    so a missing or wrong license value is a licensing bug, not a UI bug.
+    """
+
+    filename: str
+    size_bytes: Annotated[int, Field(ge=0)]
+    sha256: Annotated[str, Field(pattern=r"^[a-f0-9]{64}$")]
+    content_type: str
+    feature_count: Annotated[int, Field(ge=0)]
+    license: str
+    license_url: str
+    attribution: str
+    share_alike: bool
+    commercial_use: bool
+    r2_key: str
+    r2_url: str
+    uploaded_at: str
+    source_group: str
+
+    @field_validator("license_url", "r2_url")
+    @classmethod
+    def _require_url(cls, v: str) -> str:
+        if not v.startswith(("http://", "https://")):
+            raise ValueError("must be an http(s) URL")
+        return v
+
+
+class ArtifactManifest(_Base):
+    """Top-level wrapper holding every published artifact, keyed by filename.
+
+    Lives alongside the per-source ingestion manifest in ``out/manifest.json``
+    under the ``artifacts`` key. Separation is intentional: ingestion and
+    publication have different lifecycles (we re-publish without re-fetching).
+    """
+
+    artifacts: dict[str, ArtifactEntry]

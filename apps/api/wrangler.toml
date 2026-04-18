@@ -19,3 +19,17 @@ preview_id = "REPLACE_WITH_REAL_PREVIEW_KV_NAMESPACE_ID"
 
 # `FINNHUB_TOKEN` is set as a secret, not in this file:
 #   wrangler secret put FINNHUB_TOKEN
+
+# Public download artifacts (datacenters.geojson, cables.geojson, manifest.json, ...).
+# Populated by `opendc publish` from the data-pipeline. Bucket is shared with
+# the PMTiles uploads (see data-pipeline/opendc/tiles/upload.py DEFAULT_BUCKET).
+[[r2_buckets]]
+binding = "ARTIFACTS"
+bucket_name = "gigawattapp"
+preview_bucket_name = "gigawattapp"
+
+# Local-only override: when running `wrangler dev`, point this at the
+# data-pipeline's `out/` directory so the API serves fresh pipeline output
+# without needing `opendc publish` to have run.
+[vars]
+DEV_ARTIFACT_DIR = ""
