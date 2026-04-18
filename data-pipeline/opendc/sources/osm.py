@@ -22,6 +22,7 @@ labelling and the original polygon is preserved upstream in the raw file.
 from __future__ import annotations
 
 import json
+import os
 import time
 from collections.abc import Iterator
 from datetime import UTC, datetime
@@ -44,10 +45,14 @@ from opendc.schemas import Datacenter
 from opendc.transform.estimate_mw import estimate_mw_from_geometry
 from opendc.utils.http import get_http_client, retry_network
 
-# Public Overpass instance. Switching to a self-hosted mirror is a
-# config-only change; we don't expose the URL elsewhere so callers can't
-# inadvertently bypass our retry policy.
-OVERPASS_URL = "https://overpass-api.de/api/interpreter"
+# Public Overpass instance. Override with OPENDC_OVERPASS_URL when the
+# public instance is overloaded (504s) and a mirror like
+# https://overpass.kumi.systems/api/interpreter or
+# https://lz4.overpass-api.de/api/interpreter is healthier. The chosen
+# URL is recorded in the manifest so provenance reflects reality.
+OVERPASS_URL = os.environ.get(
+    "OPENDC_OVERPASS_URL", "https://overpass-api.de/api/interpreter"
+)
 
 # DFW metro bbox used by ``--sample`` — small enough to return in <30s,
 # large enough to cover several real datacenters (Equinix DA, Digital

@@ -1,6 +1,6 @@
 # 028 — Re-ingest OSM datacenters and republish
 
-**Status:** todo
+**Status:** done
 **Depends on:** 010 (OSM ingest), 026 (PMTiles upload), 024b (publish pipeline)
 **Estimate:** 1-2h (Overpass-bound)
 
@@ -22,17 +22,22 @@ material number of features, rebuild the datacenters tile and re-upload.
 
 ## Acceptance criteria
 
-- [ ] `opendc ingest osm` completes without exception, writes `out/interim/osm-datacenters.geojson`
-- [ ] `out/interim/datacenters-merged.geojson` feature count >100 (sanity: curated 53 + OSM)
-- [ ] `opendc publish` (with R2 env loaded) uploads artifacts + manifest
-- [ ] `manifest.json` on R2 reflects the new feature count for `datacenters-merged`
-- [ ] Datacenters PMTiles rebuilt and re-uploaded (`opendc tiles build` + `opendc tiles upload`)
-- [ ] `curl -sI https://pub-f870d3776f47481494c1c9936733d6c1.r2.dev/v1/datacenters.pmtiles`
-      returns HTTP 200 (re-verifies after re-upload)
+- [x] `opendc ingest osm` completes without exception, writes `out/interim/osm-datacenters.geojson` (4,220 features)
+- [x] `out/interim/datacenters-merged.geojson` feature count >100 (actual: 4,255)
+- [x] `opendc publish` (with R2 env loaded) uploads artifacts + manifest
+- [x] `manifest.json` on R2 reflects the new feature count for `datacenters.geojson` (4,255)
+- [x] Datacenters PMTiles rebuilt and re-uploaded (`opendc tiles build` + `opendc tiles upload`)
+- [x] `curl -sI https://pub-f870d3776f47481494c1c9936733d6c1.r2.dev/v1/datacenters.pmtiles`
+      returns HTTP 200 (re-verifies after re-upload, now 6.2 MB vs 207 KB)
 
 ## Files to touch
 
-None (data-only change). Task card is the only repo artifact.
+- `data-pipeline/opendc/sources/osm.py` — add `OPENDC_OVERPASS_URL` env override
+  (the canonical public Overpass instance returned 504; switched to
+  `https://overpass.kumi.systems/api/interpreter` mirror via env var to unblock).
+  Originally scoped as data-only, but the public instance was unhealthy and the
+  hard-coded URL had no escape hatch; documented the override in the constant's
+  docstring so future operators see the option.
 
 ## Notes
 
