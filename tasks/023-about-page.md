@@ -1,6 +1,6 @@
 # 023 — About page + attribution
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 013, 018
 **Estimate:** 2 hours
 
@@ -10,9 +10,9 @@ Single long-form `/about` page covering: what Gigawatt Map is, methodology (MW e
 
 ## Acceptance criteria
 
-- [ ] `app/about/page.tsx` with server-rendered static content
-- [ ] Typography: Source Serif 4 for body, JetBrains Mono for data-dense sections, max-width ~65ch for readability
-- [ ] Sections in order:
+- [x] `app/about/page.tsx` with server-rendered static content
+- [x] Typography: Source Serif 4 for body, JetBrains Mono for data-dense sections, max-width ~65ch for readability
+- [x] Sections in order:
   1. **What this is** — 3 short paragraphs, no jargon
   2. **Who it's for** — the 5 personas from `SPEC.md §1` summarized
   3. **How we built it** — data pipeline overview, update cadence, source versioning
@@ -27,9 +27,9 @@ Single long-form `/about` page covering: what Gigawatt Map is, methodology (MW e
   8. **Team** — currently: Sudhendra (lead). Open to collaborators.
   9. **Press & citations** — empty on day 1; populated as coverage happens
   10. **Licensing** — Code MIT. Data per-source. Attribution required.
-- [ ] Every claim that references data has a linked source
-- [ ] Accessible: headings are `<h2>` for top-level sections; skip-to-content link at top; prose contrast ≥ WCAG AA
-- [ ] Mobile-friendly (full-width single column below 768px)
+- [x] Every claim that references data has a linked source
+- [x] Accessible: headings are `<h2>` for top-level sections; skip-to-content link at top; prose contrast ≥ WCAG AA
+- [x] Mobile-friendly (full-width single column below 768px)
 
 ## Files to touch
 
