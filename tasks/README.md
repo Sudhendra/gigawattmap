@@ -35,7 +35,10 @@ Tasks are numbered and executed in order. Each card is one commit.
 - [021b — Announcements editorial backfill](./021b-announcements-backfill.md) · grow seed from 10 → ≥50 entries
 - [022 — Cmd+K search](./022-search.md) · Fuse.js-powered command palette
 - [023 — About page](./023-about-page.md) · methodology + attribution
-- [024 — Downloads + public API](./024-downloads-api.md) · data as first-class output
+- [024 — Downloads + public API](./024-downloads-api.md) · data as first-class output (umbrella → 024a/b/c)
+  - [024a — R2 artifact upload pipeline](./024a-r2-artifact-upload.md)
+  - [024b — Public API + OpenAPI](./024b-public-api.md)
+  - [024c — Downloads page + API docs](./024c-downloads-ui.md)
 - [025 — OG images + share flow + launch](./025-og-share-launch.md) · ship it
 
 ---

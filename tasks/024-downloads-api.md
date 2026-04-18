@@ -1,12 +1,21 @@
-# 024 — Downloads page + public API
+# 024 — Downloads page + public API (umbrella)
 
-**Status:** todo
+**Status:** split
 **Depends on:** 013, 023
-**Estimate:** 3 hours
+**Estimate:** 5 hours total
+**Split into:** 024a, 024b, 024c
 
 ## Context
 
 Ship the data as first-class artifacts. Developers clone the dataset directly; analysts pull CSVs; the map becomes one consumer of many. A public, unauthenticated, rate-limited API for programmatic access.
+
+This card is now an umbrella tracking three child cards executed in order:
+
+- **024a** — R2 artifact upload pipeline (infrastructure plumbing; nothing user-visible)
+- **024b** — Public API + OpenAPI + rate limiting (reads the manifest produced by 024a)
+- **024c** — Downloads page + `/data/api` docs page (consumes 024a manifest, documents 024b)
+
+Original acceptance criteria preserved below for traceability; each child card carries the relevant subset.
 
 ## Acceptance criteria
 
