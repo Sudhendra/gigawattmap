@@ -1,6 +1,6 @@
 # 020 — Ticker panel (market intelligence overlay)
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 003
 **Estimate:** 3 hours
 
