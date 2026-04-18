@@ -1,6 +1,6 @@
 # 024b — Public API (datacenters / powerplants / announcements / OpenAPI)
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 024a
 **Estimate:** 2 hours
 
@@ -10,15 +10,15 @@ Sub-card of 024. Ships the read-only public API on Hono/Workers, reading from th
 
 ## Acceptance criteria
 
-- [ ] `GET /api/v1/datacenters?bbox=lon1,lat1,lon2,lat2&operator=&status=&limit=1000` returns GeoJSON FeatureCollection
-- [ ] `GET /api/v1/datacenters/:id` returns single Feature with all enriched fields
-- [ ] `GET /api/v1/powerplants?bbox=&fuel_type=&min_mw=`
-- [ ] `GET /api/v1/announcements?limit=50&category=&since=` (reads from existing announcements artifact / D1, whichever is current)
-- [ ] All endpoints respond JSON with `Cache-Control: public, max-age=300, stale-while-revalidate=3600`
-- [ ] `GET /api/v1/openapi.json` returns OpenAPI 3.1 schema describing every endpoint, every field
-- [ ] Rate-limit middleware: 60 req/min/IP. Uses Cloudflare's rate-limit binding when present, in-memory `Map`-based fallback for local dev. Returns 429 with `Retry-After` header.
-- [ ] CORS: `Access-Control-Allow-Origin: *` for GET; no write endpoints
-- [ ] vitest coverage: each route happy-path + one error case; rate-limit middleware covers under-limit + over-limit + reset
+- [x] `GET /api/v1/datacenters?bbox=lon1,lat1,lon2,lat2&operator=&status=&limit=1000` returns GeoJSON FeatureCollection
+- [x] `GET /api/v1/datacenters/:id` returns single Feature with all enriched fields
+- [x] `GET /api/v1/powerplants?bbox=&fuel_type=&min_mw=`
+- [x] `GET /api/v1/announcements?limit=50&category=&since=` (reads from existing announcements artifact / D1, whichever is current)
+- [x] All endpoints respond JSON with `Cache-Control: public, max-age=300, stale-while-revalidate=3600`
+- [x] `GET /api/v1/openapi.json` returns OpenAPI 3.1 schema describing every endpoint, every field
+- [x] Rate-limit middleware: 60 req/min/IP. Uses Cloudflare's rate-limit binding when present, in-memory `Map`-based fallback for local dev. Returns 429 with `Retry-After` header.
+- [x] CORS: `Access-Control-Allow-Origin: *` for GET; no write endpoints
+- [x] vitest coverage: each route happy-path + one error case; rate-limit middleware covers under-limit + over-limit + reset
 
 ## Files to touch
 

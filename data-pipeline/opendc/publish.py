@@ -100,6 +100,24 @@ _OPP = (
     False,
     True,
 )
+# Global Energy Monitor power-plant data is CC BY 4.0.
+_GEM = (
+    "CC-BY-4.0",
+    "https://creativecommons.org/licenses/by/4.0/",
+    "© Global Energy Monitor",
+    False,
+    True,
+)
+# Announcements are an editorial dataset curated by Gigawatt Map from
+# primary news sources; we relicense the curated set under CC BY 4.0
+# (sources are credited per-row via ``source_url``).
+_EDITORIAL = (
+    "CC-BY-4.0",
+    "https://creativecommons.org/licenses/by/4.0/",
+    "Gigawatt Map editorial team (sources credited per row)",
+    False,
+    True,
+)
 
 
 def _spec(
@@ -141,6 +159,13 @@ PUBLICATION_CATALOG: tuple[PublishSpec, ...] = (
         source_group="datacenters",
     ),
     _spec(
+        "powerplants.geojson",
+        "interim/powerplants.geojson",
+        "application/geo+json",
+        _GEM,
+        source_group="powerplants",
+    ),
+    _spec(
         "cables.geojson",
         "interim/cables.geojson",
         "application/geo+json",
@@ -167,6 +192,13 @@ PUBLICATION_CATALOG: tuple[PublishSpec, ...] = (
         "application/geo+json",
         _OPP,
         source_group="opposition",
+    ),
+    _spec(
+        "announcements.json",
+        "interim/announcements.json",
+        "application/json",
+        _EDITORIAL,
+        source_group="announcements",
     ),
 )
 

@@ -81,11 +81,29 @@ class TestPublicationCatalog:
         assert {
             "datacenters.geojson",
             "datacenters.csv",
+            "powerplants.geojson",
             "cables.geojson",
             "landing-points.geojson",
             "cloud-regions.geojson",
             "opposition.geojson",
+            "announcements.json",
         }.issubset(names)
+
+    def test_announcements_marked_editorial_cc_by(self) -> None:
+        # Editorial dataset is curated by us; relicensed CC BY 4.0.
+        ann = next(s for s in PUBLICATION_CATALOG if s.filename == "announcements.json")
+        assert ann.license == "CC-BY-4.0"
+        assert ann.share_alike is False
+        assert ann.commercial_use is True
+        assert ann.content_type == "application/json"
+
+    def test_powerplants_marked_cc_by(self) -> None:
+        # GEM is CC BY 4.0 — commercial use OK, no share-alike.
+        pp = next(s for s in PUBLICATION_CATALOG if s.filename == "powerplants.geojson")
+        assert pp.license == "CC-BY-4.0"
+        assert pp.share_alike is False
+        assert pp.commercial_use is True
+        assert "Global Energy Monitor" in pp.attribution
 
     def test_telegeography_artifacts_marked_noncommercial(self) -> None:
         cables = next(s for s in PUBLICATION_CATALOG if s.filename == "cables.geojson")
