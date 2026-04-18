@@ -1,6 +1,6 @@
 # 032 — Fix FinnhubProvider 'Illegal invocation' on Workers fetch
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 031
 **Estimate:** 15m
 

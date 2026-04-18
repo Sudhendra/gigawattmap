@@ -45,7 +45,15 @@ export class FinnhubProvider implements TickerProvider {
   constructor({ token, fetchImpl }: FinnhubProviderOptions) {
     if (!token) throw new TickerProviderError('FINNHUB_TOKEN is required');
     this.#token = token;
-    this.#fetch = fetchImpl ?? fetch;
+    // The Workers runtime requires `fetch` to be invoked with `globalThis`
+    // (or `undefined`) as its receiver. Storing it on an instance and
+    // calling `this.#fetch(...)` rebinds `this` to the FinnhubProvider,
+    // which throws `TypeError: Illegal invocation`. Wrap in an arrow so
+    // the call site never leaks `this` into the captured callable, no
+    // matter where it came from.
+    // https://developers.cloudflare.com/workers/observability/errors/#illegal-invocation-errors
+    const f = fetchImpl ?? fetch;
+    this.#fetch = (input, init) => f(input, init);
   }
 
   async fetchQuote(symbol: string): Promise<TickerQuote | null> {
