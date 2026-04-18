@@ -1,6 +1,6 @@
 # 024b — Public API (datacenters / powerplants / announcements / OpenAPI)
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 024a
 **Estimate:** 2 hours
 
