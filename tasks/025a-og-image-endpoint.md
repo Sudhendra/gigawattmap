@@ -1,6 +1,6 @@
 # 025a — OG image endpoint
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** none
 **Estimate:** 60m
 
