@@ -1,6 +1,6 @@
 # 025c — Launch polish: 404, robots, sitemap, favicons
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** none
 **Estimate:** 45m
 
