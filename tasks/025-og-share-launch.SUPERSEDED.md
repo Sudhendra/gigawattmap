@@ -1,6 +1,6 @@
 # 025 — OG image + share flow + launch polish
 
-**Status:** todo
+**Status:** superseded by 025a, 025b, 025c, 025d
 **Depends on:** 006, 020, 021, 022, 023, 024
 **Estimate:** 3 hours
 
