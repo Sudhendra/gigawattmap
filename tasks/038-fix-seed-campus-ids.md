@@ -1,6 +1,6 @@
 # 038 — Fix seed campus ids to match canonical artifact
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** 025a (OG endpoint requires canonical ids)
 **Estimate:** 30m
 
@@ -18,13 +18,13 @@ Discovered during 025b live smoke (Meta Richland Parish, xAI Colossus 2).
 
 ## Acceptance criteria
 
-- [ ] Every `properties.id` in `apps/web/public/seed/ai-campuses.geojson`
+- [x] Every `properties.id` in `apps/web/public/seed/ai-campuses.geojson`
       exists in `data-pipeline/out/datacenters.geojson`.
-- [ ] A test in `apps/web/` proves the above (loads both files, asserts
-      every seed id resolves).
-- [ ] `pnpm --filter web test` passes.
-- [ ] Hitting `/api/v1/og?dc=<id>` for each of the 20 seed ids in dev
-      returns 200.
+- [x] A test in `apps/web/` proves the above (loads both files, asserts
+      every seed id resolves) — `src/app/_components/seed-ids.test.ts`.
+- [x] `pnpm --filter web test` passes (104/104).
+- [x] Hitting `/api/v1/og?dc=<id>` for each of the 20 seed ids in dev
+      returns 200 (verified live, all 20 PASS).
 
 ## Files to touch
 

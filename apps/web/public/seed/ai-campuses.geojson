@@ -81,7 +81,7 @@
         ]
       },
       "properties": {
-        "id": "amazon-project-rainier",
+        "id": "amazon-rainier-ms",
         "name": "Amazon Project Rainier",
         "operator": "Amazon",
         "tenant": "Anthropic",
@@ -127,7 +127,7 @@
         ]
       },
       "properties": {
-        "id": "talen-susquehanna-aws",
+        "id": "talen-susquehanna-pa",
         "name": "Talen Susquehanna (AWS)",
         "operator": "Talen",
         "tenant": "AWS",
@@ -150,7 +150,7 @@
         ]
       },
       "properties": {
-        "id": "homer-city-redev",
+        "id": "homer-city-pa",
         "name": "Homer City Redevelopment",
         "operator": "Homer City Redev.",
         "tenant": "(multiple)",
@@ -173,7 +173,7 @@
         ]
       },
       "properties": {
-        "id": "xai-colossus-memphis",
+        "id": "xai-colossus-1-tn",
         "name": "xAI Colossus Memphis",
         "operator": "xAI",
         "tenant": "xAI",
@@ -196,7 +196,7 @@
         ]
       },
       "properties": {
-        "id": "xai-colossus-2",
+        "id": "xai-colossus-2-tn",
         "name": "xAI Colossus 2",
         "operator": "xAI",
         "tenant": "xAI",
@@ -219,7 +219,7 @@
         ]
       },
       "properties": {
-        "id": "microsoft-mount-pleasant-wi",
+        "id": "microsoft-mt-pleasant-wi",
         "name": "Microsoft Mount Pleasant",
         "operator": "Microsoft",
         "tenant": "OpenAI",
@@ -311,7 +311,7 @@
         ]
       },
       "properties": {
-        "id": "oracle-cloud-az",
+        "id": "oracle-cloud-arizona",
         "name": "Oracle Cloud Arizona",
         "operator": "Oracle",
         "tenant": "Oracle",
@@ -380,7 +380,7 @@
         ]
       },
       "properties": {
-        "id": "digital-realty-ord11-elk-grove",
+        "id": "digitalrealty-ord11-elk-grove",
         "name": "Digital Realty ORD11 Elk Grove",
         "operator": "Digital Realty",
         "tenant": "(multiple)",
@@ -426,7 +426,7 @@
         ]
       },
       "properties": {
-        "id": "aws-us-east-1-va",
+        "id": "amazon-us-east-1-va",
         "name": "AWS us-east-1 N. Virginia",
         "operator": "Amazon",
         "tenant": "AWS",
@@ -449,7 +449,7 @@
         ]
       },
       "properties": {
-        "id": "meta-richland-parish-la",
+        "id": "meta-richland-parish",
         "name": "Meta Richland Parish",
         "operator": "Meta",
         "tenant": "Meta",
