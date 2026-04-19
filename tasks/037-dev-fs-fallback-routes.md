@@ -1,40 +1,48 @@
-# 037 — Wire dev fs-fallback into all R2 artifact route handlers
+# 037 — Local R2 seed script for `wrangler dev`
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** none
 **Estimate:** 45 min
 
 ## Context
 
-`apps/api/src/lib/r2.ts::readArtifact` already supports a `devReader` injection that lets `wrangler dev` serve fresh pipeline output from `DEV_ARTIFACT_DIR` when the local R2 binding is empty. But none of the four route handlers (`og`, `datacenters`, `powerplants`, `announcements`) actually pass `devReader`, so every dev request returns 404 / `artifact_unavailable`.
+Discovered while smoke-testing the 025b share-modal "Download PNG" action: every `wrangler dev` request to `/api/v1/og`, `/datacenters`, `/powerplants`, `/announcements`, `/manifest` returns 404 / `artifact_unavailable` because the local R2 binding is empty. There is no dev-time path that publishes pipeline output into the simulated bucket.
 
-Discovered while smoke-testing the 025b share-modal "Download PNG" action — every dc lookup 404s in dev because `loadDcs()` in `og.ts` never reaches the fs fallback.
+### What did NOT work (recorded so we don't try it again)
 
-Additionally, R2 keys are namespaced under `v1/downloads/...` while the pipeline writes to `data-pipeline/out/<filename>` directly. The dev path resolver must strip the `v1/downloads/` prefix so existing pipeline output is reachable without a separate publish step.
+The original 037 attempt wired a `node:fs/promises` "dev fallback" into `lib/r2.ts` so that when `DEV_ARTIFACT_DIR` was set the route handlers would read straight from `data-pipeline/out/`. That approach is impossible: `workerd` (the runtime miniflare runs) has a fully sandboxed filesystem. A diagnostic probe showed `fs.readdir('/')` returns only `['bundle','tmp','dev']` — no host paths exist inside the sandbox even with `nodejs_compat`. `import('node:fs/promises')` succeeds; reads fail with ENOENT for any real host path.
+
+All `lib/r2.ts` / route-handler / wrangler.toml edits from that attempt were reverted (see `git log` for the chore-start commit).
+
+### What this task does instead
+
+Provide a one-shot `pnpm --filter api dev:seed-r2` script that mirrors the canonical `data-pipeline/opendc/publish.py` mapping into the local Miniflare R2 simulator using `wrangler r2 object put --local`. Same R2 keys, same binding (`ARTIFACTS`), same code path as production. No changes to runtime code — dev and prod take identical paths through `readArtifact`.
 
 ## Acceptance criteria
 
-- [ ] `apps/api/src/lib/r2.ts` exports a default node-fs `devReader` factory (only used by the worker entry / route handlers, not by tests).
-- [ ] Dev path resolution strips a leading `v1/downloads/` segment so `<DEV_ARTIFACT_DIR>/<basename>` is checked. Documented in code.
-- [ ] All four route handlers (`og`, `datacenters`, `powerplants`, `announcements`) inject the dev reader.
-- [ ] `apps/api/wrangler.toml` documents `DEV_ARTIFACT_DIR` with an example pointing at `../../data-pipeline/out`.
-- [ ] `pnpm --filter api test` passes (existing r2 tests + any new path-stripping coverage).
-- [ ] Live verify: `curl http://localhost:8787/api/v1/og?dc=amazon-rainier-ms` returns 200 image/png.
-- [ ] Live verify: `curl http://localhost:8787/api/v1/datacenters?bbox=...` returns geojson, not `{"error":"artifact_unavailable"}`.
+- [ ] `apps/api/scripts/seed-local-r2.mjs` exists and uploads every artifact in `data-pipeline/out/` to the local Miniflare R2 bucket using `wrangler r2 object put --local`. Uses the same (key → source-path) mapping as `data-pipeline/opendc/publish.py`. Skips files that don't exist on disk and prints a clear summary.
+- [ ] `apps/api/package.json` exposes `dev:seed-r2` script.
+- [ ] Live verify (with `wrangler dev` running from a fresh start):
+  - `pnpm --filter api dev:seed-r2` exits 0 and reports N files uploaded
+  - `curl -fsSI http://localhost:8787/api/v1/datacenters?bbox=-180,-85,180,85` returns 200 with `content-type: application/json`
+  - `curl -fsSI http://localhost:8787/api/v1/powerplants?bbox=-180,-85,180,85` returns 200
+  - `curl -fsSI http://localhost:8787/api/v1/announcements` returns 200
+  - `curl -fsSI "http://localhost:8787/api/v1/og?dc=amazon-rainier-ms"` returns 200 with `content-type: image/png`
+  - `curl -fsS http://localhost:8787/api/v1/manifest` (if route exists) returns the manifest JSON
+- [ ] `apps/api/README.md` (or `tasks/037-...` notes) document the dev workflow: `pnpm --filter api dev` in one terminal, `pnpm --filter api dev:seed-r2` in another (after the dev server is up so the local bucket exists).
+- [ ] `pnpm --filter api test` and `pnpm --filter api typecheck` still pass (no source code changes, but verify nothing was left dangling from the reverted attempt).
 
 ## Files to touch
 
-- `apps/api/src/lib/r2.ts` — add default node devReader, key-prefix stripping
-- `apps/api/src/lib/r2.test.ts` — cover prefix stripping
-- `apps/api/src/routes/og.ts` — inject devReader
-- `apps/api/src/routes/datacenters.ts` — inject devReader
-- `apps/api/src/routes/powerplants.ts` — inject devReader
-- `apps/api/src/routes/announcements.ts` — inject devReader
-- `apps/api/wrangler.toml` — document `DEV_ARTIFACT_DIR`
-- `apps/api/.dev.vars.example` — if exists, add example
+- `apps/api/scripts/seed-local-r2.mjs` — new
+- `apps/api/package.json` — add `dev:seed-r2` script
+- `tasks/037-dev-fs-fallback-routes.md` — this card
+- (optional) `apps/api/README.md` — dev workflow note
 
 ## Notes
 
-- Cloudflare Workers don't have `node:fs` at runtime, so the fs reader must be loaded via dynamic import gated on `env.DEV_ARTIFACT_DIR` truthy. Same pattern as `workers-og` dynamic import in `og.ts`.
-- nodejs_compat is already enabled in wrangler.toml, so dynamic `node:fs/promises` import works under wrangler dev.
-- Production: `env.DEV_ARTIFACT_DIR` is empty → dynamic import never executes → no impact on Worker bundle behavior.
+- The script is intentionally JS (not TS) so it can run with bare `node` without a build step. Keep it small, no deps beyond `node:child_process` and `node:fs`.
+- `wrangler r2 object put --local <bucket>/<key> --file <path>` writes to the same Miniflare-managed bucket that the dev server reads from. The `--local` flag is critical — without it the command would target real Cloudflare R2.
+- The bucket name comes from `apps/api/wrangler.toml` `[[r2_buckets]] bucket_name = "gigawattapp"`. Hard-code in the script with a comment pointing back at wrangler.toml; keeping it in sync is a one-line edit if it ever changes.
+- Re-running the script overwrites existing objects, so it doubles as a "refresh after re-running the pipeline" command.
+- The dev server caches parsed artifacts inside the Worker isolate — restart `wrangler dev` after seeding for the first time, OR add cache-busting in 025c if dev DX matters more.
