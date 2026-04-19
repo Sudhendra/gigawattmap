@@ -49,6 +49,28 @@ export const MANIFEST_URL: string | null =
   process.env.NEXT_PUBLIC_MANIFEST_URL?.replace(/\/+$/, '') || null;
 
 /**
+ * Origin of the Worker API (no trailing slash). Powers the ticker panel
+ * and the share-modal's "download PNG" link, which target `/api/v1/*`.
+ *
+ * Local dev:   `http://localhost:8787` (default `wrangler dev` port).
+ * Production:  empty so requests stay same-origin behind Cloudflare.
+ */
+export const API_BASE: string =
+  process.env.NEXT_PUBLIC_API_BASE?.replace(/\/+$/, '') ?? '';
+
+/**
+ * Canonical absolute origin of the deployed site (no trailing slash).
+ * Used to build absolute URLs in `openGraph` / `twitter` metadata so
+ * unfurlers (Slack, LinkedIn, iMessage) can resolve the OG image.
+ *
+ * Defaults to the production origin so local builds still emit valid
+ * unfurl tags; preview deploys can override per-environment.
+ */
+export const APP_URL: string =
+  process.env.NEXT_PUBLIC_APP_URL?.replace(/\/+$/, '') ||
+  'https://gigawattmap.com';
+
+/**
  * Build a full PMTiles URL for a given layer name (e.g. `'datacenters'`),
  * or `null` if no base is configured. Callers should fall back to seed data
  * when this returns `null`.

@@ -1,16 +1,16 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useQuery } from '@tanstack/react-query';
 import { Share2, X } from 'lucide-react';
-import { toast } from 'sonner';
 import type { AiCampusFeature } from '@/components/map/layers/datacenters-layer';
 import {
   ANNOUNCEMENTS_STALE_TIME_MS,
   fetchAnnouncements,
 } from '@/components/announcements-feed/announcements-query';
+import { ShareModal } from '@/components/share/share-modal';
 import { SEARCH_INDEX_URL } from '@/lib/env';
 import type { SearchCorpus } from '@/lib/search';
 import { useMapStore } from '@/lib/store/map-store';
@@ -115,16 +115,7 @@ function CardBody({
   const p = feature.properties;
   const [lon, lat] = feature.geometry.coordinates;
   const locStr = `${typeof lat === 'number' ? lat.toFixed(2) : '—'}°, ${typeof lon === 'number' ? lon.toFixed(2) : '—'}° · ${p.country}`;
-
-  const handleShare = async (): Promise<void> => {
-    const url = buildShareUrl(p.id);
-    try {
-      await navigator.clipboard.writeText(url);
-      toast.success('Link copied to clipboard');
-    } catch {
-      toast.error('Could not copy link');
-    }
-  };
+  const [shareOpen, setShareOpen] = useState(false);
 
   return (
     <>
@@ -146,9 +137,9 @@ function CardBody({
         <div className="flex items-center gap-1">
           <button
             type="button"
-            onClick={() => void handleShare()}
+            onClick={() => setShareOpen(true)}
             className="rounded p-1.5 text-[var(--text-muted)] transition hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-focus)]"
-            aria-label="Copy share link"
+            aria-label="Share this campus"
           >
             <Share2 className="h-4 w-4" />
           </button>
@@ -163,6 +154,19 @@ function CardBody({
           </Dialog.Close>
         </div>
       </header>
+
+      <ShareModal
+        open={shareOpen}
+        onOpenChange={setShareOpen}
+        campus={{
+          id: p.id,
+          name: p.name,
+          operator: p.operator,
+          country: p.country,
+          est_mw_mid: p.est_mw_mid,
+        }}
+        shareUrl={buildShareUrl(p.id)}
+      />
 
       {/* Body */}
       <div className="flex-1 overflow-y-auto px-5 py-4">

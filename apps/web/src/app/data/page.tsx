@@ -11,6 +11,19 @@ export const metadata = {
   title: 'Data — Gigawatt Map',
   description:
     'Download the full Gigawatt Map dataset: datacenters, power plants, submarine cables, cloud regions, and more. Open data, source-by-source licensing, JSON + CSV.',
+  openGraph: {
+    title: 'Data — Gigawatt Map',
+    description:
+      'Download the full Gigawatt Map dataset: datacenters, power plants, submarine cables, cloud regions, and more. Open data, source-by-source licensing, JSON + CSV.',
+    images: ['/api/v1/og'],
+  },
+  twitter: {
+    card: 'summary_large_image' as const,
+    title: 'Data — Gigawatt Map',
+    description:
+      'Download the full Gigawatt Map dataset: datacenters, power plants, submarine cables, cloud regions, and more. Open data, source-by-source licensing, JSON + CSV.',
+    images: ['/api/v1/og'],
+  },
 };
 
 // Cache the manifest fetch for the lifetime of the build. The page is

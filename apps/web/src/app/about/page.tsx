@@ -13,6 +13,19 @@ export const metadata = {
   title: 'About — Gigawatt Map',
   description:
     'How Gigawatt Map is built: methodology, confidence tiers, every data source with license, and known gaps.',
+  openGraph: {
+    title: 'About — Gigawatt Map',
+    description:
+      'How Gigawatt Map is built: methodology, confidence tiers, every data source with license, and known gaps.',
+    images: ['/api/v1/og'],
+  },
+  twitter: {
+    card: 'summary_large_image' as const,
+    title: 'About — Gigawatt Map',
+    description:
+      'How Gigawatt Map is built: methodology, confidence tiers, every data source with license, and known gaps.',
+    images: ['/api/v1/og'],
+  },
 };
 
 export default function AboutPage(): React.JSX.Element {
