@@ -1,6 +1,6 @@
 # 025d — Launch checklist + Lighthouse verification
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 025a, 025b, 025c
 **Estimate:** 45m
 
