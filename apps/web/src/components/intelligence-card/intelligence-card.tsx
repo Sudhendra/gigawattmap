@@ -78,7 +78,6 @@ export function IntelligenceCard({ feature, onClose }: IntelligenceCardProps): R
             </Dialog.Overlay>
             <Dialog.Content
               asChild
-              aria-labelledby="intel-card-title"
               aria-describedby={undefined}
             >
               <motion.aside
@@ -134,7 +133,6 @@ function CardBody({
         <div className="min-w-0 flex-1">
           <Dialog.Title asChild>
             <h2
-              id="intel-card-title"
               className="font-display text-[15px] font-semibold uppercase tracking-[0.08em] text-[var(--text-primary)]"
             >
               {p.name}

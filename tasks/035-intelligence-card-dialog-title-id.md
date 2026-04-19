@@ -1,6 +1,6 @@
 # 035 — Fix Radix DialogTitle warning on intelligence card
 
-**Status:** todo
+**Status:** done
 **Depends on:** none
 **Estimate:** 20m
 
