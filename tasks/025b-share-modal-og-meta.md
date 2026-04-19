@@ -1,6 +1,6 @@
 # 025b — Share modal + dynamic OG metadata
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 025a
 **Estimate:** 50m
 
