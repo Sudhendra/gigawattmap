@@ -1,6 +1,6 @@
 # 025c — Launch polish: 404, robots, sitemap, favicons
 
-**Status:** in-progress
+**Status:** done
 **Depends on:** none
 **Estimate:** 45m
 
@@ -14,26 +14,26 @@ share work; can run independently of 025a/b.
 
 **404 page:**
 
-- [ ] `apps/web/src/app/not-found.tsx` (App Router convention)
-- [ ] Matches the dark palette (uses `--bg-base`, `--text-primary`, etc.)
-- [ ] Includes the AppHeader (already global via layout) and a back-to-map link
-- [ ] Has appropriate `<title>` via metadata export
+- [x] `apps/web/src/app/not-found.tsx` (App Router convention)
+- [x] Matches the dark palette (uses `--bg-base`, `--text-primary`, etc.)
+- [x] Includes the AppHeader (already global via layout) and a back-to-map link
+- [x] Has appropriate `<title>` via metadata export
 
 **robots.txt:**
 
-- [ ] `apps/web/public/robots.txt` allows all crawlers
-- [ ] Includes `Sitemap: https://gigawattmap.com/sitemap.xml`
+- [x] `apps/web/public/robots.txt` allows all crawlers
+- [x] Includes `Sitemap: https://gigawattmap.com/sitemap.xml`
 
 **sitemap.xml:**
 
-- [ ] `apps/web/src/app/sitemap.ts` returns the `MetadataRoute.Sitemap` array
-- [ ] Includes `/`, `/about`, `/data`, `/data/api`, `/news`
-- [ ] Uses `NEXT_PUBLIC_APP_URL` (or default `https://gigawattmap.com`)
-- [ ] Each entry has `lastModified`, `changeFrequency`, `priority`
+- [x] `apps/web/src/app/sitemap.ts` returns the `MetadataRoute.Sitemap` array
+- [x] Includes `/`, `/about`, `/data`, `/data/api`, `/news`
+- [x] Uses `NEXT_PUBLIC_APP_URL` (or default `https://gigawattmap.com`)
+- [x] Each entry has `lastModified`, `changeFrequency`, `priority`
 
 **Favicons:**
 
-- [ ] `apps/web/src/app/icon.tsx` (App Router dynamic icon) renders a
+- [x] `apps/web/src/app/icon.tsx` (App Router dynamic icon) renders a
       brand-palette monogram (e.g. "G" on dark background) — defers Apple
       touch icon to a follow-up if Edge/Apple needs PNG variants
 - [ ] OR drop static `apps/web/public/favicon.ico` + `apple-touch-icon.png`
@@ -41,11 +41,11 @@ share work; can run independently of 025a/b.
 
 **Verification:**
 
-- [ ] `pnpm --filter web build` passes
-- [ ] Hitting an unknown URL in dev shows the styled 404
-- [ ] `/robots.txt` and `/sitemap.xml` return correct content in dev
-- [ ] `pnpm --filter web test` still 70+ tests passing
-- [ ] User visually confirms 404 + favicon
+- [x] `pnpm --filter web build` passes
+- [x] Hitting an unknown URL in dev shows the styled 404
+- [x] `/robots.txt` and `/sitemap.xml` return correct content in dev
+- [x] `pnpm --filter web test` still 70+ tests passing (108/108)
+- [x] User visually confirms 404 + favicon
 
 ## Files to touch
 

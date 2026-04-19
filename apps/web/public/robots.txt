@@ -1,0 +1,8 @@
+# https://www.robotstxt.org/robotstxt.html
+# Gigawatt Map is a public intelligence atlas; everything is fair game for
+# crawlers. Per-source data attributions live at /about.
+
+User-agent: *
+Allow: /
+
+Sitemap: https://gigawattmap.com/sitemap.xml
