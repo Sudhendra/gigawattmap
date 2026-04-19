@@ -5,6 +5,7 @@ import { createDatacentersRouter } from './routes/datacenters';
 import { createPowerplantsRouter } from './routes/powerplants';
 import { createAnnouncementsRouter } from './routes/announcements';
 import { createOpenApiRouter } from './routes/openapi';
+import { createOgRouter } from './routes/og';
 import { createRateLimit } from './middleware/rate-limit';
 
 /**
@@ -20,6 +21,7 @@ import { createRateLimit } from './middleware/rate-limit';
  *   GET /api/v1/announcements[?limit&category&since]
  *   GET /api/v1/openapi.json
  *   GET /api/v1/tickers
+ *   GET /api/v1/og[?dc|?market]
  *
  * Cross-cutting policy on `/api/v1/*`:
  *   - CORS open to GET (no write endpoints exist).
@@ -52,6 +54,7 @@ app.route('/api/v1/datacenters', createDatacentersRouter());
 app.route('/api/v1/powerplants', createPowerplantsRouter());
 app.route('/api/v1/announcements', createAnnouncementsRouter());
 app.route('/api/v1/openapi.json', createOpenApiRouter());
+app.route('/api/v1/og', createOgRouter());
 
 app.notFound((c) => c.json({ error: 'not_found' }, 404));
 
