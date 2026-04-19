@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { AppHeader } from '@/components/app-header';
 import { MANIFEST_URL } from '@/lib/env';
 import {
   type Manifest,
@@ -69,7 +68,6 @@ export default async function DataPage(): Promise<React.JSX.Element> {
       >
         Skip to content
       </a>
-      <AppHeader />
       <main
         id="main"
         className="mx-auto w-full max-w-[80ch] px-4 py-12 font-serif text-text-primary md:py-16"

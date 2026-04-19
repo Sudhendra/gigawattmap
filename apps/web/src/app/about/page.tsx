@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { AppHeader } from '@/components/app-header';
 import { MethodologySection } from './_components/methodology-section';
 import { SourcesTable } from './_components/sources-table';
 
@@ -25,7 +24,6 @@ export default function AboutPage(): React.JSX.Element {
       >
         Skip to content
       </a>
-      <AppHeader />
       <main id="main" className="mx-auto w-full max-w-[65ch] px-4 py-12 font-serif text-text-primary md:py-16">
         <header className="mb-12 border-b border-bg-elevated pb-8">
           <h1 className="font-sans text-3xl font-semibold tracking-tight md:text-4xl">

@@ -1,6 +1,6 @@
 # 034 — Remove duplicate AppHeader on /about /data /data/api
 
-**Status:** todo
+**Status:** done
 **Depends on:** none
 **Estimate:** 20m
 

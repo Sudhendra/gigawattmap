@@ -1,5 +1,4 @@
 import Link from 'next/link';
-import { AppHeader } from '@/components/app-header';
 import { type Endpoint, EndpointDoc } from './_components/endpoint-doc';
 
 export const metadata = {
@@ -136,7 +135,6 @@ export default function ApiDocsPage(): React.JSX.Element {
       >
         Skip to content
       </a>
-      <AppHeader />
       <main
         id="main"
         className="mx-auto w-full max-w-[80ch] px-4 py-12 font-serif text-text-primary md:py-16"
