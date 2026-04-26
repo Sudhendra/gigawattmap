@@ -109,7 +109,7 @@ export function TickerPanel(): React.JSX.Element {
         </button>
       </header>
 
-      <div className="max-h-[60vh] overflow-y-auto">
+      <div className="max-h-[60vh] min-h-[280px] overflow-y-auto">
         {TICKER_SECTIONS.map((section) => (
           <section key={section}>
             <h3

@@ -1,9 +1,9 @@
 'use client';
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
+import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'sonner';
-import { Map } from '@/components/map/map';
 import { LayerControls } from '@/components/map/layer-controls';
 import { ViewportHud } from '@/components/map/viewport-hud';
 import { CloudRegionCard } from '@/components/map/cloud-region-card';
@@ -39,6 +39,24 @@ const SEED_URL = '/seed/ai-campuses.geojson';
 const CLOUD_REGIONS_URL = '/seed/cloud-regions.geojson';
 const OPPOSITION_URL = '/seed/opposition.geojson';
 const CABLES_URL = '/seed/cables.geojson';
+
+/**
+ * MapLibre + deck.gl together pull ~300 KiB of JS that does not become
+ * interactive until WebGL initializes. Loading them via `next/dynamic` with
+ * `ssr: false` removes them from the initial bundle, so the LCP-relevant
+ * chunks (header, ticker, announcements) hydrate first. The fallback
+ * matches the final map dimensions exactly to keep CLS at zero.
+ */
+const Map = dynamic(() => import('@/components/map/map').then((m) => ({ default: m.Map })), {
+  ssr: false,
+  loading: () => (
+    <div
+      className="absolute inset-0 bg-[var(--bg-base)]"
+      aria-hidden
+      role="presentation"
+    />
+  ),
+});
 
 /**
  * Orchestrator that owns the AI-campus dataset and wires map clicks ↔ URL ↔

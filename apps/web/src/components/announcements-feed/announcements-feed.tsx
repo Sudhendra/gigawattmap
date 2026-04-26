@@ -82,7 +82,7 @@ export function AnnouncementsFeed({
   return (
     <div className="pointer-events-none absolute inset-x-0 bottom-18 z-10 flex justify-center px-4">
       <aside
-        className="pointer-events-auto flex w-full max-w-6xl flex-col rounded-2xl border shadow-2xl backdrop-blur"
+        className="pointer-events-auto flex min-h-[260px] w-full max-w-6xl flex-col rounded-2xl border shadow-2xl backdrop-blur"
         style={{
           background: 'color-mix(in oklab, var(--bg-panel) 94%, transparent)',
           borderColor: 'var(--bg-elevated)',
@@ -153,7 +153,7 @@ export function AnnouncementsFeed({
                     next?.focus();
                     if (!reduceMotion) next?.scrollIntoView({ behavior: 'smooth', inline: 'center' });
                   }}
-                  className="w-72 shrink-0 rounded-2xl border p-3 text-left transition-colors hover:bg-[var(--bg-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-focus)]"
+                  className="flex min-h-36 w-72 shrink-0 flex-col rounded-2xl border p-3 text-left transition-colors hover:bg-[var(--bg-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-focus)]"
                   style={{
                     borderColor: active ? 'var(--accent-focus)' : 'var(--bg-elevated)',
                     background: active ? 'color-mix(in oklab, var(--bg-elevated) 85%, transparent)' : undefined,
