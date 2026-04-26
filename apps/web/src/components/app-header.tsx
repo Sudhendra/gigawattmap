@@ -4,7 +4,7 @@ import { CmdkHintButton } from './cmdk-hint-button';
 
 const NAV = [
   { href: '/', label: 'Map' },
-  { href: '/stories', label: 'Stories' },
+  { href: '/news', label: 'News' },
   { href: '/data', label: 'Data' },
   { href: '/about', label: 'About' },
 ] as const;
