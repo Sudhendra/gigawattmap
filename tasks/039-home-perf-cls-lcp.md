@@ -1,6 +1,6 @@
 # 039 — Home page perf: CLS + LCP + unused JS
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 025d (Lighthouse baseline)
 **Estimate:** 4-6h
 
