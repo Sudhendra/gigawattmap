@@ -1,6 +1,6 @@
 # 041 — Ticker panel: communicate the filter affordance
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 039 (perf baseline), 040 (a11y baseline)
 **Estimate:** 1-2h
 
