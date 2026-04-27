@@ -1,6 +1,6 @@
 # 040 — A11y: text-subtle contrast + cmdk button label
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 039 (surfaced these findings)
 **Estimate:** 1-2h
 
