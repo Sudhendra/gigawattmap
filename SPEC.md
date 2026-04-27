@@ -404,7 +404,7 @@ Commit to: **editorial cartography.** Feel: *FT Graphics* × *NASA Eyes on the S
 --bg-elevated:  #1b2230;
 --text-primary: #f2ede4;   /* warm off-white */
 --text-muted:   #8a94a8;
---text-subtle:  #5a6478;
+--text-subtle:  #828b9e;   /* WCAG AA: 5.07:1 on --bg-panel */
 
 /* data categories */
 --dc-hyperscale: #ffb74d;  /* amber — the AI campuses, prominent */

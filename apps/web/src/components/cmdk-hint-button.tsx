@@ -20,7 +20,7 @@ export function CmdkHintButton(): React.JSX.Element {
     <button
       type="button"
       onClick={() => setCmdkOpen(true)}
-      aria-label="Open search"
+      title="Search (press ⌘K or Ctrl+K)"
       className={cn(
         'flex items-center gap-1.5 rounded border border-white/10 px-2 py-1',
         'font-mono text-[10px] uppercase tracking-widest text-text-muted',
