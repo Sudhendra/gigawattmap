@@ -10,6 +10,7 @@ import {
 } from '@/lib/ticker-map';
 import { useMapStore } from '@/lib/store/map-store';
 import { groupBySection } from './group-by-section';
+import { nextTickerFilter } from './toggle';
 import type { TickerQuote } from './types';
 
 /**
@@ -54,8 +55,7 @@ export function TickerPanel(): React.JSX.Element {
   }, [data]);
 
   function handleTickerClick(symbol: string): void {
-    // Toggle: clicking the active filter clears it.
-    setTickerFilter(tickerFilter === symbol ? null : symbol);
+    setTickerFilter(nextTickerFilter(tickerFilter, symbol));
   }
 
   if (collapsed) {
@@ -93,12 +93,20 @@ export function TickerPanel(): React.JSX.Element {
         className="flex items-center justify-between gap-2 border-b px-3 py-2"
         style={{ borderColor: 'var(--bg-elevated)' }}
       >
-        <span
-          className="text-[10px] uppercase tracking-wide"
-          style={{ color: 'var(--text-muted)' }}
-        >
-          markets
-        </span>
+        <div className="flex flex-col">
+          <span
+            className="text-[10px] uppercase tracking-wide"
+            style={{ color: 'var(--text-muted)' }}
+          >
+            markets
+          </span>
+          <span
+            className="text-[10px] normal-case"
+            style={{ color: 'var(--text-subtle)' }}
+          >
+            click a ticker to filter the map
+          </span>
+        </div>
         <button
           type="button"
           onClick={() => setCollapsed(true)}
@@ -108,6 +116,30 @@ export function TickerPanel(): React.JSX.Element {
           <ChevronRight size={12} aria-hidden />
         </button>
       </header>
+
+      {tickerFilter && (
+        <div
+          className="flex items-center justify-between gap-2 border-b px-3 py-1.5"
+          style={{ borderColor: 'var(--bg-elevated)' }}
+        >
+          <span
+            className="text-[10px] uppercase tracking-wide"
+            style={{ color: 'var(--text-subtle)' }}
+          >
+            filtering
+          </span>
+          <button
+            type="button"
+            onClick={() => setTickerFilter(null)}
+            aria-label="Clear ticker filter"
+            className="flex items-center gap-1 rounded px-1.5 py-0.5 font-medium tabular-nums transition-colors hover:bg-[var(--bg-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-focus)]"
+            style={{ color: 'var(--accent-focus)' }}
+          >
+            {tickerFilter}
+            <span aria-hidden>×</span>
+          </button>
+        </div>
+      )}
 
       <div className="max-h-[60vh] min-h-[280px] overflow-y-auto">
         {TICKER_SECTIONS.map((section) => (
@@ -155,6 +187,10 @@ export function TickerPanel(): React.JSX.Element {
                               : 'var(--text-primary)',
                         }}
                       >
+                        <span aria-hidden className="inline-block w-2.5">
+                          {active ? '●' : dimmable && !active ? '–' : ''}
+                        </span>
+                        {' '}
                         {ticker.symbol}
                       </span>
                       <PriceCell quote={quote} loading={isLoading} error={isError} />
