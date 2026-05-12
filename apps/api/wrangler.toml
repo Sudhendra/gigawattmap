@@ -11,11 +11,15 @@ name = "gigawattmap-api"
 main = "src/index.ts"
 compatibility_date = "2024-11-12"
 compatibility_flags = ["nodejs_compat"]
+routes = [
+  { pattern = "gigawattmap.com/*", zone_name = "gigawattmap.com" },
+  { pattern = "www.gigawattmap.com/*", zone_name = "gigawattmap.com" },
+]
 
 [[kv_namespaces]]
 binding = "TICKERS_CACHE"
-id = "REPLACE_WITH_REAL_KV_NAMESPACE_ID"
-preview_id = "REPLACE_WITH_REAL_PREVIEW_KV_NAMESPACE_ID"
+id = "3be043bc06aa416999ef34035bdb3144"
+preview_id = "ccc43f6b9b2f449c89eb630bc71707d2"
 
 # `FINNHUB_TOKEN` is set as a secret, not in this file:
 #   wrangler secret put FINNHUB_TOKEN

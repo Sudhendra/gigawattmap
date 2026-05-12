@@ -8,6 +8,8 @@ import { createOpenApiRouter } from './routes/openapi';
 import { createOgRouter } from './routes/og';
 import { createRateLimit } from './middleware/rate-limit';
 
+const PAGES_ORIGIN = 'https://gigawattmap.pages.dev';
+
 /**
  * Worker entrypoint. Routes are mounted under `/api/v1/*`; the front door
  * (Cloudflare Pages or a Worker route in front of `gigawattmap.com`) is
@@ -55,6 +57,16 @@ app.route('/api/v1/powerplants', createPowerplantsRouter());
 app.route('/api/v1/announcements', createAnnouncementsRouter());
 app.route('/api/v1/openapi.json', createOpenApiRouter());
 app.route('/api/v1/og', createOgRouter());
+
+app.all('*', async (c) => {
+  const url = new URL(c.req.url);
+  if (url.pathname.startsWith('/api/')) {
+    return c.json({ error: 'not_found' }, 404);
+  }
+
+  const upstream = new URL(`${url.pathname}${url.search}`, PAGES_ORIGIN);
+  return fetch(new Request(upstream, c.req.raw));
+});
 
 app.notFound((c) => c.json({ error: 'not_found' }, 404));
 

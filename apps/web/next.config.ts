@@ -1,6 +1,7 @@
 import type { NextConfig } from 'next';
 
 const config: NextConfig = {
+  output: 'export',
   reactStrictMode: true,
   typedRoutes: true,
   // Lighthouse Best Practices flags large first-party JS without source maps.
