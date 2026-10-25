@@ -91,16 +91,16 @@ describe('announcementLocationHint', () => {
   const datacenterNames = buildDatacenterNameMap(campuses);
 
   it('prefers the mapped datacenter name when a campus id is known', () => {
-    expect(announcementLocationHint(ANNOUNCEMENTS[0], datacenterNames)).toBe(
+    expect(announcementLocationHint(ANNOUNCEMENTS[0]!, datacenterNames)).toBe(
       'Talen Susquehanna (AWS)',
     );
   });
 
   it('falls back to the operator slug when no campus lookup exists', () => {
-    expect(announcementLocationHint(ANNOUNCEMENTS[1], datacenterNames)).toBe('meta');
+    expect(announcementLocationHint(ANNOUNCEMENTS[1]!, datacenterNames)).toBe('meta');
   });
 
   it('returns an industry-wide label for policy items without a site', () => {
-    expect(announcementLocationHint(ANNOUNCEMENTS[2], datacenterNames)).toBe('Industry-wide');
+    expect(announcementLocationHint(ANNOUNCEMENTS[2]!, datacenterNames)).toBe('Industry-wide');
   });
 });
