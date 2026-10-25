@@ -32,7 +32,7 @@ def refresh_news(*, out_dir: Path, sample: bool = False) -> releases.Release:
     if previous:
         for raw in previous.records:
             row = Announcement.model_validate(raw)
-            if row.category != "news" or row.date >= cutoff:
+            if row.category != "news" or (row.date >= cutoff and news.is_relevant(row.title)):
                 rows[row.source_url.rstrip("/")] = row
     for row in fresh:
         rows[row.source_url.rstrip("/")] = row

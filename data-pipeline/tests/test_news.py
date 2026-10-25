@@ -52,3 +52,22 @@ def test_malformed_feed_fails(body: bytes) -> None:
 def test_atom_is_supported() -> None:
     body = b'<feed xmlns="http://www.w3.org/2005/Atom"><entry><title>New data center</title><link href="https://convergedigest.com/atom/"/><published>2026-10-23T12:00:00Z</published></entry></feed>'
     assert len(normalize(body, now=NOW)) == 1
+
+
+def test_generic_ai_headlines_are_not_datacenter_news() -> None:
+    body = rss(
+        item().replace(
+            "New data center announced",
+            "Automaker Accelerates Engineering with AI and Autonomous Networks",
+        )
+    )
+    assert normalize(body, now=NOW) == []
+
+
+def test_datacenter_power_budget_headlines_are_relevant() -> None:
+    body = rss(
+        item().replace(
+            "New data center announced", "Chipmaker Targets More Compute Within Fixed Power Budgets"
+        )
+    )
+    assert len(normalize(body, now=NOW)) == 1

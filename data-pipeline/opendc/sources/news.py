@@ -21,8 +21,16 @@ FEED_URL = "https://convergedigest.com/feed/"
 SOURCE_NAME = "Converge Digest"
 TERMS_URL = "https://convergedigest.com/terms-of-service/"
 KEYWORDS = re.compile(
-    r"data[ -]?cent(?:er|re)|hyperscal|megawatt|gigawatt|\bAI\b|\bGPU\b|nuclear|power grid", re.I
+    r"data[ -]?cent(?:er|re)|hyperscal|megawatt|gigawatt|nuclear|power (?:grid|budget)|"
+    r"\bAI\b.{0,30}(?:infrastructure|compute|cloud|cluster|factory)|"
+    r"\bGPU\b.{0,30}(?:cluster|cloud|infrastructure)",
+    re.I,
 )
+
+
+def is_relevant(title: str) -> bool:
+    """Conservative title-only filter; generic AI product stories are excluded."""
+    return KEYWORDS.search(title) is not None
 
 
 class NewsError(ValueError):
@@ -99,7 +107,7 @@ def normalize(
         except (ValueError, TypeError, OverflowError):
             logger.warning("Skipping entry with invalid date")
             continue
-        if not title or len(title) > 300 or not KEYWORDS.search(title):
+        if not title or len(title) > 300 or not is_relevant(title):
             continue
         if published > now or published < now - timedelta(days=180):
             continue
