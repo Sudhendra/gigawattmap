@@ -16,6 +16,7 @@ import type { SearchCorpus } from '@/lib/search';
 import { useTickerSelection } from '@/lib/hooks/use-ticker-selection';
 import { TICKER_META_BY_SYMBOL, SECTION_LABEL } from '@/lib/ticker-map';
 import { cn } from '@/lib/cn';
+import { FacilityEvidencePanel } from './facility-evidence-panel';
 import { FieldRow } from './field-row';
 import { StatusBadge } from './status-badge';
 import { selectAnnouncementsForCampus, tickerForOperator } from './intelligence-card-helpers';
@@ -24,6 +25,7 @@ type IntelligenceCardProps = {
   feature: AiCampusFeature | null;
   onClose: () => void;
   embedded?: boolean;
+  publishedAt?: string | null;
 };
 
 /** Format a number with thousands separators, or em-dash for null/undefined. */
@@ -49,6 +51,7 @@ export function IntelligenceCard({
   feature,
   onClose,
   embedded = false,
+  publishedAt = null,
 }: IntelligenceCardProps): React.JSX.Element {
   const focusRef = useRef<HTMLElement>(null);
   useEffect(() => {
@@ -77,7 +80,7 @@ export function IntelligenceCard({
         aria-label={feature.properties.name}
         className="flex h-full min-h-0 flex-col outline-none"
       >
-        <CardBody feature={feature} onClose={onClose} embedded />
+        <CardBody feature={feature} onClose={onClose} embedded publishedAt={publishedAt} />
       </section>
     );
 
@@ -116,7 +119,7 @@ export function IntelligenceCard({
                     : { type: 'spring', damping: 30, stiffness: 320, mass: 0.8 }
                 }
               >
-                <CardBody feature={feature} onClose={onClose} />
+                <CardBody feature={feature} onClose={onClose} publishedAt={publishedAt} />
               </motion.aside>
             </Dialog.Content>
           </Dialog.Portal>
@@ -130,10 +133,12 @@ function CardBody({
   feature,
   onClose,
   embedded = false,
+  publishedAt,
 }: {
   feature: AiCampusFeature;
   onClose: () => void;
   embedded?: boolean;
+  publishedAt: string | null;
 }): React.JSX.Element {
   const p = feature.properties;
   const [lon, lat] = feature.geometry.coordinates;
@@ -202,11 +207,16 @@ function CardBody({
       <div className="flex-1 overflow-y-auto px-5 py-4">
         {/* Stats row */}
         <div className="mb-5 grid grid-cols-2 gap-3">
-          <Stat label="Est. capacity" value={fmtNum(p.est_mw_mid, ' MW')} />
+          <Stat
+            label="Estimated capacity"
+            value={p.est_mw_mid === null ? 'Unknown' : fmtNum(p.est_mw_mid, ' MW')}
+          />
           <Stat label="Tier" value={titleCase(p.tier)} />
         </div>
 
-        <Section title="Operator">
+        <FacilityEvidencePanel properties={p} publishedAt={publishedAt} />
+
+        <Section title="Recorded operator">
           <dl>
             <FieldRow label="Operator">{p.operator}</FieldRow>
             <FieldRow label="Tenants">{p.tenant}</FieldRow>
@@ -230,22 +240,6 @@ function CardBody({
 
         <Section title="Listed operator">
           <MarketExposureSection operatorDisplayName={p.operator} />
-        </Section>
-
-        <Section title="Sources">
-          <p className="text-xs leading-relaxed text-[var(--text-muted)]">
-            {p.sources?.includes('osm')
-              ? '© OpenStreetMap contributors (ODbL). Coverage and estimates are community-maintained. '
-              : ''}
-            {p.sources?.includes('curated') || !p.sources?.length
-              ? 'Curated campus details from the project repository; automated map refreshes do not re-verify editorial claims. '
-              : ''}
-            {p.source_url ? (
-              <a href={p.source_url} target="_blank" rel="noreferrer" className="underline">
-                Original source
-              </a>
-            ) : null}
-          </p>
         </Section>
       </div>
     </>

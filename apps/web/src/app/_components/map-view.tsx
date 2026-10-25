@@ -316,7 +316,7 @@ function MapViewInner(): React.JSX.Element {
               ? 'Map data could not be loaded. Reload to retry.'
               : !data
                 ? 'Loading facilities…'
-                : `${data.features.length.toLocaleString()} facilities · ${updatedAt ? `OSM refreshed ${new Date(updatedAt).toLocaleDateString()}` : 'Development sample'}`}
+                : `${data.features.length.toLocaleString()} facilities · ${updatedAt ? `Dataset published ${new Date(updatedAt).toLocaleDateString()}` : 'Development sample'}`}
             {updatedAt && Date.now() - Date.parse(updatedAt) > 14 * 86400_000
               ? ' · Refresh overdue'
               : ''}
@@ -371,6 +371,7 @@ function MapViewInner(): React.JSX.Element {
                 key={selectedId}
                 feature={selectedFeature}
                 onClose={handleClose}
+                publishedAt={updatedAt}
                 embedded
               />
             ) : null
