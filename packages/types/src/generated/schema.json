@@ -436,6 +436,144 @@
       "title": "Datacenter",
       "type": "object"
     },
+    "DatasetChange": {
+      "additionalProperties": false,
+      "properties": {
+        "detected_at": {
+          "title": "Detected At",
+          "type": "string"
+        },
+        "facility_id": {
+          "title": "Facility Id",
+          "type": "string"
+        },
+        "facility_name": {
+          "title": "Facility Name",
+          "type": "string"
+        },
+        "fields": {
+          "items": {
+            "$ref": "#/$defs/DatasetFieldChange"
+          },
+          "title": "Fields",
+          "type": "array"
+        },
+        "id": {
+          "title": "Id",
+          "type": "string"
+        },
+        "kind": {
+          "enum": [
+            "added",
+            "updated"
+          ],
+          "title": "Kind",
+          "type": "string"
+        },
+        "sources": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Sources",
+          "type": "array"
+        }
+      },
+      "required": [
+        "id",
+        "facility_id",
+        "facility_name",
+        "kind",
+        "detected_at",
+        "sources",
+        "fields"
+      ],
+      "title": "DatasetChange",
+      "type": "object"
+    },
+    "DatasetFieldChange": {
+      "additionalProperties": false,
+      "description": "A recorded value change, not an independently verified project event.",
+      "properties": {
+        "after": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "After"
+        },
+        "before": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Before"
+        },
+        "field": {
+          "enum": [
+            "operator",
+            "status",
+            "est_mw_mid"
+          ],
+          "title": "Field",
+          "type": "string"
+        }
+      },
+      "required": [
+        "field",
+        "before",
+        "after"
+      ],
+      "title": "DatasetFieldChange",
+      "type": "object"
+    },
+    "MapChanges": {
+      "additionalProperties": false,
+      "properties": {
+        "baseline_at": {
+          "title": "Baseline At",
+          "type": "string"
+        },
+        "compared_at": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "title": "Compared At"
+        },
+        "events": {
+          "items": {
+            "$ref": "#/$defs/DatasetChange"
+          },
+          "title": "Events",
+          "type": "array"
+        }
+      },
+      "required": [
+        "baseline_at",
+        "compared_at",
+        "events"
+      ],
+      "title": "MapChanges",
+      "type": "object"
+    },
     "Operator": {
       "additionalProperties": false,
       "properties": {
@@ -577,6 +715,9 @@
     },
     {
       "$ref": "#/$defs/Datacenter"
+    },
+    {
+      "$ref": "#/$defs/MapChanges"
     },
     {
       "$ref": "#/$defs/Operator"

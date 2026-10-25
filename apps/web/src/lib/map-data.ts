@@ -1,3 +1,5 @@
+import type { MapChanges } from '@gigawattmap/types';
+import { parseMapChanges } from './map-changes';
 import type {
   AiCampusCollection,
   AiCampusFeature,
@@ -71,6 +73,8 @@ export function parseMapRecords(records: unknown[]): AiCampusCollection {
 export async function fetchMapData(): Promise<{
   data: AiCampusCollection;
   updatedAt: string | null;
+  changes: MapChanges | null;
+  changesUnavailable: boolean;
 }> {
   if (process.env.NODE_ENV !== 'production') {
     const response = await fetch('/seed/ai-campuses.geojson', {
@@ -79,8 +83,22 @@ export async function fetchMapData(): Promise<{
     if (!response.ok) throw new ReleaseError(`Map seed: ${response.status}`);
     const collection = record(await response.json());
     if (!Array.isArray(collection.features)) throw new ReleaseError('Invalid map seed');
-    return { data: parseMapRecords(collection.features), updatedAt: null };
+    return {
+      data: parseMapRecords(collection.features),
+      updatedAt: null,
+      changes: null,
+      changesUnavailable: true,
+    };
   }
   const release = await fetchLiveRelease('map');
-  return { data: parseMapRecords(release.records), updatedAt: release.updated_at };
+  const data = parseMapRecords(release.records);
+  try {
+    const changes = parseMapChanges(
+      release.changes,
+      new Set(data.features.map((f) => f.properties.id)),
+    );
+    return { data, updatedAt: release.updated_at, changes, changesUnavailable: changes === null };
+  } catch {
+    return { data, updatedAt: release.updated_at, changes: null, changesUnavailable: true };
+  }
 }

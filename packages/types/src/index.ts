@@ -19,6 +19,9 @@ export type {
   Cable,
   CableLanding,
   Datacenter,
+  MapChanges,
+  DatasetChange,
+  DatasetFieldChange,
   Operator,
   PowerPlant,
 } from './generated/schema.js';

@@ -5,7 +5,15 @@
 /**
  * Generated from data-pipeline/opendc/schemas.py. Do not edit by hand — run `make gen-types`.
  */
-export type GigawattMapSchemas = Announcement | Cable | CableLanding | CloudRegion | Datacenter | Operator | PowerPlant;
+export type GigawattMapSchemas =
+  | Announcement
+  | Cable
+  | CableLanding
+  | CloudRegion
+  | Datacenter
+  | MapChanges
+  | Operator
+  | PowerPlant;
 export type AmountUsd = number | null;
 export type Category = "deal" | "launch" | "milestone" | "opposition" | "policy" | "news";
 export type DatacenterId = string | null;
@@ -49,15 +57,28 @@ export type Region = string | null;
 export type Sources = string[];
 export type Status = "operational" | "construction" | "announced" | "blocked";
 export type Tier = "hyperscale" | "colo" | "neocloud" | "enterprise";
-export type HeadquartersCountry = string;
+export type BaselineAt = string;
+export type ComparedAt = string | null;
+export type DetectedAt = string;
+export type FacilityId = string;
+export type FacilityName = string;
+export type After = string | number | null;
+export type Before = string | number | null;
+export type Field = "operator" | "status" | "est_mw_mid";
+export type Fields = DatasetFieldChange[];
 export type Id3 = string;
+export type Kind = "added" | "updated";
+export type Sources1 = string[];
+export type Events = DatasetChange[];
+export type HeadquartersCountry = string;
+export type Id4 = string;
 export type Name3 = string;
 export type Ticker = string | null;
 export type Tier1 = "hyperscale" | "colo" | "neocloud" | "enterprise";
 export type CapacityMw = number;
 export type CommissioningYear = number | null;
 export type FuelType = "coal" | "gas" | "nuclear" | "solar" | "wind" | "hydro" | "storage" | "other";
-export type Id4 = string;
+export type Id5 = string;
 export type Name4 = string;
 export type Operator1 = string | null;
 export type Source = string;
@@ -151,9 +172,31 @@ export interface Datacenter {
 export interface Geometry2 {
   [k: string]: unknown;
 }
+export interface MapChanges {
+  baseline_at: BaselineAt;
+  compared_at: ComparedAt;
+  events: Events;
+}
+export interface DatasetChange {
+  detected_at: DetectedAt;
+  facility_id: FacilityId;
+  facility_name: FacilityName;
+  fields: Fields;
+  id: Id3;
+  kind: Kind;
+  sources: Sources1;
+}
+/**
+ * A recorded value change, not an independently verified project event.
+ */
+export interface DatasetFieldChange {
+  after: After;
+  before: Before;
+  field: Field;
+}
 export interface Operator {
   headquarters_country: HeadquartersCountry;
-  id: Id3;
+  id: Id4;
   name: Name3;
   ticker: Ticker;
   tier: Tier1;
@@ -163,7 +206,7 @@ export interface PowerPlant {
   commissioning_year: CommissioningYear;
   fuel_type: FuelType;
   geometry: Geometry3;
-  id: Id4;
+  id: Id5;
   name: Name4;
   operator: Operator1;
   source: Source;

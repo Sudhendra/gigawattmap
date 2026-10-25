@@ -1,5 +1,8 @@
 'use client';
 
+import type { MapChanges } from '@gigawattmap/types';
+import { RecentChanges } from '@/components/map/recent-changes';
+
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
@@ -30,10 +33,7 @@ import type {
   OppositionFightCollection,
   OppositionFightFeature,
 } from '@/components/map/layers/opposition-layer';
-import type {
-  CableCollection,
-  CableFeature,
-} from '@/components/map/layers/cables-layer';
+import type { CableCollection, CableFeature } from '@/components/map/layers/cables-layer';
 
 /** Path is relative to /public, served at /seed/*.geojson. */
 const CLOUD_REGIONS_URL = '/seed/cloud-regions.geojson';
@@ -50,11 +50,7 @@ const CABLES_URL = '/seed/cables.geojson';
 const Map = dynamic(() => import('@/components/map/map').then((m) => ({ default: m.Map })), {
   ssr: false,
   loading: () => (
-    <div
-      className="absolute inset-0 bg-[var(--bg-base)]"
-      aria-hidden
-      role="presentation"
-    />
+    <div className="absolute inset-0 bg-[var(--bg-base)]" aria-hidden role="presentation" />
   ),
 });
 
@@ -74,6 +70,8 @@ export function MapView(): React.JSX.Element {
 
 function MapViewInner(): React.JSX.Element {
   const [data, setData] = useState<AiCampusCollection | null>(null);
+  const [changes, setChanges] = useState<MapChanges | null>(null);
+  const [changesUnavailable, setChangesUnavailable] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [cloudRegions, setCloudRegions] = useState<CloudRegionCollection | null>(null);
@@ -114,6 +112,8 @@ function MapViewInner(): React.JSX.Element {
         if (!cancelled) {
           setData(next.data);
           setUpdatedAt(next.updatedAt);
+          setChanges(next.changes);
+          setChangesUnavailable(next.changesUnavailable);
         }
       } catch (err) {
         // eslint-disable-next-line no-console
@@ -283,10 +283,24 @@ function MapViewInner(): React.JSX.Element {
           onSelectOpposition={handleSelectOpposition}
           onSelectCable={handleSelectCable}
         />
-        <div role="status" className="absolute bottom-0 left-2 z-20 max-w-[65%] truncate bg-bg-panel px-2 py-1 text-[10px] text-text-muted">
-          {mapError ? 'Map data could not be loaded. Reload to retry.' : !data ? 'Loading facilities…' : `${data.features.length.toLocaleString()} facilities · ${updatedAt ? `OSM refreshed ${new Date(updatedAt).toLocaleDateString()}` : 'Development sample'}`}
-          {updatedAt && Date.now() - Date.parse(updatedAt) > 14 * 86400_000 ? ' · Refresh overdue' : ''}
+        <div
+          role="status"
+          className="absolute bottom-0 left-2 z-20 max-w-[65%] truncate bg-bg-panel px-2 py-1 text-[10px] text-text-muted"
+        >
+          {mapError
+            ? 'Map data could not be loaded. Reload to retry.'
+            : !data
+              ? 'Loading facilities…'
+              : `${data.features.length.toLocaleString()} facilities · ${updatedAt ? `OSM refreshed ${new Date(updatedAt).toLocaleDateString()}` : 'Development sample'}`}
+          {updatedAt && Date.now() - Date.parse(updatedAt) > 14 * 86400_000
+            ? ' · Refresh overdue'
+            : ''}
         </div>
+        <RecentChanges
+          history={changes}
+          loading={!data && !mapError}
+          unavailable={mapError || changesUnavailable}
+        />
         <LayerControls />
         <TickerPanel />
         <AnnouncementsFeed datacenters={data} onSelectDatacenter={handleSelect} />

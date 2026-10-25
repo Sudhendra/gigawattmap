@@ -12,6 +12,7 @@ from rich.console import Console
 from shapely.geometry import shape
 
 from opendc import releases
+from opendc.map_changes import compare
 from opendc.operators import load_operators
 from opendc.schemas import Datacenter
 from opendc.sources import curated, osm
@@ -120,6 +121,7 @@ def refresh_map(*, out_dir: Path) -> releases.Release:
         channel="map",
         updated_at=now,
         records=records,
+        changes=compare(previous, records, now),
         sources=[
             {
                 "name": "OpenStreetMap",

@@ -27,6 +27,7 @@ from opendc.schemas import (
     CableLanding,
     CloudRegion,
     Datacenter,
+    MapChanges,
     Operator,
     PowerPlant,
 )
@@ -39,6 +40,7 @@ EXPORTED_MODELS: tuple[type[BaseModel], ...] = (
     CableLanding,
     CloudRegion,
     Datacenter,
+    MapChanges,
     Operator,
     PowerPlant,
 )

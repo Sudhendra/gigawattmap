@@ -1,7 +1,7 @@
 import { API_BASE } from './env';
 
 export class ReleaseError extends Error {}
-export type LiveRelease = { updated_at: string; records: unknown[] };
+export type LiveRelease = { updated_at: string; records: unknown[]; changes?: unknown };
 
 export async function fetchLiveRelease(channel: 'news' | 'map'): Promise<LiveRelease> {
   const response = await fetch(`${API_BASE}/api/v1/updates/${channel}`, {
@@ -25,5 +25,9 @@ export async function fetchLiveRelease(channel: 'news' | 'map'): Promise<LiveRel
   ) {
     throw new ReleaseError('Invalid published dataset');
   }
-  return { updated_at: data.updated_at, records: data.records };
+  return {
+    updated_at: data.updated_at,
+    records: data.records,
+    changes: 'changes' in data ? data.changes : undefined,
+  };
 }

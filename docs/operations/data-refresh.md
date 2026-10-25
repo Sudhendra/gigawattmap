@@ -35,3 +35,11 @@ Weekly OSM refreshes do not re-verify curated MW figures, project lifecycle clai
 Enable GitHub Actions failure notifications for the maintainer. Inspect the last successful run weekly. GitHub cron is best-effort, can be delayed, and public-repository scheduled workflows can be disabled after 60 days without repository activity; re-enable them in Actions if disabled. See https://docs.github.com/en/actions/reference/workflows-and-actions/events-that-trigger-workflows#schedule . The news UI marks refreshes older than 48 hours and the map marks refreshes older than 14 days. These labels are a user-visible warning, not an independent uptime monitor.
 
 Do not claim the automation is operational until secrets exist, both workflows have completed manually, the Worker and Pages code are deployed, and the public endpoints show the new snapshots.
+
+## Recent dataset changes
+
+The map release includes `changes` in the same JSON object as its facilities. The first release establishes a baseline without claiming existing facilities are newly added. Later successful refreshes compare stable IDs and track additions plus operator, status, and midpoint capacity changes. Detection time is not a construction/opening date; weekly comparisons cannot reveal intermediate edits between snapshots.
+
+History retains the latest 500 events within 90 days, only for facilities still present. Missing facilities are not labeled closed. Before/after null values remain unknown. Repeated unchanged runs add no events. Invalid comparisons, upstream completeness failures, and failed publication leave the public map and history unchanged together. A failed final write may leave an unused archived snapshot, which is safe. Rolling back the map also rolls back its history.
+
+The panel distinguishes baseline, no recorded changes, unavailable history, and loading. Old clients can ignore the additive history field; new clients can still render an older map without history. Verify event rendering using local browser fixtures—never publish invented events.

@@ -13,6 +13,7 @@ from typing import Literal, Protocol, cast
 from botocore.exceptions import ClientError
 from pydantic import BaseModel, ConfigDict
 
+from opendc.schemas import MapChanges
 from opendc.tiles.upload import R2Config, _make_client, load_config
 
 Channel = Literal["news", "map"]
@@ -44,6 +45,7 @@ class Release(BaseModel):
     updated_at: str
     records: list[dict[str, object]]
     sources: list[dict[str, object]]
+    changes: MapChanges | None = None
 
 
 def storage() -> tuple[R2Config, Storage]:

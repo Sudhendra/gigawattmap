@@ -367,3 +367,27 @@ class ArtifactManifest(_Base):
     """
 
     artifacts: dict[str, ArtifactEntry]
+
+
+class DatasetFieldChange(_Base):
+    """A recorded value change, not an independently verified project event."""
+
+    field: Literal["operator", "status", "est_mw_mid"]
+    before: str | float | None
+    after: str | float | None
+
+
+class DatasetChange(_Base):
+    id: str
+    facility_id: str
+    facility_name: str
+    kind: Literal["added", "updated"]
+    detected_at: str
+    sources: list[str]
+    fields: list[DatasetFieldChange]
+
+
+class MapChanges(_Base):
+    baseline_at: str
+    compared_at: str | None
+    events: list[DatasetChange]
