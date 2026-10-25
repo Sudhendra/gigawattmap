@@ -213,6 +213,13 @@ const GROUPS: SourceGroup[] = [
     heading: 'Announcements & news',
     sources: [
       {
+        name: 'Converge Digest RSS',
+        coverage: 'AI and datacenter infrastructure headlines',
+        license: 'Attributed excerpts; non-commercial only',
+        cadence: 'Daily automated check',
+        href: 'https://convergedigest.com/terms-of-service/',
+      },
+      {
         name: 'Datacenter Dynamics (DCD)',
         coverage: 'Global industry news',
         license: 'Editorial / fair use',

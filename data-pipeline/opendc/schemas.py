@@ -60,7 +60,7 @@ Confidence = Literal["verified", "osm_only", "press_release", "estimated"]
 FuelType = Literal[
     "coal", "gas", "nuclear", "solar", "wind", "hydro", "storage", "other"
 ]
-AnnouncementCategory = Literal["deal", "launch", "milestone", "opposition", "policy"]
+AnnouncementCategory = Literal["deal", "launch", "milestone", "opposition", "policy", "news"]
 CloudProvider = Literal["aws", "azure", "gcp", "oracle", "alibaba"]
 
 # Opposition fights — see :class:`OppositionFight` below. The upstream
@@ -201,6 +201,7 @@ class Announcement(_Base):
     category: AnnouncementCategory
     source_url: str
     summary: str | None = None
+    source_name: str | None = None
 
     @field_validator("date", mode="before")
     @classmethod
@@ -288,6 +289,7 @@ class OppositionFight(_Base):
     action_type: list[str]
     issue_category: list[str]
     summary: str | None = None
+    source_name: str | None = None
     megawatts: float | None = None
     investment_million_usd: float | None = None
     opposition_groups: list[str]

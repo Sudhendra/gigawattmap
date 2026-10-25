@@ -106,6 +106,7 @@ def test_announcement_round_trip() -> None:
         "category": "deal",
         "source_url": "https://example.com/press",
         "summary": "Meta disclosed a second Richland phase with new capital commitments.",
+        "source_name": None,
     }
     ann = Announcement.model_validate(raw)
     assert ann.model_dump() == raw

@@ -7,11 +7,12 @@
  */
 export type GigawattMapSchemas = Announcement | Cable | CableLanding | CloudRegion | Datacenter | Operator | PowerPlant;
 export type AmountUsd = number | null;
-export type Category = "deal" | "launch" | "milestone" | "opposition" | "policy";
+export type Category = "deal" | "launch" | "milestone" | "opposition" | "policy" | "news";
 export type DatacenterId = string | null;
 export type Date = string;
 export type Id = string;
 export type OperatorId = string | null;
+export type SourceName = string | null;
 export type SourceUrl = string;
 export type Summary = string | null;
 export type Title = string;
@@ -87,6 +88,7 @@ export interface Announcement {
   date: Date;
   id: Id;
   operator_id?: OperatorId;
+  source_name?: SourceName;
   source_url: SourceUrl;
   summary?: Summary;
   title: Title;

@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
+import { NewsFreshness } from './news-freshness';
 import { useQuery } from '@tanstack/react-query';
 import type { AnnouncementCategory } from '@gigawattmap/types';
 import {
@@ -18,6 +19,7 @@ import {
 
 const CATEGORY_OPTIONS: Array<AnnouncementCategory | 'all'> = [
   'all',
+  'news',
   'deal',
   'launch',
   'milestone',
@@ -73,6 +75,7 @@ export function NewsPageClient(): React.JSX.Element {
         </p>
       </div>
 
+      <NewsFreshness />
       <section
         className="mb-8 grid gap-4 rounded-3xl border p-4 md:grid-cols-4"
         style={{ borderColor: 'var(--bg-elevated)', background: 'var(--bg-panel)' }}
@@ -149,7 +152,7 @@ export function NewsPageClient(): React.JSX.Element {
                 <div className="mb-2 flex flex-wrap items-center gap-2 font-mono text-[11px] uppercase tracking-[0.16em] text-[var(--text-muted)]">
                   <span>{announcement.date}</span>
                   <span>·</span>
-                  <span>{announcement.category}</span>
+                  <span>{announcement.source_name ? `RSS · ${announcement.source_name}` : `Curated · ${announcement.category}`}</span>
                   <span>·</span>
                   <span>{announcementLocationHint(announcement, datacenterNames)}</span>
                 </div>

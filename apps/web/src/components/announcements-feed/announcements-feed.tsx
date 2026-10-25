@@ -39,6 +39,7 @@ const CATEGORY_STYLES: Record<Announcement['category'], string> = {
   milestone: 'var(--accent-cable)',
   opposition: 'var(--status-blocked)',
   policy: 'var(--dc-colo)',
+  news: 'var(--text-muted)',
 };
 
 export function AnnouncementsFeed({
@@ -170,7 +171,7 @@ export function AnnouncementsFeed({
                         background: 'color-mix(in oklab, var(--bg-base) 72%, transparent)',
                       }}
                     >
-                      {announcement.category}
+                      {announcement.source_name ? `RSS · ${announcement.source_name}` : announcement.category}
                     </span>
                   </div>
                   <h3 className="font-serif text-base leading-tight text-[var(--text-primary)]">
@@ -214,7 +215,7 @@ export function AnnouncementsFeed({
                 className="inline-flex items-center gap-1 rounded-full border px-2.5 py-1 font-mono text-[10px] uppercase tracking-[0.14em] transition-colors hover:bg-[var(--bg-elevated)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-focus)]"
                 style={{ borderColor: 'var(--bg-elevated)', color: 'var(--text-muted)' }}
               >
-                source
+                {inlineDetail.source_name ?? 'source'}
                 <ExternalLink size={12} aria-hidden />
               </a>
             </div>

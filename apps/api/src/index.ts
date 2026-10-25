@@ -1,4 +1,5 @@
 import { Hono } from 'hono';
+import { createUpdatesRouter } from './routes/updates';
 import { cors } from 'hono/cors';
 import { createTickersRouter, type Env } from './routes/tickers';
 import { createDatacentersRouter } from './routes/datacenters';
@@ -51,6 +52,7 @@ app.use(
   createRateLimit({ limit: 60, windowSeconds: 60 }),
 );
 
+app.route('/api/v1/updates', createUpdatesRouter());
 app.route('/api/v1/tickers', createTickersRouter());
 app.route('/api/v1/datacenters', createDatacentersRouter());
 app.route('/api/v1/powerplants', createPowerplantsRouter());

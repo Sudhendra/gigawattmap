@@ -22,7 +22,8 @@
             "launch",
             "milestone",
             "opposition",
-            "policy"
+            "policy",
+            "news"
           ],
           "title": "Category",
           "type": "string"
@@ -59,6 +60,18 @@
           ],
           "default": null,
           "title": "Operator Id"
+        },
+        "source_name": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Source Name"
         },
         "source_url": {
           "title": "Source Url",

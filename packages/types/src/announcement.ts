@@ -4,4 +4,5 @@ export type AnnouncementCategory =
   | 'launch'
   | 'milestone'
   | 'opposition'
-  | 'policy';
+  | 'policy'
+  | 'news';

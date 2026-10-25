@@ -1,6 +1,6 @@
 # 042 — Daily news refresh
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 021
 **Estimate:** 1 day
 
@@ -35,3 +35,5 @@ Visitors need current, attributed news without daily manual maintenance.
 ## Notes
 
 Scope proposed for confirmation per AGENTS.md. Check publisher feed permissions before selecting sources. Daily means checking every day; do not invent entries when publishers have no new relevant news. Use existing R2 hosting and no paid services.
+
+Scope confirmed by owner. Initial deployment enables Converge Digest only; partial-source behavior applies when additional permitted feeds are enabled in the subsequent coverage stage. Core tests cover malformed feeds, deduplication, timeouts, empty releases, and failures before live publication. R2 credentials are configured as encrypted GitHub secrets. Pending: hosted workflow execution and public UI verification.

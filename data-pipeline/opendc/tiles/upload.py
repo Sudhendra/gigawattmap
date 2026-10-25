@@ -82,6 +82,7 @@ def _make_client(config: R2Config) -> Any:  # boto3.client is untyped
     doesn't pay the boto3 import cost (~150 ms cold).
     """
     import boto3  # local import, see docstring
+    from botocore.config import Config
 
     return boto3.client(
         "s3",
@@ -89,6 +90,7 @@ def _make_client(config: R2Config) -> Any:  # boto3.client is untyped
         aws_access_key_id=config.access_key_id,
         aws_secret_access_key=config.secret_access_key,
         region_name="auto",  # required by boto3 even though R2 ignores it
+        config=Config(connect_timeout=10, read_timeout=60, retries={"max_attempts": 4, "mode": "standard"}),
     )
 
 
