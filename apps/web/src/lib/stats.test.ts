@@ -86,3 +86,10 @@ describe('computeViewportStats', () => {
     expect(stats.totalMw).toBe(500);
   });
 });
+
+it('counts facilities across unwrapped dateline and whole-world camera bounds', () => {
+  const sites = [feature('east', 179, 40, 1, 'A'), feature('west', -179, 40, 1, 'A')];
+  expect(computeViewportStats(sites, [178, 30, 182, 50]).dcCount).toBe(2);
+  expect(computeViewportStats(sites, [-182, 30, -178, 50]).dcCount).toBe(2);
+  expect(computeViewportStats(sites, [-220, 30, 220, 50]).dcCount).toBe(2);
+});

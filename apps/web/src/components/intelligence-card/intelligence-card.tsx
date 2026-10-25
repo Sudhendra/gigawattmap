@@ -1,6 +1,6 @@
 'use client';
 
-import { useEffect, useMemo, useState } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useQuery } from '@tanstack/react-query';
@@ -23,6 +23,7 @@ import { selectAnnouncementsForCampus, tickerForOperator } from './intelligence-
 type IntelligenceCardProps = {
   feature: AiCampusFeature | null;
   onClose: () => void;
+  embedded?: boolean;
 };
 
 /** Format a number with thousands separators, or em-dash for null/undefined. */
@@ -44,7 +45,15 @@ function buildShareUrl(id: string): string {
  * Closes on Esc, overlay click, or the explicit close button. Animation is
  * a 250ms slide-in spring; honors prefers-reduced-motion.
  */
-export function IntelligenceCard({ feature, onClose }: IntelligenceCardProps): React.JSX.Element {
+export function IntelligenceCard({
+  feature,
+  onClose,
+  embedded = false,
+}: IntelligenceCardProps): React.JSX.Element {
+  const focusRef = useRef<HTMLElement>(null);
+  useEffect(() => {
+    if (embedded && feature) focusRef.current?.focus();
+  }, [embedded, feature?.properties.id]);
   const open = feature != null;
   const reduceMotion = useReducedMotion();
 
@@ -53,6 +62,24 @@ export function IntelligenceCard({ feature, onClose }: IntelligenceCardProps): R
   useEffect(() => {
     if (!feature && open) onClose();
   }, [feature, open, onClose]);
+
+  if (embedded && feature)
+    return (
+      <section
+        ref={focusRef}
+        onKeyDown={(event) => {
+          if (event.key === 'Escape' && event.currentTarget.contains(event.target as Node)) {
+            event.stopPropagation();
+            onClose();
+          }
+        }}
+        tabIndex={-1}
+        aria-label={feature.properties.name}
+        className="flex h-full min-h-0 flex-col outline-none"
+      >
+        <CardBody feature={feature} onClose={onClose} embedded />
+      </section>
+    );
 
   return (
     <Dialog.Root
@@ -102,25 +129,29 @@ export function IntelligenceCard({ feature, onClose }: IntelligenceCardProps): R
 function CardBody({
   feature,
   onClose,
+  embedded = false,
 }: {
   feature: AiCampusFeature;
   onClose: () => void;
+  embedded?: boolean;
 }): React.JSX.Element {
   const p = feature.properties;
   const [lon, lat] = feature.geometry.coordinates;
-  const locStr = `${typeof lat === 'number' ? lat.toFixed(2) : '—'}°, ${typeof lon === 'number' ? lon.toFixed(2) : '—'}° · ${p.country}`;
+  const locStr = `${typeof lat === 'number' ? lat.toFixed(2) : '—'}°, ${typeof lon === 'number' ? lon.toFixed(2) : '—'}° · ${p.country === 'XX' ? 'Country unverified' : p.country}`;
   const [shareOpen, setShareOpen] = useState(false);
 
   return (
     <>
       {/* Header */}
-      <header className="flex items-start justify-between gap-3 border-b border-[var(--bg-elevated)] px-5 py-4">
+      <header className="flex items-start justify-between gap-3 border-b border-[var(--border-subtle)] px-5 py-5">
         <div className="min-w-0 flex-1">
-          <Dialog.Title asChild>
-            <h2 className="font-display text-[15px] font-semibold uppercase tracking-[0.08em] text-[var(--text-primary)]">
-              {p.name}
-            </h2>
-          </Dialog.Title>
+          {embedded ? (
+            <h2 className="text-xl font-semibold leading-snug tracking-tight">{p.name}</h2>
+          ) : (
+            <Dialog.Title asChild>
+              <h2 className="text-xl font-semibold leading-snug tracking-tight">{p.name}</h2>
+            </Dialog.Title>
+          )}
           <p className="mt-1 text-xs text-[var(--text-muted)] tabular">{locStr}</p>
           <div className="mt-2">
             <StatusBadge status={p.status} />
@@ -135,15 +166,22 @@ function CardBody({
           >
             <Share2 className="h-4 w-4" />
           </button>
-          <Dialog.Close asChild>
+          {embedded ? (
             <button
               type="button"
-              className="rounded p-1.5 text-[var(--text-muted)] transition hover:bg-[var(--bg-elevated)] hover:text-[var(--text-primary)] focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-focus)]"
-              aria-label="Close"
+              onClick={onClose}
+              aria-label="Back to results"
+              className="workspace-button"
             >
-              <X className="h-4 w-4" />
+              Back
             </button>
-          </Dialog.Close>
+          ) : (
+            <Dialog.Close asChild>
+              <button type="button" aria-label="Close" className="rounded p-1.5">
+                <X className="h-4 w-4" />
+              </button>
+            </Dialog.Close>
+          )}
         </div>
       </header>
 

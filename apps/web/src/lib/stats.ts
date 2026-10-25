@@ -18,9 +18,16 @@ const ZERO: ViewportStats = { dcCount: 0, totalMw: 0, operatorCount: 0 };
  * longitudes >= west OR <= east.
  */
 export function pointInBbox(lon: number, lat: number, bbox: Bbox): boolean {
-  const [west, south, east, north] = bbox;
+  const [rawWest, south, rawEast, north] = bbox;
   if (lat < south || lat > north) return false;
-  return west <= east ? lon >= west && lon <= east : lon >= west || lon <= east;
+  if (rawEast - rawWest >= 360) return true;
+  const wrap = (value: number): number => ((((value + 180) % 360) + 360) % 360) - 180;
+  const west = wrap(rawWest),
+    east = wrap(rawEast),
+    longitude = wrap(lon);
+  return west <= east
+    ? longitude >= west && longitude <= east
+    : longitude >= west || longitude <= east;
 }
 
 /**
@@ -42,8 +49,10 @@ export function computeViewportStats(features: AiCampusFeature[], bbox: Bbox): V
     if (typeof lon !== 'number' || typeof lat !== 'number') continue;
     if (!pointInBbox(lon, lat, bbox)) continue;
     dcCount += 1;
-    if (f.properties.est_mw_mid !== null && Number.isFinite(f.properties.est_mw_mid)) totalMw += f.properties.est_mw_mid;
-    if (f.properties.operator && f.properties.operator !== 'Unknown') operators.add(f.properties.operator);
+    if (f.properties.est_mw_mid !== null && Number.isFinite(f.properties.est_mw_mid))
+      totalMw += f.properties.est_mw_mid;
+    if (f.properties.operator && f.properties.operator !== 'Unknown')
+      operators.add(f.properties.operator);
   }
   return { dcCount, totalMw, operatorCount: operators.size };
 }

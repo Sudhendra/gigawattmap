@@ -55,7 +55,7 @@ export function pointPaint(selectedId: string | null): CircleLayerSpecification[
       ['max', 5, ['*', ['sqrt', ['max', 0, ['coalesce', ['get', 'est_mw_mid'], 0]]], 0.45]],
     ],
     'circle-opacity': ['case', ['>', ['get', 'matched'], 0], 1, 0.2],
-    'circle-stroke-color': ['case', selected, '#ffeb3b', '#0a0d12'],
+    'circle-stroke-color': ['case', selected, '#6edbd5', '#0a0d12'],
     'circle-stroke-width': ['case', selected, 3, 1],
     'circle-stroke-opacity': ['case', ['>', ['get', 'matched'], 0], 0.9, 0.2],
   };

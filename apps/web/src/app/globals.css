@@ -9,11 +9,13 @@
 :root {
   /* surfaces */
   --bg-base: #0a0d12;
-  --bg-panel: #131820;
-  --bg-elevated: #1b2230;
+  --bg-panel: #101820;
+  --bg-elevated: #1b2935;
+
+  --border-subtle: #25333f;
 
   /* text */
-  --text-primary: #f2ede4;
+  --text-primary: #e7edf4;
   --text-muted: #8a94a8;
   --text-subtle: #828b9e;
 
@@ -39,7 +41,7 @@
 
   /* accents */
   --accent-cable: #00e5ff;
-  --accent-focus: #ffeb3b;
+  --accent-focus: #6edbd5;
 
   /* cloud providers — official-ish brand colors used only as the
      visual anchor for region buffer circles. We do not display
@@ -111,5 +113,320 @@ body {
   *::after {
     animation-duration: 0.001ms !important;
     transition-duration: 0.001ms !important;
+  }
+}
+
+/* Map research workspace: one panel, a clear map, and persistent selection. */
+.research-workspace {
+  position: relative;
+  z-index: 1;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 360px;
+  height: calc(100dvh - 49px);
+  overflow: hidden;
+}
+.map-workspace-canvas {
+  position: relative;
+  min-width: 0;
+  min-height: 0;
+  overflow: hidden;
+  background: #101820;
+}
+.research-workspace:has(.research-panel[data-size='collapsed']) {
+  grid-template-columns: minmax(0, 1fr) 52px;
+}
+.research-panel {
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+  min-width: 0;
+  border-left: 1px solid var(--border-subtle);
+  background: var(--bg-panel);
+}
+.research-panel-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  min-height: 80px;
+  padding: 18px 20px;
+  gap: 12px;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.workspace-eyebrow {
+  font-size: 9px;
+  font-weight: 600;
+  letter-spacing: 0.2em;
+  color: var(--text-muted);
+}
+.research-panel-actions {
+  display: flex;
+  gap: 6px;
+}
+.research-panel-actions button,
+.research-panel-opener {
+  border-radius: 6px;
+  padding: 6px;
+  color: var(--text-muted);
+  cursor: pointer;
+}
+.research-panel-actions button:hover,
+.research-panel-opener:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+.research-panel-opener,
+.sheet-expand {
+  display: none;
+}
+.research-panel-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  min-height: 0;
+}
+.research-panel[data-size='collapsed'] .research-panel-body,
+.research-panel[data-size='collapsed'] .research-panel-heading,
+.research-panel[data-size='collapsed'] .research-panel-actions {
+  display: none;
+}
+.research-panel[data-size='collapsed'] .research-panel-header {
+  padding: 12px;
+  border: 0;
+}
+.research-panel[data-size='collapsed'] .research-panel-opener {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.research-panel[data-size='collapsed'] .research-panel-opener span {
+  display: none;
+}
+.research-tabs {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  padding: 6px 12px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.research-tabs button {
+  cursor: pointer;
+  border-bottom: 2px solid transparent;
+  padding: 12px 5px;
+  font-size: 12px;
+  color: var(--text-muted);
+}
+.research-tabs button[aria-selected='true'] {
+  color: var(--accent-focus);
+  border-color: var(--accent-focus);
+}
+.research-tabs button:hover {
+  color: var(--text-primary);
+}
+.workspace-input {
+  border: 1px solid var(--border-subtle);
+  background: var(--bg-base);
+  border-radius: 7px;
+  padding: 10px 12px;
+  font-size: 12px;
+}
+.workspace-button {
+  border: 1px solid var(--border-subtle);
+  border-radius: 6px;
+  padding: 7px 9px;
+  font-size: 11px;
+  cursor: pointer;
+  color: var(--text-muted);
+}
+.workspace-button:hover {
+  background: var(--bg-elevated);
+  color: var(--text-primary);
+}
+.workspace-button[aria-pressed='true'] {
+  color: var(--accent-focus);
+  background: #183332;
+  border-color: #366964;
+}
+.workspace-button:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+.research-workspace button:focus-visible,
+.research-workspace input:focus-visible,
+.research-workspace a:focus-visible {
+  outline: 2px solid var(--accent-focus);
+  outline-offset: 2px;
+}
+.map-heading {
+  pointer-events: none;
+  position: absolute;
+  left: 24px;
+  top: 22px;
+  z-index: 10;
+  text-shadow: 0 2px 12px #000;
+  padding: 10px 14px;
+  border-radius: 8px;
+  background: #101820e8;
+}
+.map-heading h1 {
+  font-size: 24px;
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  margin: 4px 0;
+}
+.map-heading p {
+  font-size: 11px;
+  color: #acbac9;
+}
+.company-selection {
+  position: absolute;
+  left: 24px;
+  top: 142px;
+  z-index: 10;
+  width: min(330px, calc(100% - 48px));
+  border: 1px solid #366964;
+  border-radius: 10px;
+  padding: 10px 12px;
+  background: #101820f5;
+  box-shadow: 0 6px 24px #0003;
+}
+.activity-item {
+  padding: 16px 0;
+  border-bottom: 1px solid var(--border-subtle);
+}
+.viewport-stat-strip {
+  pointer-events: none;
+  position: absolute;
+  left: 16px;
+  bottom: 34px;
+  z-index: 10;
+  max-width: calc(100% - 72px);
+}
+.map-data-status {
+  position: absolute;
+  bottom: 4px;
+  left: 10px;
+  max-width: calc(100% - 140px);
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  z-index: 10;
+  font-size: 9px;
+  padding: 2px 5px;
+  background: #101820eb;
+  color: #acbac9;
+}
+.map-workspace-canvas .maplibregl-ctrl-group {
+  background: var(--bg-panel);
+  border: 1px solid var(--border-subtle);
+  box-shadow: none;
+  border-radius: 8px;
+}
+.map-workspace-canvas .maplibregl-ctrl-group button {
+  border-color: var(--border-subtle);
+  width: 32px;
+  height: 32px;
+}
+.map-workspace-canvas .maplibregl-ctrl-icon {
+  filter: invert(1);
+}
+.map-workspace-canvas .maplibregl-ctrl-attrib {
+  background: #101820de;
+  color: #acbac9;
+  font-size: 9px;
+}
+.map-workspace-canvas .maplibregl-ctrl-attrib a {
+  color: #acbac9;
+}
+@media (min-width: 1440px) {
+  .research-workspace {
+    grid-template-columns: minmax(0, 1fr) 390px;
+  }
+}
+@media (max-width: 767px) {
+  .research-workspace,
+  .research-workspace:has(.research-panel[data-size='collapsed']) {
+    grid-template-columns: minmax(0, 1fr);
+    grid-template-rows: minmax(0, 1fr) 270px;
+  }
+  .research-workspace:has(.research-panel[data-size='collapsed']) {
+    grid-template-rows: minmax(0, 1fr) 54px;
+  }
+  .research-workspace:has(.research-panel[data-size='expanded']) {
+    grid-template-rows: minmax(0, 1fr) min(75dvh, 620px);
+  }
+  .research-panel {
+    border-left: 0;
+    border-top: 1px solid var(--border-subtle);
+    border-radius: 16px 16px 0 0;
+  }
+  .research-panel-header {
+    min-height: 54px;
+    padding: 10px 16px;
+  }
+  .research-panel-heading p {
+    display: none;
+  }
+  .research-panel-actions .sheet-expand {
+    display: block;
+  }
+  .research-panel[data-size='collapsed'] .research-panel-header {
+    padding: 10px 16px;
+  }
+  .research-panel[data-size='collapsed'] .research-panel-opener span {
+    display: block;
+    font-size: 12px;
+  }
+  .research-tabs {
+    padding-top: 0;
+  }
+  .research-tabs button {
+    padding: 9px 5px;
+  }
+  .map-heading {
+    left: 12px;
+    top: 10px;
+    padding: 8px 10px;
+  }
+  .map-heading h1 {
+    font-size: 19px;
+  }
+  .map-heading p {
+    display: none;
+  }
+  .company-selection {
+    top: 88px;
+    left: 12px;
+    width: min(330px, calc(100% - 60px));
+    padding: 7px 10px;
+  }
+  .viewport-stat-strip {
+    left: 10px;
+    bottom: 30px;
+  }
+  .map-data-status {
+    max-width: calc(100% - 55px);
+    font-size: 8px;
+  }
+  .research-workspace:has(.research-panel[data-size='expanded']) .map-heading,
+  .research-workspace:has(.research-panel[data-size='expanded']) .viewport-stat-strip {
+    display: none;
+  }
+  .research-workspace:has(.research-panel[data-size='expanded']) .company-selection {
+    top: 8px;
+  }
+}
+
+.map-workspace-canvas:has(.company-selection) .map-heading h1,
+.map-workspace-canvas:has(.company-selection) .map-heading p {
+  display: none;
+}
+.company-selection {
+  top: 82px;
+}
+@media (max-width: 767px) {
+  .company-selection {
+    top: 58px;
+  }
+  .research-workspace:has(.research-panel[data-size='expanded']) .company-selection {
+    top: 8px;
   }
 }

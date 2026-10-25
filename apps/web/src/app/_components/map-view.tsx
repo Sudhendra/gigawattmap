@@ -1,7 +1,8 @@
 'use client';
 
 import type { MapChanges } from '@gigawattmap/types';
-import { RecentChanges } from '@/components/map/recent-changes';
+import { ResearchPanel } from '@/components/map/research-panel';
+import { CompanySelectionBar } from '@/components/map/company-selection-bar';
 
 import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
@@ -9,7 +10,6 @@ import { useRouter } from 'next/navigation';
 import { Toaster } from 'sonner';
 import { validateSecondaryDataset } from '@/lib/secondary-data';
 import { fetchMapData } from '@/lib/map-data';
-import { LayerControls } from '@/components/map/layer-controls';
 import { ViewportHud } from '@/components/map/viewport-hud';
 const CloudRegionCard = dynamic(async () => {
   const module = await import('@/components/map/cloud-region-card');
@@ -27,8 +27,6 @@ const IntelligenceCard = dynamic(async () => {
   const module = await import('@/components/intelligence-card/intelligence-card');
   return module.IntelligenceCard;
 });
-import { AnnouncementsFeed } from '@/components/announcements-feed/announcements-feed';
-import { TickerPanel } from '@/components/ticker-panel/ticker-panel';
 const MapSearch = dynamic(async () => {
   const module = await import('@/components/search/map-search');
   return module.MapSearch;
@@ -294,77 +292,91 @@ function MapViewInner(): React.JSX.Element {
 
   return (
     <>
-      <div className="relative h-[calc(100vh-3rem)] w-full">
-        <Map
+      <div className="research-workspace">
+        <div className="map-workspace-canvas">
+          <div className="map-heading">
+            <span className="workspace-eyebrow">THE INFRASTRUCTURE ATLAS</span>
+            <h1>Follow the buildout.</h1>
+            <p>Explore facilities. Connect the companies.</p>
+          </div>
+          <CompanySelectionBar data={data} />
+          <Map
+            data={data}
+            cloudRegions={cloudRegions}
+            oppositionData={oppositionData}
+            cablesData={cablesData}
+            selectedId={selectedId}
+            onSelect={handleSelect}
+            onSelectCloudRegion={handleSelectCloudRegion}
+            onSelectOpposition={handleSelectOpposition}
+            onSelectCable={handleSelectCable}
+          />
+          <div role="status" className="map-data-status">
+            {mapError
+              ? 'Map data could not be loaded. Reload to retry.'
+              : !data
+                ? 'Loading facilities…'
+                : `${data.features.length.toLocaleString()} facilities · ${updatedAt ? `OSM refreshed ${new Date(updatedAt).toLocaleDateString()}` : 'Development sample'}`}
+            {updatedAt && Date.now() - Date.parse(updatedAt) > 14 * 86400_000
+              ? ' · Refresh overdue'
+              : ''}
+          </div>
+          {((layers.cloud_regions && !cloudRegions) ||
+            (layers.cables && !cablesData) ||
+            (layers.opposition && !oppositionData)) && (
+            <p
+              role="status"
+              className="absolute left-3 top-60 z-20 max-w-xs rounded bg-[var(--bg-panel)] p-3 text-xs"
+            >
+              {Object.keys(layerErrors).some(
+                (key) => layerErrors[key] && layers[key as keyof typeof layers],
+              ) ? (
+                <>
+                  A layer could not load.{' '}
+                  <button
+                    className="underline"
+                    onClick={() => {
+                      setLayerErrors({});
+                      setLayerRetry((n) => n + 1);
+                    }}
+                  >
+                    Retry
+                  </button>
+                </>
+              ) : (
+                'Loading layer data…'
+              )}
+            </p>
+          )}
+
+          <ViewportHud data={data} />
+          {selectedCloudRegion && (
+            <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
+          )}
+          {selectedOpposition && (
+            <OppositionCard feature={selectedOpposition} onClose={handleCloseOpposition} />
+          )}
+          {selectedCable && <CableCard feature={selectedCable} onClose={handleCloseCable} />}
+        </div>
+        <ResearchPanel
           data={data}
-          cloudRegions={cloudRegions}
-          oppositionData={oppositionData}
-          cablesData={cablesData}
+          changes={changes}
+          changesUnavailable={mapError || changesUnavailable}
           selectedId={selectedId}
           onSelect={handleSelect}
-          onSelectCloudRegion={handleSelectCloudRegion}
-          onSelectOpposition={handleSelectOpposition}
-          onSelectCable={handleSelectCable}
+          onCloseDetail={handleClose}
+          detail={
+            selectedFeature ? (
+              <IntelligenceCard
+                key={selectedId}
+                feature={selectedFeature}
+                onClose={handleClose}
+                embedded
+              />
+            ) : null
+          }
         />
-        <div
-          role="status"
-          className="absolute bottom-0 left-2 z-20 max-w-[65%] truncate bg-bg-panel px-2 py-1 text-[10px] text-text-muted"
-        >
-          {mapError
-            ? 'Map data could not be loaded. Reload to retry.'
-            : !data
-              ? 'Loading facilities…'
-              : `${data.features.length.toLocaleString()} facilities · ${updatedAt ? `OSM refreshed ${new Date(updatedAt).toLocaleDateString()}` : 'Development sample'}`}
-          {updatedAt && Date.now() - Date.parse(updatedAt) > 14 * 86400_000
-            ? ' · Refresh overdue'
-            : ''}
-        </div>
-        <RecentChanges
-          history={changes}
-          loading={!data && !mapError}
-          unavailable={mapError || changesUnavailable}
-        />
-        <LayerControls />
-        {((layers.cloud_regions && !cloudRegions) ||
-          (layers.cables && !cablesData) ||
-          (layers.opposition && !oppositionData)) && (
-          <p
-            role="status"
-            className="absolute left-3 top-60 z-20 max-w-xs rounded bg-[var(--bg-panel)] p-3 text-xs"
-          >
-            {Object.keys(layerErrors).some(
-              (key) => layerErrors[key] && layers[key as keyof typeof layers],
-            ) ? (
-              <>
-                A layer could not load.{' '}
-                <button
-                  className="underline"
-                  onClick={() => {
-                    setLayerErrors({});
-                    setLayerRetry((n) => n + 1);
-                  }}
-                >
-                  Retry
-                </button>
-              </>
-            ) : (
-              'Loading layer data…'
-            )}
-          </p>
-        )}
-
-        <TickerPanel facilities={data} />
-        <AnnouncementsFeed datacenters={data} onSelectDatacenter={handleSelect} />
-        <ViewportHud data={data} />
-        {selectedCloudRegion && (
-          <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
-        )}
-        {selectedOpposition && (
-          <OppositionCard feature={selectedOpposition} onClose={handleCloseOpposition} />
-        )}
-        {selectedCable && <CableCard feature={selectedCable} onClose={handleCloseCable} />}
       </div>
-      {selectedFeature && <IntelligenceCard feature={selectedFeature} onClose={handleClose} />}
       {cmdkOpen && <MapSearch data={data} onOpenChange={setCmdkOpen} actions={cmdkActions} />}
       <Toaster
         theme="dark"

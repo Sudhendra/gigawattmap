@@ -1,6 +1,5 @@
 'use client';
 
-import { useEffect, useRef, useState } from 'react';
 import type { LayerId } from '@gigawattmap/types';
 import { useMapStore } from '@/lib/store/map-store';
 
@@ -14,10 +13,7 @@ type LayerControl = {
 };
 
 /**
- * v1 controls. Three of these are deliberately stubs — surfacing them
- * communicates that the project is intentionally a v1 with more layers in
- * flight, rather than a finished single-purpose tool. When clicked they
- * flash a transient "coming in v1" hint instead of toggling state.
+ * Available infrastructure layers. Planned datasets remain visibly disabled.
  */
 const LAYERS: readonly LayerControl[] = [
   { id: 'datacenters', label: 'Datacenters', swatch: 'var(--dc-hyperscale)', placeholder: false },
@@ -26,8 +22,7 @@ const LAYERS: readonly LayerControl[] = [
     label: 'Cloud regions',
     // Mixed-provider gradient communicates the layer carries multiple
     // brands without privileging any single one.
-    swatch:
-      'linear-gradient(135deg, var(--cloud-aws), var(--cloud-azure), var(--cloud-gcp))',
+    swatch: 'linear-gradient(135deg, var(--cloud-aws), var(--cloud-azure), var(--cloud-gcp))',
     placeholder: false,
   },
   { id: 'cables', label: 'Cables', swatch: 'var(--accent-cable)', placeholder: false },
@@ -35,43 +30,18 @@ const LAYERS: readonly LayerControl[] = [
   { id: 'opposition', label: 'Opposition', swatch: 'var(--status-blocked)', placeholder: false },
 ];
 
-const HINT_DURATION_MS = 2_000;
-
-/**
- * Top-left floating panel. Reads layer visibility from `mapStore` and writes
- * back through `setLayerVisible` for real layers; for placeholders it only
- * displays a 2s "coming in v1" hint so visitors get explicit feedback that
- * the toggle was understood but the layer isn't ready.
- */
+/** Layer controls live in the research panel; unavailable datasets stay disabled. */
 export function LayerControls(): React.JSX.Element {
   const layers = useMapStore((s) => s.layers);
   const setLayerVisible = useMapStore((s) => s.setLayerVisible);
 
-  // Which placeholder is currently flashing its "coming in v1" hint, if any.
-  // We track a single id rather than per-layer booleans because only one
-  // hint is ever active at a time and it auto-clears.
-  const [hintFor, setHintFor] = useState<LayerId | null>(null);
-  const hintTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
-
-  useEffect(() => {
-    return () => {
-      if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
-    };
-  }, []);
-
   function handleToggle(layer: LayerControl): void {
-    if (layer.placeholder) {
-      setHintFor(layer.id);
-      if (hintTimerRef.current) clearTimeout(hintTimerRef.current);
-      hintTimerRef.current = setTimeout(() => setHintFor(null), HINT_DURATION_MS);
-      return;
-    }
-    setLayerVisible(layer.id, !layers[layer.id]);
+    if (!layer.placeholder) setLayerVisible(layer.id, !layers[layer.id]);
   }
 
   return (
     <div
-      className="absolute left-4 top-4 z-10 w-56 rounded-md border p-2 font-mono text-xs shadow-lg backdrop-blur"
+      className="m-4 rounded-lg border p-3 text-sm"
       style={{
         background: 'color-mix(in oklab, var(--bg-panel) 88%, transparent)',
         borderColor: 'var(--bg-elevated)',
@@ -80,10 +50,9 @@ export function LayerControls(): React.JSX.Element {
       role="group"
       aria-label="Map layers"
     >
-      <ul className="flex flex-col gap-1">
+      <ul className="flex flex-col gap-3">
         {LAYERS.map((layer) => {
           const checked = layers[layer.id];
-          const showHint = hintFor === layer.id;
           return (
             <li key={layer.id} className="flex flex-col">
               <label
@@ -97,9 +66,9 @@ export function LayerControls(): React.JSX.Element {
                   // Placeholders show as unchecked because their state never
                   // flips. Real layers reflect store state.
                   checked={layer.placeholder ? false : checked}
+                  disabled={layer.placeholder}
                   onChange={() => handleToggle(layer)}
                   className="h-3.5 w-3.5 cursor-pointer accent-[var(--accent-focus)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-focus)]"
-                  aria-describedby={showHint ? `layer-hint-${layer.id}` : undefined}
                 />
                 <span
                   aria-hidden
@@ -107,22 +76,19 @@ export function LayerControls(): React.JSX.Element {
                   style={{ background: layer.swatch }}
                 />
                 <span className="flex-1">{layer.label}</span>
+                {layer.placeholder && <span className="text-[10px] text-text-muted">Planned</span>}
               </label>
-              {showHint && (
-                <span
-                  id={`layer-hint-${layer.id}`}
-                  role="status"
-                  aria-live="polite"
-                  className="ml-7 text-[10px]"
-                  style={{ color: 'var(--text-subtle)' }}
-                >
-                  coming in v1
-                </span>
-              )}
             </li>
           );
         })}
       </ul>
+      <p className="mt-5 border-t border-white/10 pt-4 text-xs leading-relaxed text-text-muted">
+        Facilities: © OpenStreetMap contributors (ODbL) and curated campuses. Cloud regions and
+        opposition: curated coverage. Cables: TeleGeography (CC BY-NC-SA 3.0, noncommercial).
+      </p>
+      <a href="/about" className="mt-3 inline-block text-xs text-[var(--accent-focus)]">
+        Sources & methodology ↗
+      </a>
     </div>
   );
 }

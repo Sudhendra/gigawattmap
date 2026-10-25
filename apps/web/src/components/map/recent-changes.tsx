@@ -14,12 +14,22 @@ function valueLabel(value: string | number | null, field: DatasetFieldChange['fi
   return field === 'est_mw_mid' ? `${value} MW` : String(value);
 }
 
-type Props = { history: MapChanges | null; loading: boolean; unavailable: boolean };
+type Props = {
+  history: MapChanges | null;
+  loading: boolean;
+  unavailable: boolean;
+  onSelect?: (id: string) => void;
+};
 
-export function RecentChanges({ history, loading, unavailable }: Props): React.JSX.Element {
+export function RecentChanges({
+  history,
+  loading,
+  unavailable,
+  onSelect,
+}: Props): React.JSX.Element {
   const [limit, setLimit] = useState(20);
   return (
-    <details className="absolute bottom-12 left-3 z-30 w-[calc(100%-1.5rem)] max-w-sm rounded-xl border border-[var(--bg-elevated)] bg-[var(--bg-panel)] text-[var(--text-primary)] shadow-xl">
+    <details className="mx-4 my-4 rounded-lg border border-[var(--border-subtle)] bg-[var(--bg-base)] text-[var(--text-primary)]">
       <summary className="cursor-pointer px-4 py-3 text-sm font-medium focus-visible:outline focus-visible:outline-2 focus-visible:outline-[var(--accent-focus)]">
         Recent dataset changes{history ? ` · ${history.events.length}` : ''}
       </summary>
@@ -59,12 +69,21 @@ export function RecentChanges({ history, loading, unavailable }: Props): React.J
                         {new Date(event.detected_at).toLocaleDateString()}
                       </time>
                     </p>
-                    <Link
-                      href={`/?dc=${encodeURIComponent(event.facility_id)}`}
-                      className="font-medium underline underline-offset-2"
-                    >
-                      {event.facility_name}
-                    </Link>
+                    {onSelect ? (
+                      <button
+                        className="text-left font-medium underline underline-offset-2"
+                        onClick={() => onSelect(event.facility_id)}
+                      >
+                        {event.facility_name}
+                      </button>
+                    ) : (
+                      <Link
+                        href={`/?dc=${encodeURIComponent(event.facility_id)}`}
+                        className="font-medium underline underline-offset-2"
+                      >
+                        {event.facility_name}
+                      </Link>
+                    )}
                     {event.fields.map((field) => (
                       <p key={field.field} className="mt-1">
                         {LABELS[field.field]}: {valueLabel(field.before, field.field)} →{' '}

@@ -2,6 +2,7 @@
 
 import { useMemo } from 'react';
 import { useMapStore } from '@/lib/store/map-store';
+import { selectedOperators, visibleCompanyFeatures } from '@/lib/company-selection';
 import { computeViewportStats, type ViewportStats } from '@/lib/stats';
 import type { AiCampusCollection } from './layers/datacenters-layer';
 
@@ -31,23 +32,29 @@ function formatGw(mw: number): string {
  * MapLibre's event model.
  */
 export function ViewportHud({ data }: ViewportHudProps): React.JSX.Element {
+  const ticker = useMapStore((s) => s.tickerFilter);
+  const operator = useMapStore((s) => s.operatorFilter);
+  const only = useMapStore((s) => s.onlyCompanyMatches);
   const visibleBbox = useMapStore((s) => s.visibleBbox);
   const collapsed = useMapStore((s) => s.hudCollapsed);
   const setCollapsed = useMapStore((s) => s.setHudCollapsed);
 
   const stats = useMemo<ViewportStats>(() => {
     if (!data || !visibleBbox) return PLACEHOLDER;
-    return computeViewportStats(data.features, visibleBbox);
-  }, [data, visibleBbox]);
+    return computeViewportStats(
+      visibleCompanyFeatures(data.features, selectedOperators(ticker, operator), only),
+      visibleBbox,
+    );
+  }, [data, visibleBbox, ticker, operator, only]);
 
   return (
     <div
-      className="pointer-events-none absolute inset-x-0 bottom-4 z-10 flex justify-center"
+      className="viewport-stat-strip"
       // The wrapper is non-interactive so map gestures pass through; the
       // pill itself re-enables pointer events.
     >
       <div
-        className="pointer-events-auto flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-full border px-4 py-2 font-mono text-xs shadow-lg backdrop-blur"
+        className="pointer-events-auto flex max-w-full items-center gap-3 rounded-lg border px-3 py-2 font-mono text-[10px] backdrop-blur"
         style={{
           background: 'color-mix(in oklab, var(--bg-panel) 88%, transparent)',
           borderColor: 'var(--bg-elevated)',
@@ -73,7 +80,7 @@ export function ViewportHud({ data }: ViewportHudProps): React.JSX.Element {
             className="tabular flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1"
           >
             <Stat
-              label="All visible"
+              label={only ? 'Matches in view' : 'In view'}
               value={`${stats.dcCount.toLocaleString()} DCs`}
               tooltip="All facilities within the current map view, including those dimmed by company highlighting."
             />
@@ -81,20 +88,13 @@ export function ViewportHud({ data }: ViewportHudProps): React.JSX.Element {
             <Stat
               label=""
               value={`~${formatGw(stats.totalMw)} GW est`}
-              tooltip="Sum of midpoint power estimates across visible datacenters. Estimates are intervals; this is the central value."
+              tooltip="Sum of available midpoint capacity estimates. Facilities without estimates are excluded; this is not total market capacity."
             />
             <Divider />
             <Stat
               label=""
               value={`${stats.operatorCount.toLocaleString()} operators`}
               tooltip="Distinct owner-operators among visible datacenters."
-            />
-            <Divider />
-            <Stat
-              label=""
-              value="— substations"
-              tooltip="Substation layer ships in a later milestone."
-              muted
             />
           </div>
         )}

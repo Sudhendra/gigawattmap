@@ -20,6 +20,12 @@ export const DEFAULT_VIEWPORT: Viewport = {
 };
 
 type MapStore = {
+  onlyCompanyMatches: boolean;
+  setOnlyCompanyMatches: (next: boolean) => void;
+  fitCompanyRequest: number;
+  requestCompanyFit: () => void;
+  basemap: 'dark' | 'light';
+  setBasemap: (next: 'dark' | 'light') => void;
   viewport: Viewport;
   setViewport: (next: Viewport) => void;
   /** The layer the user is actively focused on (drives HUD emphasis). */
@@ -109,6 +115,12 @@ function writePersistedCollapsed(next: boolean): void {
 }
 
 export const useMapStore = create<MapStore>((set) => ({
+  onlyCompanyMatches: false,
+  setOnlyCompanyMatches: (next) => set({ onlyCompanyMatches: next }),
+  fitCompanyRequest: 0,
+  requestCompanyFit: () => set((state) => ({ fitCompanyRequest: state.fitCompanyRequest + 1 })),
+  basemap: 'dark',
+  setBasemap: (next) => set({ basemap: next }),
   viewport: DEFAULT_VIEWPORT,
   setViewport: (next) => set({ viewport: next }),
   selectedLayer: 'datacenters',
@@ -116,7 +128,11 @@ export const useMapStore = create<MapStore>((set) => ({
   selectedDcId: null,
   setSelectedDcId: (id) => set({ selectedDcId: id }),
   operatorFilter: null,
-  setOperatorFilter: (id) => set({ operatorFilter: id }),
+  setOperatorFilter: (id) =>
+    set((state) => ({
+      operatorFilter: id,
+      onlyCompanyMatches: state.operatorFilter === id ? state.onlyCompanyMatches : false,
+    })),
   cmdkOpen: false,
   setCmdkOpen: (next) => set({ cmdkOpen: next }),
   hudCollapsed: false,
@@ -131,10 +147,9 @@ export const useMapStore = create<MapStore>((set) => ({
     cloud_regions: false,
     water_stress: false,
   },
-  setLayerVisible: (id, next) =>
-    set((state) => ({ layers: { ...state.layers, [id]: next } })),
+  setLayerVisible: (id, next) => set((state) => ({ layers: { ...state.layers, [id]: next } })),
   tickerFilter: null,
-  setTickerFilter: (symbol) => set({ tickerFilter: symbol }),
+  setTickerFilter: (symbol) => set({ tickerFilter: symbol, onlyCompanyMatches: false }),
   tickerPanelCollapsed: readPersistedCollapsed(),
   setTickerPanelCollapsed: (next) => {
     writePersistedCollapsed(next);

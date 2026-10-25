@@ -1,8 +1,8 @@
 'use client';
 
-import { useEffect, useMemo } from 'react';
+import { useMemo, useState } from 'react';
 import { useQuery } from '@tanstack/react-query';
-import { ChevronRight, ChevronLeft, TrendingDown, TrendingUp } from 'lucide-react';
+import { TrendingDown, TrendingUp } from 'lucide-react';
 import {
   SECTION_LABEL,
   TICKER_SECTIONS,
@@ -27,13 +27,14 @@ import { fetchTickers } from './ticker-query';
  */
 export function TickerPanel({
   facilities,
+  onSelection,
 }: {
   facilities: AiCampusCollection | null;
+  onSelection?: () => void;
 }): React.JSX.Element {
   const tickerFilter = useMapStore((s) => s.tickerFilter);
   const setTickerFilter = useTickerSelection();
-  const collapsed = useMapStore((s) => s.tickerPanelCollapsed);
-  const setCollapsed = useMapStore((s) => s.setTickerPanelCollapsed);
+  const [query, setQuery] = useState('');
 
   const { data, isError, isLoading } = useQuery({
     queryKey: ['tickers'],
@@ -41,15 +42,6 @@ export function TickerPanel({
     staleTime: 5 * 60 * 1000,
     refetchInterval: 5 * 60 * 1000,
   });
-
-  useEffect(() => {
-    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 639px)').matches) return;
-    try {
-      if (window.sessionStorage.getItem('gwm.tickerPanelCollapsed') === null) setCollapsed(true);
-    } catch {
-      setCollapsed(true);
-    }
-  }, [setCollapsed]);
 
   const grouped = useMemo(() => groupBySection(), []);
 
@@ -61,30 +53,12 @@ export function TickerPanel({
 
   function handleTickerClick(symbol: string): void {
     setTickerFilter(nextTickerFilter(tickerFilter, symbol));
-  }
-
-  if (collapsed) {
-    return (
-      <button
-        type="button"
-        onClick={() => setCollapsed(false)}
-        className="absolute right-4 top-4 z-10 flex flex-col items-center gap-1 rounded-md border px-2 py-3 font-mono text-[10px] uppercase tracking-wide shadow-lg backdrop-blur transition-colors hover:bg-[var(--bg-elevated)]"
-        style={{
-          background: 'color-mix(in oklab, var(--bg-panel) 88%, transparent)',
-          borderColor: 'var(--bg-elevated)',
-          color: 'var(--text-muted)',
-        }}
-        aria-label="Show market panel"
-      >
-        <ChevronLeft size={12} aria-hidden />
-        <span className="[writing-mode:vertical-rl] [transform:rotate(180deg)]">markets</span>
-      </button>
-    );
+    onSelection?.();
   }
 
   return (
     <aside
-      className="absolute right-4 top-4 z-10 flex max-h-[65dvh] w-72 max-w-[calc(100vw-2rem)] flex-col rounded-md border font-mono text-xs shadow-lg backdrop-blur"
+      className="flex min-h-0 flex-col text-xs"
       style={{
         background: 'color-mix(in oklab, var(--bg-panel) 92%, transparent)',
         borderColor: 'var(--bg-elevated)',
@@ -101,22 +75,23 @@ export function TickerPanel({
             className="text-[10px] uppercase tracking-wide"
             style={{ color: 'var(--text-muted)' }}
           >
-            markets
+            Listed companies
           </span>
           <span className="text-[10px] normal-case" style={{ color: 'var(--text-subtle)' }}>
             Show linked facilities
           </span>
         </div>
-        <button
-          type="button"
-          onClick={() => setCollapsed(true)}
-          className="rounded p-1 transition-colors hover:bg-[var(--bg-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-focus)]"
-          aria-label="Collapse market panel"
-        >
-          <ChevronRight size={12} aria-hidden />
-        </button>
       </header>
 
+      <div className="px-4 py-3">
+        <input
+          aria-label="Search companies"
+          value={query}
+          onChange={(event) => setQuery(event.target.value)}
+          placeholder="Search company or ticker…"
+          className="workspace-input w-full"
+        />
+      </div>
       {tickerFilter && (
         <div
           className="border-b border-[var(--bg-elevated)] px-3 py-2 text-[11px]"
@@ -142,17 +117,31 @@ export function TickerPanel({
                   ? `${countLinkedFacilities(facilities.features, tickerFilter).toLocaleString()} linked facilities in this dataset`
                   : 'Loading facility count…'}
               </p>
-              <p className="mt-1 text-[var(--text-muted)]">
-                Matches the recorded operator. Matching facilities stay bright; others fade. This is
-                not a supplier or revenue-exposure estimate. Cluster numbers include all facilities.
-              </p>
+              <details className="mt-2 text-[var(--text-muted)]">
+                <summary className="cursor-pointer">How company links work</summary>
+                <p className="mt-2 leading-relaxed">
+                  Links match recorded facility operators, not supplier contracts or revenue
+                  exposure. Highlight keeps other facilities dimmed; Only matches hides them.
+                  Cluster numbers count the facilities currently shown.
+                </p>
+              </details>
             </>
           )}
         </div>
       )}
 
       <div className="min-h-0 flex-1 overflow-y-auto">
-        {TICKER_SECTIONS.map((section) => (
+        {query.trim() &&
+          !TICKER_SECTIONS.some((section) =>
+            grouped[section].some((ticker) =>
+              `${ticker.name} ${ticker.symbol}`.toLowerCase().includes(query.toLowerCase().trim()),
+            ),
+          ) && <p className="px-4 py-5 text-sm text-text-muted">No companies match your search.</p>}
+        {TICKER_SECTIONS.filter((section) =>
+          grouped[section].some((ticker) =>
+            `${ticker.name} ${ticker.symbol}`.toLowerCase().includes(query.toLowerCase().trim()),
+          ),
+        ).map((section) => (
           <section key={section}>
             <h3
               className="sticky top-0 z-10 px-3 py-1.5 text-[10px] uppercase tracking-wide backdrop-blur"
@@ -164,53 +153,62 @@ export function TickerPanel({
               {SECTION_LABEL[section]}
             </h3>
             <ul>
-              {grouped[section].map((ticker) => {
-                const quote = quotesBySymbol.get(ticker.symbol);
-                const active = tickerFilter === ticker.symbol;
-                const dimmable = !tickerHasLinks(ticker.symbol);
-                return (
-                  <li key={ticker.symbol}>
-                    <button
-                      type="button"
-                      onClick={() => handleTickerClick(ticker.symbol)}
-                      className="grid w-full grid-cols-[3rem_1fr_auto] items-baseline gap-2 px-3 py-1 text-left transition-colors hover:bg-[var(--bg-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-focus)]"
-                      style={{
-                        background: active ? 'var(--bg-elevated)' : 'transparent',
-                      }}
-                      aria-pressed={active}
-                      aria-label={`${ticker.symbol} — ${ticker.name}: ${dimmable ? 'No facility links yet' : 'Show linked facilities'}`}
-                      title={
-                        dimmable ? `${ticker.name} — no facilities directly mapped` : ticker.name
-                      }
-                    >
-                      <span
-                        className="font-medium tabular-nums"
+              {grouped[section]
+                .filter((ticker) =>
+                  `${ticker.name} ${ticker.symbol}`
+                    .toLowerCase()
+                    .includes(query.toLowerCase().trim()),
+                )
+                .map((ticker) => {
+                  const quote = quotesBySymbol.get(ticker.symbol);
+                  const active = tickerFilter === ticker.symbol;
+                  const dimmable = !tickerHasLinks(ticker.symbol);
+                  return (
+                    <li key={ticker.symbol}>
+                      <button
+                        type="button"
+                        onClick={() => handleTickerClick(ticker.symbol)}
+                        className="grid w-full grid-cols-[1fr_4.5rem_4.5rem] items-baseline gap-x-2 gap-y-1 px-4 py-3 text-left transition-colors hover:bg-[var(--bg-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-focus)]"
                         style={{
-                          color: active
-                            ? 'var(--accent-focus)'
-                            : dimmable
-                              ? 'var(--text-muted)'
-                              : 'var(--text-primary)',
+                          background: active ? 'var(--bg-elevated)' : 'transparent',
                         }}
+                        aria-pressed={active}
+                        aria-label={`${ticker.symbol} — ${ticker.name}: ${dimmable ? 'No facility links yet' : 'Show linked facilities'}`}
+                        title={
+                          dimmable ? `${ticker.name} — no facilities directly mapped` : ticker.name
+                        }
                       >
-                        <span aria-hidden className="inline-block w-2.5">
-                          {active ? '●' : dimmable && !active ? '–' : ''}
-                        </span>{' '}
-                        {ticker.symbol}
-                      </span>
-                      <PriceCell quote={quote} loading={isLoading} error={isError} />
-                      <ChangeCell quote={quote} />
-                      <span className="col-span-3 mt-0.5 text-[10px] text-[var(--text-muted)]">
-                        {dimmable
-                          ? 'No facility links yet'
-                          : facilities
-                            ? `${countLinkedFacilities(facilities.features, ticker.symbol)} linked facilities`
-                            : 'Loading facilities…'}
-                      </span>
-                    </button>
-                  </li>
-                );
-              })}
+                        <span
+                          className="font-mono font-medium tabular-nums"
+                          style={{
+                            color: active
+                              ? 'var(--accent-focus)'
+                              : dimmable
+                                ? 'var(--text-muted)'
+                                : 'var(--text-primary)',
+                          }}
+                        >
+                          <span aria-hidden className="inline-block w-2.5">
+                            {active ? '●' : dimmable && !active ? '–' : ''}
+                          </span>{' '}
+                          {ticker.symbol}
+                        </span>
+                        <PriceCell quote={quote} loading={isLoading} error={isError} />
+                        <ChangeCell quote={quote} />
+                        <span className="col-span-3 text-[11px] text-[var(--text-muted)]">
+                          <span className="mb-1 block text-xs text-[var(--text-primary)]">
+                            {ticker.name}
+                          </span>
+                          {dimmable
+                            ? 'No facility links yet'
+                            : facilities
+                              ? `${countLinkedFacilities(facilities.features, ticker.symbol)} linked facilities`
+                              : 'Loading facilities…'}
+                        </span>
+                      </button>
+                    </li>
+                  );
+                })}
             </ul>
           </section>
         ))}
@@ -249,7 +247,7 @@ function PriceCell({
 }): React.JSX.Element {
   if (quote) {
     return (
-      <span className="text-right tabular-nums" style={{ color: 'var(--text-primary)' }}>
+      <span className="font-mono text-right tabular-nums" style={{ color: 'var(--text-primary)' }}>
         {quote.price.toFixed(2)}
       </span>
     );
@@ -279,7 +277,7 @@ function ChangeCell({ quote }: { quote: TickerQuote | undefined }): React.JSX.El
   const Arrow = positive ? TrendingUp : TrendingDown;
   return (
     <span
-      className="flex items-center gap-1 tabular-nums"
+      className="flex items-center gap-1 font-mono tabular-nums"
       style={{ color }}
       aria-label={`${positive ? 'up' : 'down'} ${Math.abs(quote.change_pct).toFixed(2)} percent`}
     >

@@ -21,7 +21,9 @@ async (page) => {
   const listener = request => {if (request.isNavigationRequest() || new URL(request.url()).searchParams.has('_rsc')) requests.push(request.url());};
   page.on('request', listener);
   try {
-    await canvas.click({position: {x: 720, y: 425}});
+    const bounds = await canvas.boundingBox();
+    if (!bounds) throw new Error('Missing map canvas');
+    await canvas.click({position: {x: bounds.width / 2, y: bounds.height / 2}});
     const dialog = page.getByRole('dialog', {name: '125 facilities in this cluster'});
     await dialog.waitFor();
     await dialog.getByRole('button', {name: 'Show next 50 facilities'}).click();
@@ -34,8 +36,8 @@ async (page) => {
     await dialog.locator('li button').focus();
     await page.keyboard.press('Enter');
     await page.waitForURL('**/?dc=cluster-test-124');
-    await page.getByRole('dialog', {name: 'Test facility 124'}).waitFor();
-    await page.getByRole('button', {name: 'Close', exact: true}).click();
+    await page.getByRole('region', {name: 'Test facility 124', exact: true}).waitFor();
+    await page.getByRole('button', {name: 'Back to results', exact: true}).click();
     await page.waitForURL('http://localhost:3000/');
     if (requests.length) throw new Error('Cluster/card interactions navigated: ' + requests.join(', '));
     if (!await page.evaluate(() => window.__clusterDocument && window.__clusterCanvas === document.querySelector('.maplibregl-canvas'))) throw new Error('Map was replaced');

@@ -3,12 +3,14 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import dynamic from 'next/dynamic';
 import maplibregl from 'maplibre-gl';
-import type { GeoJSONSource } from 'maplibre-gl';
+import type { GeoJSONSource, StyleSpecification } from 'maplibre-gl';
+import { applyBasemapPalette } from './basemap-palette';
 import { DEFAULT_VIEWPORT, useMapStore } from '@/lib/store/map-store';
 import type { AiCampusCollection, AiCampusFeature } from './layers/datacenters-layer';
 import type { CloudRegionCollection, CloudRegionFeature } from './layers/cloud-regions-layer';
 import type { OppositionFightCollection, OppositionFightFeature } from './layers/opposition-layer';
 import type { CableCollection, CableFeature } from './layers/cables-layer';
+import { companyMatches, facilityBounds, visibleCompanyFeatures } from '@/lib/company-selection';
 import { targetsForTicker } from '@/lib/ticker-map';
 import {
   CLUSTERS_LAYER,
@@ -30,7 +32,10 @@ type ClusterSelection = {
   error: string | null;
 };
 
-const BASEMAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+const BASEMAP_STYLES = {
+  dark: 'https://tiles.openfreemap.org/styles/dark',
+  light: 'https://tiles.openfreemap.org/styles/positron',
+};
 type SecondaryComponent = typeof import('./secondary-overlays').SecondaryOverlays;
 
 export type MapProps = {
@@ -107,6 +112,14 @@ export function Map({
       if (timeout !== undefined) clearTimeout(timeout);
     }
   };
+  const basemap = useMapStore((s) => s.basemap);
+  const onlyMatches = useMapStore((s) => s.onlyCompanyMatches);
+  const fitRequest = useMapStore((s) => s.fitCompanyRequest);
+  const lastFit = useRef(fitRequest);
+  const activeBasemap = useRef(basemap);
+  const [styleRevision, setStyleRevision] = useState(0);
+  const [styleError, setStyleError] = useState(false);
+  const [styleRetry, setStyleRetry] = useState(0);
   const [ready, setReady] = useState<maplibregl.Map | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [Secondary, setSecondary] = useState<SecondaryComponent | null>(null);
@@ -122,8 +135,17 @@ export function Map({
     return !ticker && operator ? { ...base, operators: new Set([operator]) } : base;
   }, [ticker, operator]);
   const renderData = useMemo(
-    () => (data ? prepareFacilities(data, targets.operators) : null),
-    [data, targets],
+    () =>
+      data
+        ? prepareFacilities(
+            {
+              ...data,
+              features: visibleCompanyFeatures(data.features, targets.operators, onlyMatches),
+            },
+            targets.operators,
+          )
+        : null,
+    [data, targets, onlyMatches],
   );
   const secondaryActive = layers.cloud_regions || layers.opposition || layers.cables;
 
@@ -150,7 +172,7 @@ export function Map({
     try {
       map = new maplibregl.Map({
         container: containerRef.current,
-        style: BASEMAP_STYLE,
+        style: BASEMAP_STYLES[activeBasemap.current],
         center: [DEFAULT_VIEWPORT.longitude, DEFAULT_VIEWPORT.latitude],
         zoom: DEFAULT_VIEWPORT.zoom,
         bearing: DEFAULT_VIEWPORT.bearing,
@@ -176,6 +198,16 @@ export function Map({
       setVisibleBbox([bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()]);
     };
     map.on('moveend', updateViewport);
+    map.on('style.load', () => {
+      applyBasemapPalette(map, useMapStore.getState().basemap);
+      setStyleRevision((value) => value + 1);
+    });
+    const observer = new ResizeObserver(() => {
+      map.resize();
+      updateViewport();
+    });
+    observer.observe(containerRef.current);
+
     map.once('load', () => {
       map.addSource(FACILITIES_SOURCE, {
         type: 'geojson',
@@ -191,9 +223,9 @@ export function Map({
         source: FACILITIES_SOURCE,
         filter: ['has', 'point_count'],
         paint: {
-          'circle-color': '#36556d',
+          'circle-color': '#18333e',
           'circle-radius': ['step', ['get', 'point_count'], 16, 100, 21, 1000, 27],
-          'circle-stroke-color': '#64b5f6',
+          'circle-stroke-color': '#67bfc9',
           'circle-stroke-width': 1,
           'circle-opacity': ['case', ['>', ['get', 'matched'], 0], 0.95, 0.2],
         },
@@ -262,23 +294,24 @@ export function Map({
       clusterRequest.current += 1;
       mapRef.current = null;
       setReady(null);
+      observer.disconnect();
       map.remove();
     };
   }, [setViewport, setVisibleBbox]);
 
   useEffect(() => {
     closeCluster();
-    if (ready && renderData)
+    if (ready && renderData && ready.getSource(FACILITIES_SOURCE))
       (ready.getSource(FACILITIES_SOURCE) as GeoJSONSource).setData(renderData);
-  }, [ready, renderData]);
+  }, [ready, renderData, styleRevision]);
   useEffect(() => {
-    if (!ready) return;
+    if (!ready || !ready.getLayer(POINTS_LAYER)) return;
     closeCluster();
     for (const id of [POINTS_LAYER, CLUSTERS_LAYER, COUNTS_LAYER])
       ready.setLayoutProperty(id, 'visibility', layers.datacenters ? 'visible' : 'none');
     for (const [key, value] of Object.entries(pointPaint(selectedId) ?? {}))
       ready.setPaintProperty(POINTS_LAYER, key, value);
-  }, [ready, selectedId, layers.datacenters]);
+  }, [ready, selectedId, layers.datacenters, styleRevision]);
   useEffect(() => {
     if (!ready || !selectedId || !data) return;
     const feature = data.features.find((item) => item.properties.id === selectedId);
@@ -292,6 +325,70 @@ export function Map({
         essential: false,
       });
   }, [ready, selectedId, data]);
+
+  useEffect(() => {
+    if (!ready || !data || fitRequest === lastFit.current) return;
+    lastFit.current = fitRequest;
+    const bounds = facilityBounds(
+      data.features.filter((feature) => companyMatches(feature, targets.operators)),
+    );
+    if (bounds)
+      ready.fitBounds(bounds, { padding: 55, maxZoom: 12, duration: 700, essential: false });
+  }, [ready, data, fitRequest, targets]);
+
+  useEffect(() => {
+    if (!ready || activeBasemap.current === basemap) return;
+    closeCluster();
+    let cancelled = false;
+    const controller = new AbortController();
+    const timeout = setTimeout(() => controller.abort(), 15000);
+    setStyleError(false);
+    void (async () => {
+      try {
+        const response = await fetch(BASEMAP_STYLES[basemap], { signal: controller.signal });
+        if (!response.ok) throw new Error('Basemap request failed');
+        const payload: unknown = await response.json();
+        if (
+          !payload ||
+          typeof payload !== 'object' ||
+          !('version' in payload) ||
+          payload.version !== 8 ||
+          !('layers' in payload) ||
+          !Array.isArray(payload.layers) ||
+          !('sources' in payload)
+        )
+          throw new Error('Invalid basemap style');
+        if (cancelled || mapRef.current !== ready) return;
+        ready.setStyle(payload as StyleSpecification, {
+          transformStyle: (previous, next) => ({
+            ...next,
+            sources: {
+              ...next.sources,
+              ...(previous?.sources[FACILITIES_SOURCE]
+                ? { [FACILITIES_SOURCE]: previous.sources[FACILITIES_SOURCE] }
+                : {}),
+            },
+            layers: [
+              ...next.layers,
+              ...(previous?.layers.filter((layer) =>
+                [POINTS_LAYER, CLUSTERS_LAYER, COUNTS_LAYER].includes(layer.id),
+              ) ?? []),
+            ],
+          }),
+        });
+        activeBasemap.current = basemap;
+      } catch {
+        if (!cancelled) setStyleError(true);
+      } finally {
+        clearTimeout(timeout);
+      }
+    })();
+    return () => {
+      cancelled = true;
+      controller.abort();
+      clearTimeout(timeout);
+    };
+  }, [ready, basemap, styleRetry]);
 
   return (
     <>
@@ -333,6 +430,14 @@ export function Map({
             })();
           }}
         />
+      )}
+      {styleError && (
+        <p role="alert" className="absolute bottom-28 left-3 z-20 rounded bg-bg-panel p-3 text-xs">
+          Basemap could not switch. The previous map is still available.{' '}
+          <button className="underline" onClick={() => setStyleRetry((value) => value + 1)}>
+            Retry basemap
+          </button>
+        </p>
       )}
       {error && (
         <p
