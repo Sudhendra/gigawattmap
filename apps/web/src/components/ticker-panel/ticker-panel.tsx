@@ -13,19 +13,7 @@ import { groupBySection } from './group-by-section';
 import { nextTickerFilter } from './toggle';
 import type { TickerQuote } from './types';
 
-/**
- * Endpoint for the Worker. Override for staging via
- * `NEXT_PUBLIC_API_BASE` (e.g. `https://api.gigawattmap.com`); same-origin
- * default works in dev when the Worker runs behind a Pages function.
- */
-const API_BASE = process.env.NEXT_PUBLIC_API_BASE ?? '';
-const TICKERS_URL = `${API_BASE}/api/v1/tickers`;
-
-async function fetchTickers(): Promise<TickerQuote[]> {
-  const res = await fetch(TICKERS_URL, { cache: 'no-store' });
-  if (!res.ok) throw new Error(`tickers ${res.status}`);
-  return (await res.json()) as TickerQuote[];
-}
+import { fetchTickers } from './ticker-query';
 
 /**
  * Top-right floating market panel. Tracks 25 AI-infra equities, refreshes
