@@ -56,7 +56,9 @@ export const MANIFEST_URL: string | null =
  * Production:  empty so requests stay same-origin behind Cloudflare.
  */
 export const API_BASE: string =
-  process.env.NEXT_PUBLIC_API_BASE?.replace(/\/+$/, '') ?? '';
+  process.env.NODE_ENV === 'production'
+    ? ''
+    : process.env.NEXT_PUBLIC_API_BASE?.replace(/\/+$/, '') ?? '';
 
 /**
  * Canonical absolute origin of the deployed site (no trailing slash).

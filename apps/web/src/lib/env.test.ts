@@ -86,3 +86,15 @@ describe('lib/env', () => {
     expect(mod.APP_URL).toBe('https://preview.gigawattmap.com');
   });
 });
+
+ test('production API calls stay on the deployed origin even with a local developer override', async () => {
+   vi.resetModules();
+   vi.stubEnv('NODE_ENV', 'production');
+   vi.stubEnv('NEXT_PUBLIC_API_BASE', 'http://localhost:8787');
+   try {
+     const mod = await import('./env');
+     expect(mod.API_BASE).toBe('');
+   } finally {
+     vi.unstubAllEnvs();
+   }
+ });
