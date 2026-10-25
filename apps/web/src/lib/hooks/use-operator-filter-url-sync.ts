@@ -28,7 +28,10 @@ export function useOperatorFilterUrlSync(): (id: string | null) => void {
   return useCallback(
     (id: string | null) => {
       const next = new URLSearchParams(params.toString());
-      if (id) next.set(PARAM, id);
+      if (id) {
+        next.set(PARAM, id);
+        next.delete('dc');
+      }
       else next.delete(PARAM);
       const qs = next.toString();
       router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });

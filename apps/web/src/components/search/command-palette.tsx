@@ -129,7 +129,6 @@ export function CommandPalette({
             </Dialog.Overlay>
             <Dialog.Content
               asChild
-              aria-labelledby="cmdk-title"
               aria-describedby={undefined}
             >
               <motion.div
@@ -144,7 +143,7 @@ export function CommandPalette({
                 transition={{ duration: reduceMotion ? 0 : 0.14 }}
               >
                 <Dialog.Title asChild>
-                  <span id="cmdk-title" className="sr-only">
+                  <span className="sr-only">
                     Search datacenters, operators, and announcements
                   </span>
                 </Dialog.Title>

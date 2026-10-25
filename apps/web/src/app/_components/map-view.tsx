@@ -254,7 +254,6 @@ function MapViewInner(): React.JSX.Element {
       },
       onSelectOperator: (id: string) => {
         setOperatorFilter(id);
-        setSelectedDcId(null);
         setSelectedCloudRegion(null);
         setSelectedOpposition(null);
         setSelectedCable(null);
