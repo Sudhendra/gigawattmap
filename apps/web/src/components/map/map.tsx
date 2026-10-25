@@ -2,7 +2,6 @@
 
 import { useEffect, useMemo, useRef } from 'react';
 import maplibregl from 'maplibre-gl';
-import { Protocol } from 'pmtiles';
 import { MapboxOverlay } from '@deck.gl/mapbox';
 import { DEFAULT_VIEWPORT, useMapStore } from '@/lib/store/map-store';
 import {
@@ -30,15 +29,6 @@ import {
   usePrefersReducedMotion,
 } from '@/lib/hooks/use-animation-clock';
 import { targetsForTicker } from '@/lib/ticker-map';
-
-// Register the pmtiles:// protocol once per module load. Idempotent across HMR.
-let protocolRegistered = false;
-function ensurePmtilesProtocol(): void {
-  if (protocolRegistered) return;
-  const protocol = new Protocol();
-  maplibregl.addProtocol('pmtiles', protocol.tile);
-  protocolRegistered = true;
-}
 
 /**
  * Temporary basemap URL. Swapped for our own Protomaps-built dark style in a
@@ -126,7 +116,6 @@ export function Map({
   // --- Map lifecycle: create once, destroy on unmount. -----------------------
   useEffect(() => {
     if (!containerRef.current) return;
-    ensurePmtilesProtocol();
 
     const map = new maplibregl.Map({
       container: containerRef.current,
@@ -185,7 +174,7 @@ export function Map({
     // Cloud-region buffers render below the campus dots so they read as
     // background context rather than competing for clicks. deck.gl draws
     // earlier-indexed layers first, so this ordering is intentional.
-    if (cloudRegions) {
+    if (cloudRegions && cloudRegionsVisible) {
       layers.push(
         createCloudRegionsLayer(cloudRegions, {
           visible: cloudRegionsVisible,
@@ -197,7 +186,7 @@ export function Map({
     // Cables render after cloud regions but before datacenters so the
     // animated trails pass behind campus dots — the dots are the
     // primary subject; cables are connective tissue.
-    if (cablesData) {
+    if (cablesData && cablesVisible) {
       layers.push(
         ...createCablesLayers(cablesData, {
           visible: cablesVisible,
@@ -218,7 +207,7 @@ export function Map({
     }
     // Opposition glyphs render on top of campus dots so the red ✕ overlays
     // any conflicting project — that visual stacking is the point.
-    if (oppositionData) {
+    if (oppositionData && oppositionVisible) {
       layers.push(
         createOppositionLayer(oppositionData, {
           visible: oppositionVisible,
