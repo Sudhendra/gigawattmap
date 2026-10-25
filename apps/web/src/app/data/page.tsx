@@ -101,12 +101,12 @@ export default async function DataPage(): Promise<React.JSX.Element> {
           <p className="mt-3 font-mono text-[11px] uppercase tracking-widest text-text-subtle">
             Source code:{' '}
             <a
-              href="https://github.com/anomalyco/gigawattmap"
+              href="https://github.com/Sudhendra/gigawattmap"
               target="_blank"
               rel="noreferrer"
               className="text-text-muted hover:text-text-primary"
             >
-              github.com/anomalyco/gigawattmap
+              github.com/Sudhendra/gigawattmap
             </a>
           </p>
           {manifest?.updated_at && (

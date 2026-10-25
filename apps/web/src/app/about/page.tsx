@@ -7,7 +7,7 @@ import { SourcesTable } from './_components/sources-table';
  * deliberately avoid a build-time stamp so the timestamp reflects
  * editorial review, not deploy time.
  */
-const LAST_UPDATED = '2026-04-18';
+const LAST_UPDATED = '2026-10-25';
 
 export const metadata = {
   title: 'About — Gigawatt Map',
@@ -191,7 +191,7 @@ export default function AboutPage(): React.JSX.Element {
           <p>
             The repository lives on{' '}
             <a
-              href="https://github.com/gigawattmap/gigawattmap"
+              href="https://github.com/Sudhendra/gigawattmap"
               target="_blank"
               rel="noreferrer"
               className="font-mono text-text-primary underline decoration-text-subtle underline-offset-2 hover:decoration-text-primary"
@@ -199,7 +199,7 @@ export default function AboutPage(): React.JSX.Element {
               GitHub
             </a>
             . Open a pull request against{' '}
-            <code className="font-mono text-sm text-text-muted">data/curated/</code> to add or
+            <code className="font-mono text-sm text-text-muted">data-pipeline/opendc/data/ai-campuses.csv</code> to add or
             correct a facility; every row needs a primary{' '}
             <code className="font-mono text-sm text-text-muted">source_url</code>. For larger
             contributions — a new source module, a methodology change — open an issue first.
@@ -207,10 +207,10 @@ export default function AboutPage(): React.JSX.Element {
           <p>
             Press and partnership inquiries:{' '}
             <a
-              href="mailto:hello@gigawattmap.com"
-              className="font-mono text-text-primary underline decoration-text-subtle underline-offset-2 hover:decoration-text-primary"
+              href="mailto:sudhendrakambhamettu@gmail.com"
+              className="break-all font-mono text-text-primary underline decoration-text-subtle underline-offset-2 hover:decoration-text-primary"
             >
-              hello@gigawattmap.com
+              sudhendrakambhamettu@gmail.com
             </a>
             .
           </p>

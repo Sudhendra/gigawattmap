@@ -47,7 +47,7 @@ const GROUPS: SourceGroup[] = [
         coverage: 'Named flagship builds',
         license: 'CC BY-SA 4.0',
         cadence: 'On announcement',
-        href: 'https://github.com/gigawattmap/data',
+        href: 'https://github.com/Sudhendra/gigawattmap/blob/main/data-pipeline/opendc/data/ai-campuses.csv',
       },
     ],
   },

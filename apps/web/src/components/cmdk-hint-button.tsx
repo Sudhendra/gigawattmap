@@ -28,7 +28,7 @@ export function CmdkHintButton(): React.JSX.Element {
       )}
     >
       <span>Search</span>
-      <kbd className="font-mono text-[10px]">{isMac ? '⌘' : 'Ctrl'}K</kbd>
+      <kbd className="hidden font-mono text-[10px] sm:inline">{isMac ? '⌘' : 'Ctrl'}K</kbd>
     </button>
   );
 }
