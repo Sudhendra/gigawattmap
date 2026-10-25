@@ -144,7 +144,7 @@ export function TickerPanel({
               </p>
               <p className="mt-1 text-[var(--text-muted)]">
                 Matches the recorded operator. Matching facilities stay bright; others fade. This is
-                not a supplier or revenue-exposure estimate.
+                not a supplier or revenue-exposure estimate. Cluster numbers include all facilities.
               </p>
             </>
           )}
