@@ -29,3 +29,5 @@ Cluster expansion forces repeated clicks before a facility card is accessible. M
 ## Notes
 
 User authorized improved UX while retaining clustering. Use existing Radix dialog for focus management; no new dependencies. Existing total-JavaScript budget blocker remains task 048; measure incremental impact.
+
+Implementation checks: 137 web tests pass; strict typecheck and production build pass. Before the fix, selecting EQIX from ?operator=equinix requested /index.txt?_rsc=... . The same regression now passes with no route request and the same document/canvas. Local browser verified 420-member cluster company ranking; a 125-member same-coordinate fixture verified pagination, full-cluster search, keyboard card selection and 390px mobile layout. History back/forward and reload restore facility selection. Initial Next JS remains 137 KB; the on-demand picker chunk is approximately 1.7 KB gzip. No new dependencies. Production verification pending.

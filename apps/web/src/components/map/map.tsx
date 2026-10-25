@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useRef, useState } from 'react';
+import dynamic from 'next/dynamic';
 import maplibregl from 'maplibre-gl';
 import type { GeoJSONSource } from 'maplibre-gl';
 import { DEFAULT_VIEWPORT, useMapStore } from '@/lib/store/map-store';
@@ -17,6 +18,17 @@ import {
   pointPaint,
   prepareFacilities,
 } from './native-facilities';
+
+const ClusterBrowser = dynamic(() =>
+  import('./cluster-browser').then((module) => module.ClusterBrowser),
+);
+type ClusterSelection = {
+  id: number;
+  count: number;
+  center: [number, number];
+  facilities: AiCampusFeature[] | null;
+  error: string | null;
+};
 
 const BASEMAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
 type SecondaryComponent = typeof import('./secondary-overlays').SecondaryOverlays;
@@ -58,6 +70,43 @@ export function Map({
   const mapRef = useRef<maplibregl.Map | null>(null);
   const selectRef = useRef(onSelect);
   selectRef.current = onSelect;
+  const [cluster, setCluster] = useState<ClusterSelection | null>(null);
+  const clusterRequest = useRef(0);
+  const dataRef = useRef(data);
+  dataRef.current = data;
+  const closeCluster = (): void => {
+    clusterRequest.current += 1;
+    setCluster(null);
+  };
+  const loadCluster = async (map: maplibregl.Map, selection: ClusterSelection): Promise<void> => {
+    const request = ++clusterRequest.current;
+    setCluster({ ...selection, facilities: null, error: null });
+    let timeout: ReturnType<typeof setTimeout> | undefined;
+    try {
+      const source = map.getSource(FACILITIES_SOURCE) as GeoJSONSource;
+      const leaves = await Promise.race([
+        source.getClusterLeaves(selection.id, selection.count, 0),
+        new Promise<never>((_, reject) => {
+          timeout = setTimeout(() => reject(new Error('Cluster lookup timed out')), 10000);
+        }),
+      ]);
+      if (clusterRequest.current !== request || mapRef.current !== map) return;
+      const ids = new Set(
+        leaves
+          .map((leaf) => leaf.properties?.id)
+          .filter((id): id is string => typeof id === 'string'),
+      );
+      const facilities =
+        dataRef.current?.features.filter((feature) => ids.has(feature.properties.id)) ?? [];
+      if (facilities.length !== selection.count) throw new Error('Cluster membership changed');
+      setCluster({ ...selection, facilities, error: null });
+    } catch {
+      if (clusterRequest.current === request && mapRef.current === map)
+        setCluster({ ...selection, facilities: null, error: 'Could not load this cluster.' });
+    } finally {
+      if (timeout !== undefined) clearTimeout(timeout);
+    }
+  };
   const [ready, setReady] = useState<maplibregl.Map | null>(null);
   const [error, setError] = useState<string | null>(null);
   const [Secondary, setSecondary] = useState<SecondaryComponent | null>(null);
@@ -181,18 +230,22 @@ export function Map({
         if (!feature || feature.geometry.type !== 'Point') return;
         const id: unknown = feature.properties.cluster_id;
         const coordinates = feature.geometry.coordinates;
-        if (typeof id !== 'number' || coordinates.length < 2) return;
-        void (async () => {
-          try {
-            const source = map.getSource(FACILITIES_SOURCE) as GeoJSONSource;
-            const zoom = await source.getClusterExpansionZoom(id);
-            if (mapRef.current === map)
-              map.easeTo({ center: [coordinates[0]!, coordinates[1]!], zoom });
-          } catch {
-            if (mapRef.current === map)
-              setError('Could not expand this cluster. Zoom in to explore its facilities.');
-          }
-        })();
+        const count: unknown = feature.properties.point_count;
+        if (
+          typeof id !== 'number' ||
+          typeof count !== 'number' ||
+          !Number.isSafeInteger(count) ||
+          count < 1 ||
+          coordinates.length < 2
+        )
+          return;
+        void loadCluster(map, {
+          id,
+          count,
+          center: [coordinates[0]!, coordinates[1]!],
+          facilities: null,
+          error: null,
+        });
       });
       for (const id of [POINTS_LAYER, CLUSTERS_LAYER]) {
         map.on('mouseenter', id, () => {
@@ -206,6 +259,7 @@ export function Map({
       setReady(map);
     });
     return () => {
+      clusterRequest.current += 1;
       mapRef.current = null;
       setReady(null);
       map.remove();
@@ -213,11 +267,13 @@ export function Map({
   }, [setViewport, setVisibleBbox]);
 
   useEffect(() => {
+    closeCluster();
     if (ready && renderData)
       (ready.getSource(FACILITIES_SOURCE) as GeoJSONSource).setData(renderData);
   }, [ready, renderData]);
   useEffect(() => {
     if (!ready) return;
+    closeCluster();
     for (const id of [POINTS_LAYER, CLUSTERS_LAYER, COUNTS_LAYER])
       ready.setLayoutProperty(id, 'visibility', layers.datacenters ? 'visible' : 'none');
     for (const [key, value] of Object.entries(pointPaint(selectedId) ?? {}))
@@ -245,6 +301,39 @@ export function Map({
         role="region"
         aria-label="World datacenter map"
       />
+      {cluster && ready && (
+        <ClusterBrowser
+          key={cluster.id}
+          count={cluster.count}
+          facilities={cluster.facilities}
+          error={cluster.error}
+          operators={targets.operators}
+          onClose={closeCluster}
+          onRestoreFocus={() => ready.getCanvas().focus()}
+          onSelect={(id) => {
+            closeCluster();
+            selectRef.current(id);
+          }}
+          onRetry={() => {
+            void loadCluster(ready, cluster);
+          }}
+          onZoom={() => {
+            const selection = cluster;
+            closeCluster();
+            void (async () => {
+              try {
+                const zoom = await (
+                  ready.getSource(FACILITIES_SOURCE) as GeoJSONSource
+                ).getClusterExpansionZoom(selection.id);
+                if (mapRef.current === ready) ready.easeTo({ center: selection.center, zoom });
+              } catch {
+                if (mapRef.current === ready)
+                  setError('Could not zoom into this cluster. Use the map zoom controls.');
+              }
+            })();
+          }}
+        />
+      )}
       {error && (
         <p
           role="alert"

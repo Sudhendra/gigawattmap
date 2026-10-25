@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { replaceMapSelection } from '@/lib/map-selection-url';
 import { useMapStore } from '@/lib/store/map-store';
 
 const PARAM = 'dc';
@@ -16,8 +17,6 @@ const PARAM = 'dc';
  * UI handlers; never write to the store slice directly.
  */
 export function useSelectedDcUrlSync(): (id: string | null) => void {
-  const router = useRouter();
-  const pathname = usePathname();
   const params = useSearchParams();
   const setSelectedDcId = useMapStore((s) => s.setSelectedDcId);
 
@@ -28,17 +27,12 @@ export function useSelectedDcUrlSync(): (id: string | null) => void {
     setSelectedDcId(urlId);
   }, [urlId, setSelectedDcId]);
 
-  // Caller-facing setter: writes URL, lets the effect above update the store.
-  // `replace` (not push) keeps the back button useful for actual navigation,
-  // and `scroll: false` prevents Next.js from yanking the viewport on update.
+  // Selection is local UI state. Preserve the document, camera and history entry.
   return useCallback(
     (id: string | null) => {
-      const next = new URLSearchParams(params.toString());
-      if (id) next.set(PARAM, id);
-      else next.delete(PARAM);
-      const qs = next.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      replaceMapSelection(PARAM, id);
+      setSelectedDcId(id);
     },
-    [params, pathname, router],
+    [setSelectedDcId],
   );
 }

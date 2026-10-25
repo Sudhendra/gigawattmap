@@ -1,7 +1,8 @@
 'use client';
 
 import { useCallback, useEffect } from 'react';
-import { usePathname, useRouter, useSearchParams } from 'next/navigation';
+import { useSearchParams } from 'next/navigation';
+import { replaceMapSelection } from '@/lib/map-selection-url';
 import { useMapStore } from '@/lib/store/map-store';
 
 const PARAM = 'operator';
@@ -15,8 +16,6 @@ const PARAM = 'operator';
  * UI handlers (e.g. the Cmd+K palette); never write the slice directly.
  */
 export function useOperatorFilterUrlSync(): (id: string | null) => void {
-  const router = useRouter();
-  const pathname = usePathname();
   const params = useSearchParams();
   const setOperatorFilter = useMapStore((s) => s.setOperatorFilter);
 
@@ -27,15 +26,10 @@ export function useOperatorFilterUrlSync(): (id: string | null) => void {
 
   return useCallback(
     (id: string | null) => {
-      const next = new URLSearchParams(params.toString());
-      if (id) {
-        next.set(PARAM, id);
-        next.delete('dc');
-      }
-      else next.delete(PARAM);
-      const qs = next.toString();
-      router.replace(qs ? `${pathname}?${qs}` : pathname, { scroll: false });
+      replaceMapSelection(PARAM, id);
+      setOperatorFilter(id);
+      if (id) useMapStore.getState().setSelectedDcId(null);
     },
-    [params, pathname, router],
+    [setOperatorFilter],
   );
 }
