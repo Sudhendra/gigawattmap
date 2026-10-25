@@ -1,41 +1,25 @@
 'use client';
 
-import { useEffect, useMemo, useRef } from 'react';
+import { useEffect, useMemo, useRef, useState } from 'react';
 import maplibregl from 'maplibre-gl';
-import { MapboxOverlay } from '@deck.gl/mapbox';
+import type { GeoJSONSource } from 'maplibre-gl';
 import { DEFAULT_VIEWPORT, useMapStore } from '@/lib/store/map-store';
-import {
-  createDatacentersLayer,
-  type AiCampusCollection,
-  type AiCampusFeature,
-} from './layers/datacenters-layer';
-import {
-  createCloudRegionsLayer,
-  type CloudRegionCollection,
-  type CloudRegionFeature,
-} from './layers/cloud-regions-layer';
-import {
-  createOppositionLayer,
-  type OppositionFightCollection,
-  type OppositionFightFeature,
-} from './layers/opposition-layer';
-import {
-  createCablesLayers,
-  type CableCollection,
-  type CableFeature,
-} from './layers/cables-layer';
-import {
-  useAnimationClock,
-  usePrefersReducedMotion,
-} from '@/lib/hooks/use-animation-clock';
+import type { AiCampusCollection, AiCampusFeature } from './layers/datacenters-layer';
+import type { CloudRegionCollection, CloudRegionFeature } from './layers/cloud-regions-layer';
+import type { OppositionFightCollection, OppositionFightFeature } from './layers/opposition-layer';
+import type { CableCollection, CableFeature } from './layers/cables-layer';
 import { targetsForTicker } from '@/lib/ticker-map';
+import {
+  CLUSTERS_LAYER,
+  COUNTS_LAYER,
+  FACILITIES_SOURCE,
+  POINTS_LAYER,
+  pointPaint,
+  prepareFacilities,
+} from './native-facilities';
 
-/**
- * Temporary basemap URL. Swapped for our own Protomaps-built dark style in a
- * later card; OpenFreeMap's `liberty` is acceptable as a placeholder per the
- * card's note. It is dark-leaning by default in the Liberty style.
- */
 const BASEMAP_STYLE = 'https://tiles.openfreemap.org/styles/liberty';
+type SecondaryComponent = typeof import('./secondary-overlays').SecondaryOverlays;
 
 export type MapProps = {
   /** AI-campus seed collection. Owner is responsible for fetching it. */
@@ -58,11 +42,7 @@ export type MapProps = {
   onSelectCable?: (feature: CableFeature | null) => void;
 };
 
-/**
- * Full-bleed MapLibre + deck.gl map. Stateless wrt selection — the parent
- * owns it. The map reacts to `selectedId` by flying to the feature and
- * re-renders the layer so the selected dot can be highlighted.
- */
+/** Native clustered facilities; secondary rendering engine loads only on demand. */
 export function Map({
   data,
   cloudRegions = null,
@@ -76,187 +56,232 @@ export function Map({
 }: MapProps): React.JSX.Element {
   const containerRef = useRef<HTMLDivElement | null>(null);
   const mapRef = useRef<maplibregl.Map | null>(null);
-  const overlayRef = useRef<MapboxOverlay | null>(null);
+  const selectRef = useRef(onSelect);
+  selectRef.current = onSelect;
+  const [ready, setReady] = useState<maplibregl.Map | null>(null);
+  const [error, setError] = useState<string | null>(null);
+  const [Secondary, setSecondary] = useState<SecondaryComponent | null>(null);
+  const [overlayError, setOverlayError] = useState(false);
+  const [retry, setRetry] = useState(0);
   const setViewport = useMapStore((s) => s.setViewport);
   const setVisibleBbox = useMapStore((s) => s.setVisibleBbox);
-  const datacentersVisible = useMapStore((s) => s.layers.datacenters);
-  const cloudRegionsVisible = useMapStore((s) => s.layers.cloud_regions);
-  const oppositionVisible = useMapStore((s) => s.layers.opposition);
-  const cablesVisible = useMapStore((s) => s.layers.cables);
-  const tickerFilter = useMapStore((s) => s.tickerFilter);
-  const operatorFilter = useMapStore((s) => s.operatorFilter);
+  const layers = useMapStore((s) => s.layers);
+  const ticker = useMapStore((s) => s.tickerFilter);
+  const operator = useMapStore((s) => s.operatorFilter);
+  const targets = useMemo(() => {
+    const base = targetsForTicker(ticker);
+    return !ticker && operator ? { ...base, operators: new Set([operator]) } : base;
+  }, [ticker, operator]);
+  const renderData = useMemo(
+    () => (data ? prepareFacilities(data, targets.operators) : null),
+    [data, targets],
+  );
+  const secondaryActive = layers.cloud_regions || layers.opposition || layers.cables;
 
-  // Resolve the ticker filter into highlight sets once per render. Pure
-  // derivation; cheap enough not to bother memoising. The Cmd+K operator
-  // filter (`?operator=`) merges into the same operator set so the existing
-  // dimming logic covers both pathways without inventing a parallel one.
-  const highlightTargets = useMemo(() => {
-    const base = targetsForTicker(tickerFilter);
-    if (!operatorFilter) return base;
-    const operators = new Set(base.operators);
-    operators.add(operatorFilter);
-    return { ...base, operators };
-  }, [tickerFilter, operatorFilter]);
+  useEffect(() => {
+    if (!secondaryActive || Secondary) return;
+    let cancelled = false;
+    setOverlayError(false);
+    void (async () => {
+      try {
+        const module = await import('./secondary-overlays');
+        if (!cancelled) setSecondary(() => module.SecondaryOverlays);
+      } catch {
+        if (!cancelled) setOverlayError(true);
+      }
+    })();
+    return () => {
+      cancelled = true;
+    };
+  }, [secondaryActive, Secondary, retry]);
 
-  // Animation clock for the cables TripsLayer. Disabled when the user
-  // prefers reduced motion or the cables layer itself is off — no point
-  // burning a rAF loop for a hidden layer.
-  const reducedMotion = usePrefersReducedMotion();
-  const animationEnabled = cablesVisible && !!cablesData && !reducedMotion;
-  const animationClockMs = useAnimationClock(animationEnabled);
-
-  // Stable lookup for flyTo. Recomputed only when data identity changes.
-  const featureById = useMemo(() => {
-    // Disambiguate from the React component named `Map` in this module.
-    const m = new globalThis.Map<string, AiCampusFeature>();
-    if (data) for (const f of data.features) m.set(f.properties.id, f);
-    return m;
-  }, [data]);
-
-  // --- Map lifecycle: create once, destroy on unmount. -----------------------
   useEffect(() => {
     if (!containerRef.current) return;
-
-    const map = new maplibregl.Map({
-      container: containerRef.current,
-      style: BASEMAP_STYLE,
-      center: [DEFAULT_VIEWPORT.longitude, DEFAULT_VIEWPORT.latitude],
-      zoom: DEFAULT_VIEWPORT.zoom,
-      bearing: DEFAULT_VIEWPORT.bearing,
-      pitch: DEFAULT_VIEWPORT.pitch,
-      attributionControl: { compact: true },
-    });
-
+    let map: maplibregl.Map;
+    try {
+      map = new maplibregl.Map({
+        container: containerRef.current,
+        style: BASEMAP_STYLE,
+        center: [DEFAULT_VIEWPORT.longitude, DEFAULT_VIEWPORT.latitude],
+        zoom: DEFAULT_VIEWPORT.zoom,
+        bearing: DEFAULT_VIEWPORT.bearing,
+        pitch: DEFAULT_VIEWPORT.pitch,
+        attributionControl: { compact: true },
+      });
+    } catch {
+      setError('The map could not start. Check WebGL support and reload.');
+      return;
+    }
+    mapRef.current = map;
     map.addControl(new maplibregl.NavigationControl({ visualizePitch: true }), 'bottom-right');
-
-    map.on('moveend', () => {
-      const c = map.getCenter();
+    const updateViewport = (): void => {
+      const center = map.getCenter(),
+        bounds = map.getBounds();
       setViewport({
-        longitude: c.lng,
-        latitude: c.lat,
+        longitude: center.lng,
+        latitude: center.lat,
         zoom: map.getZoom(),
         bearing: map.getBearing(),
         pitch: map.getPitch(),
       });
-      // Push the visible bounds for the HUD's stat reducer. MapLibre may
-      // return west > east when the view wraps the antimeridian; the stats
-      // helper handles that case directly.
-      const b = map.getBounds();
-      setVisibleBbox([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
-    });
-
-    // Seed the bbox once the style has loaded so the HUD can render before
-    // the user's first interaction.
+      setVisibleBbox([bounds.getWest(), bounds.getSouth(), bounds.getEast(), bounds.getNorth()]);
+    };
+    map.on('moveend', updateViewport);
     map.once('load', () => {
-      const b = map.getBounds();
-      setVisibleBbox([b.getWest(), b.getSouth(), b.getEast(), b.getNorth()]);
+      map.addSource(FACILITIES_SOURCE, {
+        type: 'geojson',
+        data: { type: 'FeatureCollection', features: [] },
+        cluster: true,
+        clusterRadius: 40,
+        clusterMaxZoom: 9,
+        clusterProperties: { matched: ['+', ['get', 'matched']] },
+      });
+      map.addLayer({
+        id: CLUSTERS_LAYER,
+        type: 'circle',
+        source: FACILITIES_SOURCE,
+        filter: ['has', 'point_count'],
+        paint: {
+          'circle-color': '#36556d',
+          'circle-radius': ['step', ['get', 'point_count'], 16, 100, 21, 1000, 27],
+          'circle-stroke-color': '#64b5f6',
+          'circle-stroke-width': 1,
+          'circle-opacity': ['case', ['>', ['get', 'matched'], 0], 0.95, 0.2],
+        },
+      });
+      map.addLayer({
+        id: COUNTS_LAYER,
+        type: 'symbol',
+        source: FACILITIES_SOURCE,
+        filter: ['has', 'point_count'],
+        layout: {
+          'text-field': ['get', 'point_count_abbreviated'],
+          'text-font': ['Noto Sans Regular'],
+          'text-size': 12,
+          'text-allow-overlap': true,
+        },
+        paint: {
+          'text-color': '#ffffff',
+          'text-opacity': ['case', ['>', ['get', 'matched'], 0], 1, 0.3],
+        },
+      });
+      map.addLayer({
+        id: POINTS_LAYER,
+        type: 'circle',
+        source: FACILITIES_SOURCE,
+        filter: ['!', ['has', 'point_count']],
+        paint: pointPaint(null),
+      });
+      map.on('click', POINTS_LAYER, (event) => {
+        const id: unknown = event.features?.[0]?.properties.id;
+        if (typeof id === 'string') selectRef.current(id);
+      });
+      map.on('click', CLUSTERS_LAYER, (event) => {
+        const feature = event.features?.[0];
+        if (!feature || feature.geometry.type !== 'Point') return;
+        const id: unknown = feature.properties.cluster_id;
+        const coordinates = feature.geometry.coordinates;
+        if (typeof id !== 'number' || coordinates.length < 2) return;
+        void (async () => {
+          try {
+            const source = map.getSource(FACILITIES_SOURCE) as GeoJSONSource;
+            const zoom = await source.getClusterExpansionZoom(id);
+            if (mapRef.current === map)
+              map.easeTo({ center: [coordinates[0]!, coordinates[1]!], zoom });
+          } catch {
+            if (mapRef.current === map)
+              setError('Could not expand this cluster. Zoom in to explore its facilities.');
+          }
+        })();
+      });
+      for (const id of [POINTS_LAYER, CLUSTERS_LAYER]) {
+        map.on('mouseenter', id, () => {
+          map.getCanvas().style.cursor = 'pointer';
+        });
+        map.on('mouseleave', id, () => {
+          map.getCanvas().style.cursor = '';
+        });
+      }
+      updateViewport();
+      setReady(map);
     });
-
-    const overlay = new MapboxOverlay({ interleaved: true, layers: [] });
-    map.addControl(overlay);
-
-    mapRef.current = map;
-    overlayRef.current = overlay;
-
     return () => {
-      overlay.finalize();
-      map.remove();
       mapRef.current = null;
-      overlayRef.current = null;
+      setReady(null);
+      map.remove();
     };
   }, [setViewport, setVisibleBbox]);
 
-  // --- Layer: rebuild when data or selection changes. ------------------------
   useEffect(() => {
-    const overlay = overlayRef.current;
-    if (!overlay) return;
-    const layers = [];
-    // Cloud-region buffers render below the campus dots so they read as
-    // background context rather than competing for clicks. deck.gl draws
-    // earlier-indexed layers first, so this ordering is intentional.
-    if (cloudRegions && cloudRegionsVisible) {
-      layers.push(
-        createCloudRegionsLayer(cloudRegions, {
-          visible: cloudRegionsVisible,
-          highlightProviders: highlightTargets.cloudProviders,
-          onClick: (feature) => onSelectCloudRegion?.(feature),
-        }),
-      );
-    }
-    // Cables render after cloud regions but before datacenters so the
-    // animated trails pass behind campus dots — the dots are the
-    // primary subject; cables are connective tissue.
-    if (cablesData && cablesVisible) {
-      layers.push(
-        ...createCablesLayers(cablesData, {
-          visible: cablesVisible,
-          currentTimeMs: animationClockMs,
-          onClick: (feature) => onSelectCable?.(feature),
-        }),
-      );
-    }
-    if (data) {
-      layers.push(
-        createDatacentersLayer(data, {
-          selectedId,
-          visible: datacentersVisible,
-          highlightOperators: highlightTargets.operators,
-          onClick: (feature) => onSelect(feature.properties.id),
-        }),
-      );
-    }
-    // Opposition glyphs render on top of campus dots so the red ✕ overlays
-    // any conflicting project — that visual stacking is the point.
-    if (oppositionData && oppositionVisible) {
-      layers.push(
-        createOppositionLayer(oppositionData, {
-          visible: oppositionVisible,
-          onClick: (feature) => onSelectOpposition?.(feature),
-        }),
-      );
-    }
-    overlay.setProps({ layers });
-  }, [
-    data,
-    cloudRegions,
-    oppositionData,
-    cablesData,
-    selectedId,
-    onSelect,
-    onSelectCloudRegion,
-    onSelectOpposition,
-    onSelectCable,
-    datacentersVisible,
-    cloudRegionsVisible,
-    oppositionVisible,
-    cablesVisible,
-    animationClockMs,
-    highlightTargets,
-  ]);
-
-  // --- Fly-to when selection changes externally (URL load, deep link). ------
+    if (ready && renderData)
+      (ready.getSource(FACILITIES_SOURCE) as GeoJSONSource).setData(renderData);
+  }, [ready, renderData]);
   useEffect(() => {
-    const map = mapRef.current;
-    if (!map || !selectedId) return;
-    const f = featureById.get(selectedId);
-    if (!f) return;
-    const [lon, lat] = f.geometry.coordinates;
-    if (typeof lon !== 'number' || typeof lat !== 'number') return;
-    map.flyTo({
-      center: [lon, lat],
-      zoom: Math.max(map.getZoom(), 7),
-      speed: 1.2,
-      curve: 1.4,
-      essential: true, // honors prefers-reduced-motion at the maplibre level
-    });
-  }, [selectedId, featureById]);
+    if (!ready) return;
+    for (const id of [POINTS_LAYER, CLUSTERS_LAYER, COUNTS_LAYER])
+      ready.setLayoutProperty(id, 'visibility', layers.datacenters ? 'visible' : 'none');
+    for (const [key, value] of Object.entries(pointPaint(selectedId) ?? {}))
+      ready.setPaintProperty(POINTS_LAYER, key, value);
+  }, [ready, selectedId, layers.datacenters]);
+  useEffect(() => {
+    if (!ready || !selectedId || !data) return;
+    const feature = data.features.find((item) => item.properties.id === selectedId);
+    if (!feature) return;
+    const [lon, lat] = feature.geometry.coordinates;
+    if (typeof lon === 'number' && typeof lat === 'number')
+      ready.flyTo({
+        center: [lon, lat],
+        zoom: Math.max(ready.getZoom(), 12),
+        speed: 1.2,
+        essential: false,
+      });
+  }, [ready, selectedId, data]);
 
   return (
-    <div
-      ref={containerRef}
-      className="h-full w-full [&_.maplibregl-canvas]:cursor-grab [&_.maplibregl-canvas:active]:cursor-grabbing"
-      role="region"
-      aria-label="World datacenter map"
-    />
+    <>
+      <div
+        ref={containerRef}
+        className="h-full w-full [&_.maplibregl-canvas]:cursor-grab [&_.maplibregl-canvas:active]:cursor-grabbing"
+        role="region"
+        aria-label="World datacenter map"
+      />
+      {error && (
+        <p
+          role="alert"
+          className="absolute left-3 top-48 z-20 max-w-xs rounded bg-[var(--bg-panel)] p-3 text-xs"
+        >
+          {error}
+        </p>
+      )}
+      {secondaryActive && !Secondary && (
+        <p
+          role="status"
+          className="absolute left-3 top-48 z-20 rounded bg-[var(--bg-panel)] p-3 text-xs"
+        >
+          {overlayError ? (
+            <>
+              Layer renderer could not load.{' '}
+              <button className="underline" onClick={() => setRetry((n) => n + 1)}>
+                Retry
+              </button>
+            </>
+          ) : (
+            'Loading layer renderer…'
+          )}
+        </p>
+      )}
+      {ready && secondaryActive && Secondary && (
+        <Secondary
+          map={ready}
+          cloudRegions={layers.cloud_regions ? cloudRegions : null}
+          oppositionData={layers.opposition ? oppositionData : null}
+          cablesData={layers.cables ? cablesData : null}
+          cloudProviders={targets.cloudProviders}
+          onCloud={onSelectCloudRegion}
+          onOpposition={onSelectOpposition}
+          onCable={onSelectCable}
+        />
+      )}
+    </>
   );
 }

@@ -7,19 +7,34 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'sonner';
+import { validateSecondaryDataset } from '@/lib/secondary-data';
 import { fetchMapData } from '@/lib/map-data';
 import { LayerControls } from '@/components/map/layer-controls';
 import { ViewportHud } from '@/components/map/viewport-hud';
-import { CloudRegionCard } from '@/components/map/cloud-region-card';
-import { OppositionCard } from '@/components/intelligence-card/opposition-card';
-import { CableCard } from '@/components/intelligence-card/cable-card';
-import { IntelligenceCard } from '@/components/intelligence-card/intelligence-card';
+const CloudRegionCard = dynamic(async () => {
+  const module = await import('@/components/map/cloud-region-card');
+  return module.CloudRegionCard;
+});
+const OppositionCard = dynamic(async () => {
+  const module = await import('@/components/intelligence-card/opposition-card');
+  return module.OppositionCard;
+});
+const CableCard = dynamic(async () => {
+  const module = await import('@/components/intelligence-card/cable-card');
+  return module.CableCard;
+});
+const IntelligenceCard = dynamic(async () => {
+  const module = await import('@/components/intelligence-card/intelligence-card');
+  return module.IntelligenceCard;
+});
 import { AnnouncementsFeed } from '@/components/announcements-feed/announcements-feed';
 import { TickerPanel } from '@/components/ticker-panel/ticker-panel';
-import { CommandPalette } from '@/components/search/command-palette';
+const MapSearch = dynamic(async () => {
+  const module = await import('@/components/search/map-search');
+  return module.MapSearch;
+});
 import { useSelectedDcUrlSync } from '@/lib/hooks/use-selected-dc-url-sync';
 import { useOperatorFilterUrlSync } from '@/lib/hooks/use-operator-filter-url-sync';
-import { useSearchIndex } from '@/lib/hooks/use-search-index';
 import { useMapStore } from '@/lib/store/map-store';
 import type {
   AiCampusCollection,
@@ -40,13 +55,7 @@ const CLOUD_REGIONS_URL = '/seed/cloud-regions.geojson';
 const OPPOSITION_URL = '/seed/opposition.geojson';
 const CABLES_URL = '/seed/cables.geojson';
 
-/**
- * MapLibre + deck.gl together pull ~300 KiB of JS that does not become
- * interactive until WebGL initializes. Loading them via `next/dynamic` with
- * `ssr: false` removes them from the initial bundle, so the LCP-relevant
- * chunks (header, ticker, announcements) hydrate first. The fallback
- * matches the final map dimensions exactly to keep CLS at zero.
- */
+/** MapLibre loads after the initial UI; secondary renderers load only on demand. */
 const Map = dynamic(() => import('@/components/map/map').then((m) => ({ default: m.Map })), {
   ssr: false,
   loading: () => (
@@ -74,6 +83,9 @@ function MapViewInner(): React.JSX.Element {
   const [changesUnavailable, setChangesUnavailable] = useState(false);
   const [mapError, setMapError] = useState(false);
   const [updatedAt, setUpdatedAt] = useState<string | null>(null);
+  const layers = useMapStore((state) => state.layers);
+  const [layerErrors, setLayerErrors] = useState<Record<string, boolean>>({});
+  const [layerRetry, setLayerRetry] = useState(0);
   const [cloudRegions, setCloudRegions] = useState<CloudRegionCollection | null>(null);
   const [oppositionData, setOppositionData] = useState<OppositionFightCollection | null>(null);
   const [cablesData, setCablesData] = useState<CableCollection | null>(null);
@@ -85,7 +97,6 @@ function MapViewInner(): React.JSX.Element {
   const router = useRouter();
   const cmdkOpen = useMapStore((s) => s.cmdkOpen);
   const setCmdkOpen = useMapStore((s) => s.setCmdkOpen);
-  const searchIndex = useSearchIndex(data);
   // The store mirrors the URL — read it here so the drawer + map both
   // observe the same single source of truth.
   const selectedId = useMapStore((s) => s.selectedDcId);
@@ -129,14 +140,18 @@ function MapViewInner(): React.JSX.Element {
   // Cloud regions live in their own seed; failure here is non-fatal —
   // the rest of the map still renders.
   useEffect(() => {
+    if (!layers.cloud_regions || cloudRegions) return;
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch(CLOUD_REGIONS_URL);
+        const res = await fetch(CLOUD_REGIONS_URL, { signal: AbortSignal.timeout(20_000) });
         if (!res.ok) throw new Error(`Cloud-regions fetch failed: ${res.status}`);
-        const next = (await res.json()) as CloudRegionCollection;
+        const payload: unknown = await res.json();
+        validateSecondaryDataset(payload, 'cloud_regions');
+        const next = payload as CloudRegionCollection;
         if (!cancelled) setCloudRegions(next);
       } catch (err) {
+        if (!cancelled) setLayerErrors((previous) => ({ ...previous, cloud_regions: true }));
         // eslint-disable-next-line no-console
         console.error('Failed to load cloud-regions seed', err);
       }
@@ -144,18 +159,22 @@ function MapViewInner(): React.JSX.Element {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [layers.cloud_regions, cloudRegions, layerRetry]);
 
   // Opposition fights — same non-fatal pattern.
   useEffect(() => {
+    if (!layers.opposition || oppositionData) return;
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch(OPPOSITION_URL);
+        const res = await fetch(OPPOSITION_URL, { signal: AbortSignal.timeout(20_000) });
         if (!res.ok) throw new Error(`Opposition fetch failed: ${res.status}`);
-        const next = (await res.json()) as OppositionFightCollection;
+        const payload: unknown = await res.json();
+        validateSecondaryDataset(payload, 'opposition');
+        const next = payload as OppositionFightCollection;
         if (!cancelled) setOppositionData(next);
       } catch (err) {
+        if (!cancelled) setLayerErrors((previous) => ({ ...previous, opposition: true }));
         // eslint-disable-next-line no-console
         console.error('Failed to load opposition seed', err);
       }
@@ -163,19 +182,23 @@ function MapViewInner(): React.JSX.Element {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [layers.opposition, oppositionData, layerRetry]);
 
   // Submarine cables — same non-fatal pattern. The 2 MB payload is
   // accepted in dev mode; production swaps in PMTiles per task 013.
   useEffect(() => {
+    if (!layers.cables || cablesData) return;
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch(CABLES_URL);
+        const res = await fetch(CABLES_URL, { signal: AbortSignal.timeout(20_000) });
         if (!res.ok) throw new Error(`Cables fetch failed: ${res.status}`);
-        const next = (await res.json()) as CableCollection;
+        const payload: unknown = await res.json();
+        validateSecondaryDataset(payload, 'cables');
+        const next = payload as CableCollection;
         if (!cancelled) setCablesData(next);
       } catch (err) {
+        if (!cancelled) setLayerErrors((previous) => ({ ...previous, cables: true }));
         // eslint-disable-next-line no-console
         console.error('Failed to load cables seed', err);
       }
@@ -183,7 +206,7 @@ function MapViewInner(): React.JSX.Element {
     return () => {
       cancelled = true;
     };
-  }, []);
+  }, [layers.cables, cablesData, layerRetry]);
 
   const selectedFeature = useMemo<AiCampusFeature | null>(() => {
     if (!data || !selectedId) return null;
@@ -302,20 +325,47 @@ function MapViewInner(): React.JSX.Element {
           unavailable={mapError || changesUnavailable}
         />
         <LayerControls />
+        {((layers.cloud_regions && !cloudRegions) ||
+          (layers.cables && !cablesData) ||
+          (layers.opposition && !oppositionData)) && (
+          <p
+            role="status"
+            className="absolute left-3 top-60 z-20 max-w-xs rounded bg-[var(--bg-panel)] p-3 text-xs"
+          >
+            {Object.keys(layerErrors).some(
+              (key) => layerErrors[key] && layers[key as keyof typeof layers],
+            ) ? (
+              <>
+                A layer could not load.{' '}
+                <button
+                  className="underline"
+                  onClick={() => {
+                    setLayerErrors({});
+                    setLayerRetry((n) => n + 1);
+                  }}
+                >
+                  Retry
+                </button>
+              </>
+            ) : (
+              'Loading layer data…'
+            )}
+          </p>
+        )}
+
         <TickerPanel facilities={data} />
         <AnnouncementsFeed datacenters={data} onSelectDatacenter={handleSelect} />
         <ViewportHud data={data} />
-        <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
-        <OppositionCard feature={selectedOpposition} onClose={handleCloseOpposition} />
-        <CableCard feature={selectedCable} onClose={handleCloseCable} />
+        {selectedCloudRegion && (
+          <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
+        )}
+        {selectedOpposition && (
+          <OppositionCard feature={selectedOpposition} onClose={handleCloseOpposition} />
+        )}
+        {selectedCable && <CableCard feature={selectedCable} onClose={handleCloseCable} />}
       </div>
-      <IntelligenceCard feature={selectedFeature} onClose={handleClose} />
-      <CommandPalette
-        open={cmdkOpen}
-        onOpenChange={setCmdkOpen}
-        index={searchIndex}
-        actions={cmdkActions}
-      />
+      {selectedFeature && <IntelligenceCard feature={selectedFeature} onClose={handleClose} />}
+      {cmdkOpen && <MapSearch data={data} onOpenChange={setCmdkOpen} actions={cmdkActions} />}
       <Toaster
         theme="dark"
         position="bottom-left"

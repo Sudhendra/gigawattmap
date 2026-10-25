@@ -119,6 +119,8 @@ function toSegments(data: CableCollection): CableSegment[] {
   return out;
 }
 
+const segmentCache = new WeakMap<CableCollection, CableSegment[]>();
+
 export type CreateCablesLayersOptions = {
   /** Click handler. Receives the GeoJSON feature for card population. */
   onClick?: (feature: CableFeature) => void;
@@ -140,15 +142,19 @@ export type CreateCablesLayersOptions = {
  * group. Index 0 is the static base line; index 1 is the animated
  * trail (omitted when ``currentTimeMs`` is null).
  *
- * Memoization is the caller's responsibility — segments are recomputed
- * on every call. The map.tsx effect already memoizes per-data identity.
+ * Immutable source snapshots share their prepared geometry across animation
+ * frames. Weak references release it when the source is replaced.
  */
 export function createCablesLayers(
   data: CableCollection,
   options: CreateCablesLayersOptions = {},
 ): CompositeLayer[] {
   const { onClick, visible = true, currentTimeMs = null } = options;
-  const segments = toSegments(data);
+  let segments = segmentCache.get(data);
+  if (!segments) {
+    segments = toSegments(data);
+    segmentCache.set(data, segments);
+  }
 
   // Base layer is always present — it owns clicks + tooltips so the
   // animated layer doesn't need to be pickable (cheaper raycast).
