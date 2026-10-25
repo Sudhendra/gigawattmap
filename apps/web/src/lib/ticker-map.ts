@@ -98,8 +98,9 @@ const OPERATORS_BY_TICKER: Readonly<Record<string, readonly string[]>> = {
   // REITs whose campuses appear in the seed
   EQIX: ['Equinix'],
   DLR: ['Digital Realty'],
-  // Power producers known to host or serve AI offtakes
-  TLN: ['Talen', 'Amazon'], // Susquehanna campus + AWS Cumulus offtake
+  // Power relationships require facility-specific evidence.
+  // TLN has no facility-specific mapping yet. An AWS agreement is not a
+  // defensible link to every Amazon-operated facility.
   // Pure-play silicon doesn't operate datacenters; left empty so the
   // filter is a no-op and we don't pretend.
 };
@@ -108,14 +109,12 @@ const OPERATORS_BY_TICKER: Readonly<Record<string, readonly string[]>> = {
  * Cloud-region providers reachable from a given ticker. Mirrors the
  * `CloudProvider` enum used by the cloud-regions layer.
  */
-const CLOUD_PROVIDERS_BY_TICKER: Readonly<
-  Record<string, readonly CloudProvider[]>
-> = {
+const CLOUD_PROVIDERS_BY_TICKER: Readonly<Record<string, readonly CloudProvider[]>> = {
   MSFT: ['azure'],
   GOOGL: ['gcp'],
   AMZN: ['aws'],
   ORCL: ['oracle'],
-  // (Alibaba is private; no ticker maps to it.)
+  // Alibaba is not included in this quote panel.
 };
 
 /**
@@ -176,4 +175,16 @@ const TICKER_BY_OPERATOR: ReadonlyMap<string, string> = (() => {
 export function tickerForOperator(operatorDisplayName: string): string | null {
   if (!operatorDisplayName) return null;
   return TICKER_BY_OPERATOR.get(operatorDisplayName) ?? null;
+}
+
+/** Count direct operator matches in the current dataset, independent of the viewport. */
+export function countLinkedFacilities(
+  features: readonly { properties: { operator: string } }[],
+  symbol: string,
+): number {
+  const targets = targetsForTicker(symbol);
+  return features.reduce(
+    (count, feature) => count + Number(targets.operators.has(feature.properties.operator)),
+    0,
+  );
 }

@@ -73,9 +73,9 @@ export function ViewportHud({ data }: ViewportHudProps): React.JSX.Element {
             className="tabular flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1"
           >
             <Stat
-              label="Visible"
+              label="All visible"
               value={`${stats.dcCount.toLocaleString()} DCs`}
-              tooltip="Datacenters whose marker falls inside the current map view."
+              tooltip="All facilities within the current map view, including those dimmed by company highlighting."
             />
             <Divider />
             <Stat
@@ -127,7 +127,11 @@ function Stat({
 }
 
 function Divider(): React.JSX.Element {
-  return <span aria-hidden className="text-[var(--text-subtle)]">·</span>;
+  return (
+    <span aria-hidden className="text-[var(--text-subtle)]">
+      ·
+    </span>
+  );
 }
 
 function Chevron({ collapsed }: { collapsed: boolean }): React.JSX.Element {

@@ -35,14 +35,14 @@ describe('ticker-panel structural guarantees (041)', () => {
     // Whatever the exact wording, the panel must mention "filter" and "map"
     // in close proximity inside the header — the whole point of 041 is that
     // a new visitor finds out what the rows do without hovering.
-    expect(source).toMatch(/click .* (?:to )?filter (?:the )?map/i);
+    expect(source).toMatch(/Show linked facilities/);
   });
 
   it('renders a clear-filter pill conditional on tickerFilter', () => {
     // The pill is only meaningful when a filter is active. The conditional
     // render keeps the panel uncluttered for first-time visitors.
     expect(source).toMatch(/tickerFilter && /);
-    expect(source).toMatch(/aria-label=["']Clear ticker filter["']/);
+    expect(source).toMatch(/aria-label=["']Clear linked facilities["']/);
   });
 
   it('marks the active row with a leading dot glyph', () => {

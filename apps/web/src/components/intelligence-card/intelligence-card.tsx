@@ -13,15 +13,12 @@ import {
 import { ShareModal } from '@/components/share/share-modal';
 import { SEARCH_INDEX_URL } from '@/lib/env';
 import type { SearchCorpus } from '@/lib/search';
-import { useMapStore } from '@/lib/store/map-store';
+import { useTickerSelection } from '@/lib/hooks/use-ticker-selection';
 import { TICKER_META_BY_SYMBOL, SECTION_LABEL } from '@/lib/ticker-map';
 import { cn } from '@/lib/cn';
 import { FieldRow } from './field-row';
 import { StatusBadge } from './status-badge';
-import {
-  selectAnnouncementsForCampus,
-  tickerForOperator,
-} from './intelligence-card-helpers';
+import { selectAnnouncementsForCampus, tickerForOperator } from './intelligence-card-helpers';
 
 type IntelligenceCardProps = {
   feature: AiCampusFeature | null;
@@ -76,10 +73,7 @@ export function IntelligenceCard({ feature, onClose }: IntelligenceCardProps): R
                 transition={{ duration: reduceMotion ? 0 : 0.18 }}
               />
             </Dialog.Overlay>
-            <Dialog.Content
-              asChild
-              aria-describedby={undefined}
-            >
+            <Dialog.Content asChild aria-describedby={undefined}>
               <motion.aside
                 className={cn(
                   'fixed right-0 top-0 z-50 flex h-dvh w-full max-w-[420px] flex-col',
@@ -123,9 +117,7 @@ function CardBody({
       <header className="flex items-start justify-between gap-3 border-b border-[var(--bg-elevated)] px-5 py-4">
         <div className="min-w-0 flex-1">
           <Dialog.Title asChild>
-            <h2
-              className="font-display text-[15px] font-semibold uppercase tracking-[0.08em] text-[var(--text-primary)]"
-            >
+            <h2 className="font-display text-[15px] font-semibold uppercase tracking-[0.08em] text-[var(--text-primary)]">
               {p.name}
             </h2>
           </Dialog.Title>
@@ -198,15 +190,23 @@ function CardBody({
           <ContextSection campus={feature} />
         </Section>
 
-        <Section title="Market exposure">
+        <Section title="Listed operator">
           <MarketExposureSection operatorDisplayName={p.operator} />
         </Section>
 
         <Section title="Sources">
           <p className="text-xs leading-relaxed text-[var(--text-muted)]">
-            {p.sources?.includes('osm') ? '© OpenStreetMap contributors (ODbL). Coverage and estimates are community-maintained. ' : ''}
-            {p.sources?.includes('curated') || !p.sources?.length ? 'Curated campus details from the project repository; automated map refreshes do not re-verify editorial claims. ' : ''}
-            {p.source_url ? <a href={p.source_url} target="_blank" rel="noreferrer" className="underline">Original source</a> : null}
+            {p.sources?.includes('osm')
+              ? '© OpenStreetMap contributors (ODbL). Coverage and estimates are community-maintained. '
+              : ''}
+            {p.sources?.includes('curated') || !p.sources?.length
+              ? 'Curated campus details from the project repository; automated map refreshes do not re-verify editorial claims. '
+              : ''}
+            {p.source_url ? (
+              <a href={p.source_url} target="_blank" rel="noreferrer" className="underline">
+                Original source
+              </a>
+            ) : null}
           </p>
         </Section>
       </div>
@@ -237,7 +237,9 @@ function Stat({ label, value }: { label: string; value: string }): React.JSX.Ele
       <div className="text-[10px] uppercase tracking-[0.12em] text-[var(--text-subtle)]">
         {label}
       </div>
-      <div className="mt-0.5 font-display text-base text-[var(--text-primary)] tabular">{value}</div>
+      <div className="mt-0.5 font-display text-base text-[var(--text-primary)] tabular">
+        {value}
+      </div>
     </div>
   );
 }
@@ -264,11 +266,7 @@ function PowerSection({
   voltageKv: number | null | undefined;
 }): React.JSX.Element {
   if (distanceKm == null) {
-    return (
-      <Placeholder>
-        Substation proximity has not been verified for this facility.
-      </Placeholder>
-    );
+    return <Placeholder>Substation proximity has not been verified for this facility.</Placeholder>;
   }
   const isHighVoltage = typeof voltageKv === 'number' && voltageKv >= 100;
   return (
@@ -297,8 +295,8 @@ function PowerSection({
         )}
       </FieldRow>
       <p className="mt-2 text-[10px] leading-relaxed text-[var(--text-subtle)]">
-        Source: OpenStreetMap (ODbL). Distance is great-circle from the
-        campus centroid to the substation centroid.
+        Source: OpenStreetMap (ODbL). Distance is great-circle from the campus centroid to the
+        substation centroid.
       </p>
     </dl>
   );
@@ -404,7 +402,7 @@ function MarketExposureSection({
 }: {
   operatorDisplayName: string;
 }): React.JSX.Element {
-  const setTickerFilter = useMapStore((s) => s.setTickerFilter);
+  const setTickerFilter = useTickerSelection();
   const symbol = tickerForOperator(operatorDisplayName);
   if (!symbol) {
     return <p className="text-xs text-[var(--text-muted)]">No public ticker linked.</p>;
@@ -419,7 +417,7 @@ function MarketExposureSection({
         'text-[var(--text-primary)] transition hover:border-[var(--accent-focus)] hover:bg-[var(--bg-elevated)]',
         'focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-[var(--accent-focus)]',
       )}
-      aria-label={`Filter map by ${symbol}`}
+      aria-label={`Show linked facilities for ${symbol}`}
     >
       <span className="font-display font-semibold tabular">${symbol}</span>
       {meta ? (

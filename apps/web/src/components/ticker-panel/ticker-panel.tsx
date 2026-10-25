@@ -7,7 +7,11 @@ import {
   SECTION_LABEL,
   TICKER_SECTIONS,
   tickerHasLinks,
+  countLinkedFacilities,
+  TICKER_META_BY_SYMBOL,
 } from '@/lib/ticker-map';
+import type { AiCampusCollection } from '@/components/map/layers/datacenters-layer';
+import { useTickerSelection } from '@/lib/hooks/use-ticker-selection';
 import { useMapStore } from '@/lib/store/map-store';
 import { groupBySection } from './group-by-section';
 import { nextTickerFilter } from './toggle';
@@ -21,9 +25,13 @@ import { fetchTickers } from './ticker-query';
  * filter the map by clicking a row. Clicking the active ticker again
  * clears the filter.
  */
-export function TickerPanel(): React.JSX.Element {
+export function TickerPanel({
+  facilities,
+}: {
+  facilities: AiCampusCollection | null;
+}): React.JSX.Element {
   const tickerFilter = useMapStore((s) => s.tickerFilter);
-  const setTickerFilter = useMapStore((s) => s.setTickerFilter);
+  const setTickerFilter = useTickerSelection();
   const collapsed = useMapStore((s) => s.tickerPanelCollapsed);
   const setCollapsed = useMapStore((s) => s.setTickerPanelCollapsed);
 
@@ -60,16 +68,14 @@ export function TickerPanel(): React.JSX.Element {
         aria-label="Show market panel"
       >
         <ChevronLeft size={12} aria-hidden />
-        <span className="[writing-mode:vertical-rl] [transform:rotate(180deg)]">
-          markets
-        </span>
+        <span className="[writing-mode:vertical-rl] [transform:rotate(180deg)]">markets</span>
       </button>
     );
   }
 
   return (
     <aside
-      className="absolute right-4 top-4 z-10 flex w-64 flex-col rounded-md border font-mono text-xs shadow-lg backdrop-blur"
+      className="absolute right-4 top-4 z-10 flex max-h-[calc(100dvh-6rem)] w-72 max-w-[calc(100vw-2rem)] flex-col rounded-md border font-mono text-xs shadow-lg backdrop-blur"
       style={{
         background: 'color-mix(in oklab, var(--bg-panel) 92%, transparent)',
         borderColor: 'var(--bg-elevated)',
@@ -88,11 +94,8 @@ export function TickerPanel(): React.JSX.Element {
           >
             markets
           </span>
-          <span
-            className="text-[10px] normal-case"
-            style={{ color: 'var(--text-subtle)' }}
-          >
-            click a ticker to filter the map
+          <span className="text-[10px] normal-case" style={{ color: 'var(--text-subtle)' }}>
+            Show linked facilities
           </span>
         </div>
         <button
@@ -107,36 +110,45 @@ export function TickerPanel(): React.JSX.Element {
 
       {tickerFilter && (
         <div
-          className="flex items-center justify-between gap-2 border-b px-3 py-1.5"
-          style={{ borderColor: 'var(--bg-elevated)' }}
+          className="border-b border-[var(--bg-elevated)] px-3 py-2 text-[11px]"
+          aria-live="polite"
         >
-          <span
-            className="text-[10px] uppercase tracking-wide"
-            style={{ color: 'var(--text-subtle)' }}
-          >
-            filtering
-          </span>
-          <button
-            type="button"
-            onClick={() => setTickerFilter(null)}
-            aria-label="Clear ticker filter"
-            className="flex items-center gap-1 rounded px-1.5 py-0.5 font-medium tabular-nums transition-colors hover:bg-[var(--bg-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-[var(--accent-focus)]"
-            style={{ color: 'var(--accent-focus)' }}
-          >
-            {tickerFilter}
-            <span aria-hidden>×</span>
-          </button>
+          <div className="mb-1 flex items-center justify-between gap-2">
+            <strong>{TICKER_META_BY_SYMBOL.get(tickerFilter)?.name ?? tickerFilter}</strong>
+            <button
+              type="button"
+              onClick={() => setTickerFilter(null)}
+              aria-label="Clear linked facilities"
+              className="rounded px-2 py-1 text-[var(--accent-focus)] focus-visible:ring-2"
+            >
+              Clear ×
+            </button>
+          </div>
+          {!tickerHasLinks(tickerFilter) ? (
+            <p>No facility links yet. The map remains unchanged.</p>
+          ) : (
+            <>
+              <p>
+                {facilities
+                  ? `${countLinkedFacilities(facilities.features, tickerFilter).toLocaleString()} linked facilities in this dataset`
+                  : 'Loading facility count…'}
+              </p>
+              <p className="mt-1 text-[var(--text-muted)]">
+                Matches the recorded operator. Matching facilities stay bright; others fade. This is
+                not a supplier or revenue-exposure estimate.
+              </p>
+            </>
+          )}
         </div>
       )}
 
-      <div className="max-h-[60vh] min-h-[280px] overflow-y-auto">
+      <div className="min-h-0 flex-1 overflow-y-auto">
         {TICKER_SECTIONS.map((section) => (
           <section key={section}>
             <h3
               className="sticky top-0 z-10 px-3 py-1.5 text-[10px] uppercase tracking-wide backdrop-blur"
               style={{
-                background:
-                  'color-mix(in oklab, var(--bg-panel) 95%, transparent)',
+                background: 'color-mix(in oklab, var(--bg-panel) 95%, transparent)',
                 color: 'var(--text-subtle)',
               }}
             >
@@ -154,15 +166,12 @@ export function TickerPanel(): React.JSX.Element {
                       onClick={() => handleTickerClick(ticker.symbol)}
                       className="grid w-full grid-cols-[3rem_1fr_auto] items-baseline gap-2 px-3 py-1 text-left transition-colors hover:bg-[var(--bg-elevated)] focus:outline-none focus-visible:ring-2 focus-visible:ring-inset focus-visible:ring-[var(--accent-focus)]"
                       style={{
-                        background: active
-                          ? 'var(--bg-elevated)'
-                          : 'transparent',
+                        background: active ? 'var(--bg-elevated)' : 'transparent',
                       }}
                       aria-pressed={active}
+                      aria-label={`${ticker.symbol} — ${ticker.name}: ${dimmable ? 'No facility links yet' : 'Show linked facilities'}`}
                       title={
-                        dimmable
-                          ? `${ticker.name} — no facilities directly mapped`
-                          : ticker.name
+                        dimmable ? `${ticker.name} — no facilities directly mapped` : ticker.name
                       }
                     >
                       <span
@@ -177,12 +186,18 @@ export function TickerPanel(): React.JSX.Element {
                       >
                         <span aria-hidden className="inline-block w-2.5">
                           {active ? '●' : dimmable && !active ? '–' : ''}
-                        </span>
-                        {' '}
+                        </span>{' '}
                         {ticker.symbol}
                       </span>
                       <PriceCell quote={quote} loading={isLoading} error={isError} />
                       <ChangeCell quote={quote} />
+                      <span className="col-span-3 mt-0.5 text-[10px] text-[var(--text-muted)]">
+                        {dimmable
+                          ? 'No facility links yet'
+                          : facilities
+                            ? `${countLinkedFacilities(facilities.features, ticker.symbol)} linked facilities`
+                            : 'Loading facilities…'}
+                      </span>
                     </button>
                   </li>
                 );

@@ -43,10 +43,10 @@ describe('ticker-map', () => {
     expect(amzn.cloudProviders.has('aws')).toBe(true);
   });
 
-  it('Talen links Susquehanna and the AWS offtake', () => {
+  it('Talen does not imply links to every Amazon facility', () => {
     const tln = targetsForTicker('TLN');
-    expect(tln.operators.has('Talen')).toBe(true);
-    expect(tln.operators.has('Amazon')).toBe(true);
+    expect(tln.operators.size).toBe(0);
+    expect(tln.operators.has('Amazon')).toBe(false);
   });
 
   it('pure-silicon tickers have no editorial links', () => {
@@ -59,4 +59,16 @@ describe('ticker-map', () => {
     expect(t.operators.size).toBe(0);
     expect(t.cloudProviders.size).toBe(0);
   });
+});
+
+it('counts current operator matches without inferring suppliers or offtakes', async () => {
+  const { countLinkedFacilities } = await import('./ticker-map');
+  const features = ['Equinix', 'Amazon', 'Equinix', 'Unknown'].map((operator) => ({
+    properties: { operator },
+  }));
+  expect(countLinkedFacilities(features, 'EQIX')).toBe(2);
+  expect(countLinkedFacilities(features, 'AMZN')).toBe(1);
+  expect(countLinkedFacilities(features, 'NVDA')).toBe(0);
+  expect(countLinkedFacilities(features, 'TLN')).toBe(0);
+  expect(countLinkedFacilities([], 'EQIX')).toBe(0);
 });

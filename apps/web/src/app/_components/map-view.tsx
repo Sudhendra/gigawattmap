@@ -253,6 +253,7 @@ function MapViewInner(): React.JSX.Element {
         setSelectedCable(null);
       },
       onSelectOperator: (id: string) => {
+        useMapStore.getState().setTickerFilter(null);
         setOperatorFilter(id);
         setSelectedCloudRegion(null);
         setSelectedOpposition(null);
@@ -301,7 +302,7 @@ function MapViewInner(): React.JSX.Element {
           unavailable={mapError || changesUnavailable}
         />
         <LayerControls />
-        <TickerPanel />
+        <TickerPanel facilities={data} />
         <AnnouncementsFeed datacenters={data} onSelectDatacenter={handleSelect} />
         <ViewportHud data={data} />
         <CloudRegionCard feature={selectedCloudRegion} onClose={handleCloseCloudRegion} />
