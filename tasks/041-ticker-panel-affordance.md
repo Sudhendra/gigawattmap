@@ -65,3 +65,5 @@ This card adds the missing affordances. It does **not** redesign the panel.
   microcopy is the whole budget.
 - Don't introduce new colours. Reuse `--text-subtle` (newly AA-compliant
   via 040) and `--accent-focus` for the pill's interactive state.
+
+October 25: ticker interaction scope superseded by completed task 047 (counts, plain-language highlighting, no-link states, direct-operator relationship corrections, keyboard/mobile checks). Original benchmark-specific acceptance below is not asserted as completed; consult task 048 for measured performance and its remaining size blocker.
