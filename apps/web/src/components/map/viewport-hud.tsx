@@ -47,7 +47,7 @@ export function ViewportHud({ data }: ViewportHudProps): React.JSX.Element {
       // pill itself re-enables pointer events.
     >
       <div
-        className="pointer-events-auto flex max-w-[60%] items-center gap-3 rounded-full border px-4 py-2 font-mono text-xs shadow-lg backdrop-blur"
+        className="pointer-events-auto flex max-w-[calc(100%-2rem)] items-center gap-3 rounded-full border px-4 py-2 font-mono text-xs shadow-lg backdrop-blur"
         style={{
           background: 'color-mix(in oklab, var(--bg-panel) 88%, transparent)',
           borderColor: 'var(--bg-elevated)',
@@ -70,7 +70,7 @@ export function ViewportHud({ data }: ViewportHudProps): React.JSX.Element {
             id="viewport-hud-stats"
             aria-live="polite"
             aria-atomic="true"
-            className="tabular flex items-center gap-3 whitespace-nowrap"
+            className="tabular flex min-w-0 flex-wrap items-center gap-x-3 gap-y-1"
           >
             <Stat
               label="Visible"
