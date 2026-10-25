@@ -143,3 +143,24 @@ def test_final_write_failure_keeps_previous_map_and_history(tmp_path: Path) -> N
         publish(new, out_dir=tmp_path, config=R2Config("a", "k", "s", "b", ""), client=client)
     assert Release.model_validate_json(objects["v1/live/map.json"]) == old
     assert len(objects) == 2
+
+
+def test_incomplete_refresh_never_compares_or_publishes_history(tmp_path: Path) -> None:
+    from unittest.mock import patch
+
+    from opendc.map_refresh import refresh_map
+
+    old = release([feature(), feature("two")], release([feature()]), NEXT)
+    client = Mock()
+    with (
+        patch("opendc.map_refresh.releases.storage", return_value=(Mock(), client)),
+        patch("opendc.map_refresh.releases.read_current", return_value=old),
+        patch("opendc.map_refresh.osm.run", return_value=(tmp_path / "osm.json", 100, 0)),
+        patch("opendc.map_refresh.source_timestamp", return_value=NEXT),
+        patch("opendc.map_refresh.compare") as comparison,
+        pytest.raises(ReleaseError),
+    ):
+        refresh_map(out_dir=tmp_path)
+    comparison.assert_not_called()
+    client.put_object.assert_not_called()
+    assert old.changes is not None and len(old.changes.events) == 1
