@@ -1,6 +1,6 @@
 # 043 — Connect and refresh the full map dataset
 
-**Status:** todo
+**Status:** in-progress
 **Depends on:** 028
 **Estimate:** 1 day
 
@@ -35,3 +35,5 @@ MapView always loads the bundled AI-campus seed even though task 028 published
 ## Notes
 
 Scope proposed for confirmation per AGENTS.md. Start with existing sources and full facility coverage, without inventing pins or adding unrelated layers. Preserve per-source licensing and downloads. Choose the rendering approach after measuring the published data and current renderer.
+
+Scope confirmed by owner. Full point snapshots reuse the existing renderer; search derives from the same snapshot rather than separate PMTiles/index publication. A primary Overpass refresh on October 25 produced 5,008 facilities from 4,973 OSM records; source timestamp 2026-10-25T05:18:51Z. Mirror responses dated May/July were detected; regression tests now reject partial responses and upstream timestamps older than seven days. Pending: hosted workflow, browser flow/performance checks, and deployment.

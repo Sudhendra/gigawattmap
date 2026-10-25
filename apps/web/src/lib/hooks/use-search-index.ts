@@ -1,6 +1,7 @@
 'use client';
 
 import { useEffect, useMemo, useState } from 'react';
+import type { AiCampusCollection } from '@/components/map/layers/datacenters-layer';
 import { SEARCH_INDEX_URL } from '@/lib/env';
 import { buildSearchIndex, type SearchCorpus, type SearchIndex } from '@/lib/search';
 
@@ -16,7 +17,7 @@ const SEED_URL = '/seed/search-index.json';
  * static across a session, and only needed by one consumer, so a one-shot
  * fetch with module-level cache keeps the dependency surface flat.
  */
-export function useSearchIndex(): SearchIndex | null {
+export function useSearchIndex(data: AiCampusCollection | null = null): SearchIndex | null {
   const [corpus, setCorpus] = useState<SearchCorpus | null>(null);
 
   useEffect(() => {
@@ -24,7 +25,7 @@ export function useSearchIndex(): SearchIndex | null {
     const url = SEARCH_INDEX_URL ?? SEED_URL;
     void (async () => {
       try {
-        const res = await fetch(url);
+        const res = await fetch(url, { signal: AbortSignal.timeout(20_000) });
         if (!res.ok) throw new Error(`search-index fetch failed: ${res.status}`);
         const next = (await res.json()) as SearchCorpus;
         if (!cancelled) setCorpus(next);
@@ -39,5 +40,25 @@ export function useSearchIndex(): SearchIndex | null {
     };
   }, []);
 
-  return useMemo(() => (corpus ? buildSearchIndex(corpus) : null), [corpus]);
+  return useMemo(() => {
+    if (!data) return corpus ? buildSearchIndex(corpus) : null;
+    const base = corpus ?? { datacenters: [], operators: [], announcements: [] };
+    const datacenters = data.features.map(({ properties: p }) => ({
+      id: p.id,
+      name: p.name,
+      operator: p.operator_id ?? null,
+      operator_name: p.operator,
+      tenant: p.tenant,
+      city: null,
+      region: p.region ?? null,
+      country: p.country,
+    }));
+    const operators = base.operators.map((op) => ({
+      ...op,
+      facility_count: datacenters.filter(
+        (dc) => dc.operator === op.id || dc.operator_name === op.name,
+      ).length,
+    }));
+    return buildSearchIndex({ ...base, datacenters, operators });
+  }, [corpus, data]);
 }

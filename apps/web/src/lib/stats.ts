@@ -42,8 +42,8 @@ export function computeViewportStats(features: AiCampusFeature[], bbox: Bbox): V
     if (typeof lon !== 'number' || typeof lat !== 'number') continue;
     if (!pointInBbox(lon, lat, bbox)) continue;
     dcCount += 1;
-    if (Number.isFinite(f.properties.est_mw_mid)) totalMw += f.properties.est_mw_mid;
-    operators.add(f.properties.operator);
+    if (f.properties.est_mw_mid !== null && Number.isFinite(f.properties.est_mw_mid)) totalMw += f.properties.est_mw_mid;
+    if (f.properties.operator && f.properties.operator !== 'Unknown') operators.add(f.properties.operator);
   }
   return { dcCount, totalMw, operatorCount: operators.size };
 }

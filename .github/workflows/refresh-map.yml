@@ -1,0 +1,42 @@
+name: Refresh weekly map
+on:
+  schedule:
+    - cron: '43 8 * * 1'
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency:
+  group: refresh-map
+  cancel-in-progress: false
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    timeout-minutes: 45
+    defaults:
+      run:
+        working-directory: data-pipeline
+    steps:
+      - uses: actions/checkout@v4
+      - uses: astral-sh/setup-uv@v6
+        with:
+          enable-cache: true
+          python-version: "3.12"
+      - run: uv sync --locked --dev
+      - run: uv run python -m pytest tests/test_map_refresh.py tests/test_merge.py
+        env:
+          PYTHONPATH: .
+      - name: Refresh and publish
+        run: uv run python -m opendc.map_refresh
+        env:
+          PYTHONPATH: .
+          R2_ACCOUNT_ID: ${{ secrets.R2_ACCOUNT_ID }}
+          R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
+          R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
+          R2_BUCKET: gigawattapp
+          OPENDC_OVERPASS_URL: https://overpass-api.de/api/interpreter
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: map-refresh-report
+          path: data-pipeline/out/refresh-map/
+          retention-days: 21

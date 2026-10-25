@@ -204,9 +204,9 @@ function CardBody({
 
         <Section title="Sources">
           <p className="text-xs leading-relaxed text-[var(--text-muted)]">
-            Hand-curated CSV of ~50 campuses · cross-checked against operator
-            press releases · substation enrichment from OpenStreetMap (ODbL)
-            and the Global Energy Monitor power-plant database (CC BY 4.0).
+            {p.sources?.includes('osm') ? '© OpenStreetMap contributors (ODbL). Coverage and estimates are community-maintained. ' : ''}
+            {p.sources?.includes('curated') || !p.sources?.length ? 'Curated campus details from the project repository; automated map refreshes do not re-verify editorial claims. ' : ''}
+            {p.source_url ? <a href={p.source_url} target="_blank" rel="noreferrer" className="underline">Original source</a> : null}
           </p>
         </Section>
       </div>
@@ -266,8 +266,7 @@ function PowerSection({
   if (distanceKm == null) {
     return (
       <Placeholder>
-        No substation data within 10 km. (Common outside the US/EU OSM coverage
-        envelope.)
+        Substation proximity has not been verified for this facility.
       </Placeholder>
     );
   }

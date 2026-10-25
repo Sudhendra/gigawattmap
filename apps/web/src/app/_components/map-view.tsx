@@ -4,6 +4,7 @@ import { Suspense, useCallback, useEffect, useMemo, useState } from 'react';
 import dynamic from 'next/dynamic';
 import { useRouter } from 'next/navigation';
 import { Toaster } from 'sonner';
+import { fetchMapData } from '@/lib/map-data';
 import { LayerControls } from '@/components/map/layer-controls';
 import { ViewportHud } from '@/components/map/viewport-hud';
 import { CloudRegionCard } from '@/components/map/cloud-region-card';
@@ -35,7 +36,6 @@ import type {
 } from '@/components/map/layers/cables-layer';
 
 /** Path is relative to /public, served at /seed/*.geojson. */
-const SEED_URL = '/seed/ai-campuses.geojson';
 const CLOUD_REGIONS_URL = '/seed/cloud-regions.geojson';
 const OPPOSITION_URL = '/seed/opposition.geojson';
 const CABLES_URL = '/seed/cables.geojson';
@@ -74,6 +74,8 @@ export function MapView(): React.JSX.Element {
 
 function MapViewInner(): React.JSX.Element {
   const [data, setData] = useState<AiCampusCollection | null>(null);
+  const [mapError, setMapError] = useState(false);
+  const [updatedAt, setUpdatedAt] = useState<string | null>(null);
   const [cloudRegions, setCloudRegions] = useState<CloudRegionCollection | null>(null);
   const [oppositionData, setOppositionData] = useState<OppositionFightCollection | null>(null);
   const [cablesData, setCablesData] = useState<CableCollection | null>(null);
@@ -85,7 +87,7 @@ function MapViewInner(): React.JSX.Element {
   const router = useRouter();
   const cmdkOpen = useMapStore((s) => s.cmdkOpen);
   const setCmdkOpen = useMapStore((s) => s.setCmdkOpen);
-  const searchIndex = useSearchIndex();
+  const searchIndex = useSearchIndex(data);
   // The store mirrors the URL — read it here so the drawer + map both
   // observe the same single source of truth.
   const selectedId = useMapStore((s) => s.selectedDcId);
@@ -108,13 +110,15 @@ function MapViewInner(): React.JSX.Element {
     let cancelled = false;
     void (async () => {
       try {
-        const res = await fetch(SEED_URL);
-        if (!res.ok) throw new Error(`Seed fetch failed: ${res.status}`);
-        const next = (await res.json()) as AiCampusCollection;
-        if (!cancelled) setData(next);
+        const next = await fetchMapData();
+        if (!cancelled) {
+          setData(next.data);
+          setUpdatedAt(next.updatedAt);
+        }
       } catch (err) {
         // eslint-disable-next-line no-console
-        console.error('Failed to load AI-campus seed', err);
+        console.error('Failed to load map data', err);
+        if (!cancelled) setMapError(true);
       }
     })();
     return () => {
@@ -279,6 +283,10 @@ function MapViewInner(): React.JSX.Element {
           onSelectOpposition={handleSelectOpposition}
           onSelectCable={handleSelectCable}
         />
+        <div role="status" className="absolute bottom-0 left-2 z-20 max-w-[65%] truncate bg-bg-panel px-2 py-1 text-[10px] text-text-muted">
+          {mapError ? 'Map data could not be loaded. Reload to retry.' : !data ? 'Loading facilities…' : `${data.features.length.toLocaleString()} facilities · ${updatedAt ? `OSM refreshed ${new Date(updatedAt).toLocaleDateString()}` : 'Development sample'}`}
+          {updatedAt && Date.now() - Date.parse(updatedAt) > 14 * 86400_000 ? ' · Refresh overdue' : ''}
+        </div>
         <LayerControls />
         <TickerPanel />
         <AnnouncementsFeed datacenters={data} onSelectDatacenter={handleSelect} />

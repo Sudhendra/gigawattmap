@@ -17,7 +17,7 @@ export function StatusBadge({
   status,
   className,
 }: {
-  status: DatacenterStatus;
+  status: DatacenterStatus | null;
   className?: string;
 }): React.JSX.Element {
   return (
@@ -26,14 +26,14 @@ export function StatusBadge({
         'inline-flex items-center gap-1.5 rounded-full border px-2 py-0.5 text-[11px] font-medium uppercase tracking-wider',
         className,
       )}
-      style={{ color: `var(--status-${status})`, borderColor: 'currentColor' }}
+      style={{ color: status ? `var(--status-${status})` : 'var(--text-muted)', borderColor: 'currentColor' }}
     >
       <span
         aria-hidden
         className="h-1.5 w-1.5 rounded-full"
         style={{ backgroundColor: 'currentColor' }}
       />
-      {LABEL[status]}
+      {status ? LABEL[status] : 'Status unknown'}
     </span>
   );
 }

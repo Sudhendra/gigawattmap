@@ -15,8 +15,12 @@ export type AiCampusProperties = {
   operator: string;
   tenant: string;
   tier: DatacenterTier;
-  est_mw_mid: number;
-  status: DatacenterStatus;
+  est_mw_mid: number | null;
+  status: DatacenterStatus | null;
+  operator_id?: string | null;
+  region?: string | null;
+  sources?: string[];
+  source_url?: string | null;
   country: string;
   /** Substation enrichment from task 017. Null when no substation is within 10 km. */
   nearest_substation_id?: string | null;
@@ -34,8 +38,8 @@ export type AiCampusCollection = FeatureCollection<Point, AiCampusProperties>;
  */
 const MIN_RADIUS_PX = 5;
 const MAX_RADIUS_PX = 22;
-function radiusForMw(mw: number): number {
-  if (!Number.isFinite(mw) || mw <= 0) return MIN_RADIUS_PX;
+function radiusForMw(mw: number | null): number {
+  if (mw === null || !Number.isFinite(mw) || mw <= 0) return MIN_RADIUS_PX;
   const r = Math.sqrt(mw) * 0.45;
   return Math.min(MAX_RADIUS_PX, Math.max(MIN_RADIUS_PX, r));
 }
@@ -110,7 +114,7 @@ export function createDatacentersLayer(
     getFillColor: (f) => {
       const base = colorForTier(f.properties.tier);
       if (!filterActive) return base;
-      const matches = highlightOperators?.has(f.properties.operator) ?? false;
+      const matches = (highlightOperators?.has(f.properties.operator) || (f.properties.operator_id ? highlightOperators?.has(f.properties.operator_id) : false)) ?? false;
       if (matches) return base;
       return [base[0], base[1], base[2], DIMMED_ALPHA];
     },
