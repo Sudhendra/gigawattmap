@@ -3,6 +3,11 @@
 import { useMemo, useState } from 'react';
 import Link from 'next/link';
 import { useQuery } from '@tanstack/react-query';
+import {
+  scopeAnnouncements,
+  type ActivityScope,
+  type ActivityMembership,
+} from '@/components/map/activity-scope';
 import type { AiCampusCollection } from '@/components/map/layers/datacenters-layer';
 import {
   announcementLocationHint,
@@ -14,10 +19,21 @@ import { ANNOUNCEMENTS_STALE_TIME_MS, fetchAnnouncements } from './announcements
 type Props = {
   datacenters: AiCampusCollection | null;
   onSelectDatacenter: (id: string | null) => void;
+  scope: ActivityScope;
+  membership: ActivityMembership;
+  scopeWaiting: boolean;
+  noCompany: boolean;
 };
 
 /** Editorial activity stays separate from detected changes in source coverage. */
-export function AnnouncementsFeed({ datacenters, onSelectDatacenter }: Props): React.JSX.Element {
+export function AnnouncementsFeed({
+  datacenters,
+  onSelectDatacenter,
+  scope,
+  membership,
+  scopeWaiting,
+  noCompany,
+}: Props): React.JSX.Element {
   const [expanded, setExpanded] = useState<string | null>(null);
   const { data, isError, isLoading, refetch } = useQuery({
     queryKey: ['announcements'],
@@ -25,16 +41,20 @@ export function AnnouncementsFeed({ datacenters, onSelectDatacenter }: Props): R
     staleTime: ANNOUNCEMENTS_STALE_TIME_MS,
   });
   const names = useMemo(() => buildDatacenterNameMap(datacenters), [datacenters]);
+  const items = useMemo(
+    () => scopeAnnouncements(data ?? [], scope, membership),
+    [data, scope, membership],
+  );
   return (
     <section aria-label="Announcements feed" className="px-4 py-4">
       <div className="mb-4 flex items-center justify-between">
-        <h3 className="text-sm font-medium">Industry activity</h3>
+        <h3 className="text-sm font-medium">News & announcements</h3>
         <Link href="/news" className="text-xs text-[var(--accent-focus)]">
           Full feed ↗
         </Link>
       </div>
       <p className="mb-4 text-xs leading-relaxed text-text-muted">
-        Published news and curated announcements. All regions and companies.
+        Published reports, separate from dataset changes above.
       </p>
       {isLoading && (
         <p role="status" className="text-sm text-text-muted">
@@ -49,11 +69,23 @@ export function AnnouncementsFeed({ datacenters, onSelectDatacenter }: Props): R
           </button>
         </p>
       )}
-      {!isLoading && !isError && !data?.length && (
-        <p className="text-sm text-text-muted">No announcements yet.</p>
+      {!isLoading && !isError && !scopeWaiting && (
+        <p role="status" className="mb-3 text-xs text-text-muted">
+          {items.length} {items.length === 1 ? 'story' : 'stories'}
+          {scope === 'all' ? '' : ' matching this scope'}
+        </p>
+      )}
+      {!isLoading && !isError && !scopeWaiting && !items.length && (
+        <p className="text-sm leading-relaxed text-text-muted">
+          {noCompany
+            ? 'Select a company to see linked activity.'
+            : scope === 'all'
+              ? 'No announcements yet.'
+              : 'No explicitly linked stories match this scope. Unlinked stories remain available under All activity.'}
+        </p>
       )}
       <ol className="space-y-1">
-        {data?.map((item) => {
+        {items.map((item) => {
           const active = expanded === item.id;
           const facilityExists =
             !!item.datacenter_id &&
@@ -74,7 +106,13 @@ export function AnnouncementsFeed({ datacenters, onSelectDatacenter }: Props): R
                 {item.title}
               </button>
               <p className="mt-2 text-[11px] text-text-muted">
-                {announcementLocationHint(item, names)}
+                {facilityExists
+                  ? `Facility-linked · ${announcementLocationHint(item, names)}`
+                  : item.datacenter_id
+                    ? 'Facility link unavailable in current dataset'
+                    : item.operator_id
+                      ? `Company-wide · ${announcementLocationHint(item, names)}`
+                      : 'Industry-wide · no facility/company link recorded'}
               </p>
               {active && (
                 <div className="mt-3 text-xs leading-relaxed text-text-muted">

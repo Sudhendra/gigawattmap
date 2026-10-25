@@ -5,10 +5,9 @@ import type { ReactNode } from 'react';
 import type { MapChanges } from '@gigawattmap/types';
 import { ChevronDown, ChevronUp, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { TickerPanel } from '@/components/ticker-panel/ticker-panel';
-import { AnnouncementsFeed } from '@/components/announcements-feed/announcements-feed';
+import { ContextualActivity } from './contextual-activity';
 import { useMapStore } from '@/lib/store/map-store';
 import { LayerControls } from './layer-controls';
-import { RecentChanges } from './recent-changes';
 import type { AiCampusCollection } from './layers/datacenters-layer';
 
 type Props = {
@@ -148,15 +147,12 @@ export function ResearchPanel({
                 />
               )}
               {item === 'Activity' && (
-                <>
-                  <RecentChanges
-                    history={changes}
-                    loading={!data}
-                    unavailable={changesUnavailable}
-                    onSelect={onSelect}
-                  />
-                  <AnnouncementsFeed datacenters={data} onSelectDatacenter={onSelect} />
-                </>
+                <ContextualActivity
+                  data={data}
+                  changes={changes}
+                  changesUnavailable={changesUnavailable}
+                  onSelect={onSelect}
+                />
               )}
               {item === 'Layers' && (
                 <>

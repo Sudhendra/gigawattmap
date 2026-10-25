@@ -11,8 +11,6 @@ import {
   fetchAnnouncements,
 } from '@/components/announcements-feed/announcements-query';
 import { ShareModal } from '@/components/share/share-modal';
-import { SEARCH_INDEX_URL } from '@/lib/env';
-import type { SearchCorpus } from '@/lib/search';
 import { useTickerSelection } from '@/lib/hooks/use-ticker-selection';
 import { TICKER_META_BY_SYMBOL, SECTION_LABEL } from '@/lib/ticker-map';
 import { cn } from '@/lib/cn';
@@ -338,15 +336,6 @@ function titleCase(s: string): string {
   return s.length === 0 ? s : s[0]!.toUpperCase() + s.slice(1);
 }
 
-const SEARCH_INDEX_SEED_URL = '/seed/search-index.json';
-
-async function fetchSearchCorpus(): Promise<SearchCorpus> {
-  const url = SEARCH_INDEX_URL ?? SEARCH_INDEX_SEED_URL;
-  const res = await fetch(url);
-  if (!res.ok) throw new Error(`search-index ${res.status}`);
-  return (await res.json()) as SearchCorpus;
-}
-
 const ANNOUNCEMENT_CATEGORY_LABEL: Record<string, string> = {
   deal: 'deal',
   launch: 'launch',
@@ -357,11 +346,8 @@ const ANNOUNCEMENT_CATEGORY_LABEL: Record<string, string> = {
 
 /**
  * "CONTEXT" section. Shows up to 3 most recent announcements joined to
- * this campus by either `datacenter_id` or `operator_id`. Operator-id
- * resolution requires a display-name → slug lookup, which we get from
- * the same search-index payload `useSearchIndex` consumes (cached for
- * the session via TanStack Query). When the corpus hasn't loaded yet we
- * still surface direct datacenter_id matches.
+ * this campus by recorded facility or operator ID. Wider operator context
+ * is labeled separately from an explicit link to this facility.
  */
 function ContextSection({ campus }: { campus: AiCampusFeature }): React.JSX.Element {
   const announcementsQuery = useQuery({
@@ -369,18 +355,7 @@ function ContextSection({ campus }: { campus: AiCampusFeature }): React.JSX.Elem
     queryFn: fetchAnnouncements,
     staleTime: ANNOUNCEMENTS_STALE_TIME_MS,
   });
-  const corpusQuery = useQuery({
-    queryKey: ['search-corpus'],
-    queryFn: fetchSearchCorpus,
-    staleTime: 60 * 60 * 1000,
-  });
-
-  const operatorId = useMemo(() => {
-    const corpus = corpusQuery.data;
-    if (!corpus) return null;
-    const display = campus.properties.operator;
-    return corpus.operators.find((o) => o.name === display)?.id ?? null;
-  }, [corpusQuery.data, campus.properties.operator]);
+  const operatorId = campus.properties.operator_id ?? null;
 
   const items = useMemo(
     () =>
@@ -396,8 +371,14 @@ function ContextSection({ campus }: { campus: AiCampusFeature }): React.JSX.Elem
   if (announcementsQuery.isLoading) {
     return <p className="text-xs text-[var(--text-muted)]">Loading announcements…</p>;
   }
+  if (announcementsQuery.isError)
+    return (
+      <p role="status" className="text-xs text-text-muted">
+        Announcements are currently unavailable.
+      </p>
+    );
   if (items.length === 0) {
-    return <p className="text-xs text-[var(--text-muted)]">No recent announcements.</p>;
+    return <p className="text-xs text-[var(--text-muted)]">No explicitly linked announcements.</p>;
   }
   return (
     <ul className="space-y-2">
@@ -408,6 +389,11 @@ function ContextSection({ campus }: { campus: AiCampusFeature }): React.JSX.Elem
             <span>·</span>
             <span>{ANNOUNCEMENT_CATEGORY_LABEL[a.category] ?? a.category}</span>
           </div>
+          <p className="my-1 text-[10px] text-text-muted">
+            {a.datacenter_id === campus.properties.id
+              ? 'Linked to this facility'
+              : 'Operator context · not specific to this facility'}
+          </p>
           <a
             href={a.source_url}
             target="_blank"

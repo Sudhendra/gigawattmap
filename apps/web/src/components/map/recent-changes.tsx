@@ -19,6 +19,7 @@ type Props = {
   loading: boolean;
   unavailable: boolean;
   onSelect?: (id: string) => void;
+  scoped?: boolean;
 };
 
 export function RecentChanges({
@@ -26,6 +27,7 @@ export function RecentChanges({
   loading,
   unavailable,
   onSelect,
+  scoped = false,
 }: Props): React.JSX.Element {
   const [limit, setLimit] = useState(20);
   return (
@@ -57,7 +59,9 @@ export function RecentChanges({
               </p>
             ) : history.events.length === 0 ? (
               <p role="status">
-                No recorded changes to current facilities within the history window.
+                {scoped
+                  ? 'No recorded dataset changes match this scope. This does not mean no real-world changes occurred.'
+                  : 'No recorded changes to current facilities within the history window.'}
               </p>
             ) : (
               <ol className="space-y-4">

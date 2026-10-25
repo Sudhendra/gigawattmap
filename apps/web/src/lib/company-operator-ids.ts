@@ -1,0 +1,28 @@
+// Explicit ticker identities from data-pipeline/opendc/data/operators.csv.
+// Identifies a company for news joins, not facility ownership or supplier exposure.
+export const COMPANY_OPERATOR_IDS: Readonly<Record<string, string>> = {
+  AMZN: 'amazon',
+  MSFT: 'microsoft',
+  GOOGL: 'google',
+  META: 'meta',
+  ORCL: 'oracle',
+  AAPL: 'apple',
+  IBM: 'ibm',
+  BABA: 'alibaba',
+  '0700.HK': 'tencent',
+  BIDU: 'baidu',
+  YDEX: 'yandex',
+  EQIX: 'equinix',
+  DLR: 'digitalrealty',
+  IRM: 'iron-mountain',
+  '9432.T': 'ntt',
+  CRWV: 'coreweave',
+  NBIS: 'nebius',
+  APLD: 'applied-digital',
+  IREN: 'iris-energy',
+  'ADANIENT.NS': 'adani',
+  SIFY: 'sify',
+  '9984.T': 'softbank',
+  '4755.T': 'rakuten',
+  TLN: 'talen',
+};
