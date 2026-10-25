@@ -153,11 +153,8 @@ const EMPTY_TARGETS: TickerFilterTargets = {
  * name (as it appears in `properties.operator` on the AI-campus seed) to
  * the ticker symbol that most directly represents it.
  *
- * When an operator is listed under multiple tickers (e.g. "Amazon" under
- * AMZN as a hyperscaler and TLN as a power offtake counterparty), the
- * earlier declaration wins — `OPERATORS_BY_TICKER` is intentionally
- * ordered hyperscalers → neoclouds → REITs → power producers, so direct
- * ownership beats indirect exposure.
+ * Only direct operator mappings are included. Supplier and power-offtake
+ * relationships require facility-specific evidence before being added.
  *
  * Returns `null` for operators with no public ticker (private companies,
  * sovereigns) or unknown names.

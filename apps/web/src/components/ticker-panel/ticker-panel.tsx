@@ -1,6 +1,6 @@
 'use client';
 
-import { useMemo } from 'react';
+import { useEffect, useMemo } from 'react';
 import { useQuery } from '@tanstack/react-query';
 import { ChevronRight, ChevronLeft, TrendingDown, TrendingUp } from 'lucide-react';
 import {
@@ -42,6 +42,15 @@ export function TickerPanel({
     refetchInterval: 5 * 60 * 1000,
   });
 
+  useEffect(() => {
+    if (typeof window === 'undefined' || !window.matchMedia('(max-width: 639px)').matches) return;
+    try {
+      if (window.sessionStorage.getItem('gwm.tickerPanelCollapsed') === null) setCollapsed(true);
+    } catch {
+      setCollapsed(true);
+    }
+  }, [setCollapsed]);
+
   const grouped = useMemo(() => groupBySection(), []);
 
   const quotesBySymbol = useMemo(() => {
@@ -75,7 +84,7 @@ export function TickerPanel({
 
   return (
     <aside
-      className="absolute right-4 top-4 z-10 flex max-h-[calc(100dvh-6rem)] w-72 max-w-[calc(100vw-2rem)] flex-col rounded-md border font-mono text-xs shadow-lg backdrop-blur"
+      className="absolute right-4 top-4 z-10 flex max-h-[65dvh] w-72 max-w-[calc(100vw-2rem)] flex-col rounded-md border font-mono text-xs shadow-lg backdrop-blur"
       style={{
         background: 'color-mix(in oklab, var(--bg-panel) 92%, transparent)',
         borderColor: 'var(--bg-elevated)',
@@ -125,7 +134,7 @@ export function TickerPanel({
             </button>
           </div>
           {!tickerHasLinks(tickerFilter) ? (
-            <p>No facility links yet. The map remains unchanged.</p>
+            <p>No facility links yet. Showing all facilities without company highlighting.</p>
           ) : (
             <>
               <p>
