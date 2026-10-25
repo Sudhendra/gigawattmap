@@ -41,3 +41,8 @@ export function announcementLocationHint(
   if (announcement.operator_id) return announcement.operator_id.replaceAll('-', ' ');
   return 'Industry-wide';
 }
+
+/** Format a date-only news value without changing its calendar day. */
+export function formatAnnouncementDate(date: string, locale?: string): string {
+  return new Intl.DateTimeFormat(locale, { month: 'short', day: 'numeric', timeZone: 'UTC' }).format(new Date(`${date}T00:00:00Z`));
+}

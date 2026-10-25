@@ -10,6 +10,7 @@ import { usePrefersReducedMotion } from '@/lib/hooks/use-animation-clock';
 import {
   announcementLocationHint,
   buildDatacenterNameMap,
+  formatAnnouncementDate,
 } from './announcements-helpers';
 import {
   ANNOUNCEMENTS_STALE_TIME_MS,
@@ -21,10 +22,7 @@ type AnnouncementsFeedProps = {
   onSelectDatacenter: (id: string | null) => void;
 };
 
-const DATE_FORMATTER = new Intl.DateTimeFormat(undefined, {
-  month: 'short',
-  day: 'numeric',
-});
+
 
 const MONEY_FORMATTER = new Intl.NumberFormat('en-US', {
   notation: 'compact',
@@ -162,7 +160,7 @@ export function AnnouncementsFeed({
                 >
                   <div className="mb-3 flex items-start justify-between gap-3">
                     <span className="rounded-full border px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em] text-[var(--text-primary)] tabular" style={{ borderColor: 'var(--bg-elevated)' }}>
-                      {DATE_FORMATTER.format(new Date(`${announcement.date}T00:00:00Z`))}
+                      {formatAnnouncementDate(announcement.date)}
                     </span>
                     <span
                       className="rounded-full px-2 py-1 font-mono text-[10px] uppercase tracking-[0.14em]"
