@@ -7,11 +7,22 @@ export function CompareButton({ id }: { id: string }): React.JSX.Element {
   return (
     <button
       className="workspace-button"
+      title={
+        selected
+          ? 'Remove this facility from your comparison'
+          : full
+            ? 'Remove a facility from the comparison tray to make room'
+            : 'Compare this facility with up to two others'
+      }
       aria-pressed={selected}
       disabled={!selected && full}
       onClick={() => (selected ? remove(id) : add(id))}
     >
-      {selected ? 'Remove from comparison' : full ? 'Comparison full (3/3)' : 'Add to comparison'}
+      {selected
+        ? '✓ Added to comparison · Remove'
+        : full
+          ? 'Comparison full (3/3)'
+          : 'Add to comparison'}
     </button>
   );
 }

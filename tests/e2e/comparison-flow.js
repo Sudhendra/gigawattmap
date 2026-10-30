@@ -16,7 +16,7 @@ async (page) => {
     else if(!await page.getByRole('button',{name:'Comparison full (3/3)',exact:true}).isDisabled())throw new Error('Limit missing');
     await page.getByRole('button',{name:'Back to results',exact:true}).click();
   }
-  await page.getByRole('button',{name:'Compare facilities (3/3)',exact:true}).click();
+  await page.getByRole('button',{name:'View comparison',exact:true}).click();
   const dialog=page.getByRole('dialog',{name:'Facility comparison',exact:true}); await dialog.waitFor();
   await dialog.getByRole('cell',{name:'0 MW',exact:true}).waitFor();
   await page.screenshot({path:'output/playwright/comparison-desktop.png'});
@@ -25,8 +25,8 @@ async (page) => {
   await page.screenshot({path:'output/playwright/comparison-mobile.png'});
   await dialog.getByRole('button',{name:'Remove Comparison facility 1 from comparison',exact:true}).click();
   await page.keyboard.press('Escape');
-  await page.getByRole('button',{name:'Compare facilities (2/3)',exact:true}).waitFor();
+  await page.getByRole('button',{name:'View comparison',exact:true}).waitFor();
   await page.getByRole('button',{name:'Clear comparison',exact:true}).click();
-  if(await page.getByRole('region',{name:'Comparison tray'}).count())throw new Error('Clear failed');
+  await page.getByRole('button',{name:'Choose facilities',exact:true}).waitFor();
   if(!await page.evaluate(()=>window.__compareCanvas===document.querySelector('.maplibregl-canvas')))throw new Error('Map recreated');
 }
