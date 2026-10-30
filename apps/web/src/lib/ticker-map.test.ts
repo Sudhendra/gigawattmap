@@ -72,3 +72,11 @@ it('counts current operator matches without inferring suppliers or offtakes', as
   expect(countLinkedFacilities(features, 'TLN')).toBe(0);
   expect(countLinkedFacilities([], 'EQIX')).toBe(0);
 });
+
+it('joins live canonical operator IDs even when display names differ from editorial aliases', async () => {
+  const { countLinkedFacilities } = await import('./ticker-map');
+  const features = [{ properties: { operator: 'Amazon Web Services', operator_id: 'amazon' } }];
+  expect(countLinkedFacilities(features, 'AMZN')).toBe(1);
+  expect(targetsForTicker('AMZN').operators.has('amazon')).toBe(true);
+  expect(countLinkedFacilities(features, 'TLN')).toBe(0);
+});

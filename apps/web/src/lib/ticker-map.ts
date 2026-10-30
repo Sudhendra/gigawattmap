@@ -1,3 +1,4 @@
+import { COMPANY_OPERATOR_IDS } from './company-operator-ids';
 import type { CloudProvider } from '@/lib/colors';
 
 /**
@@ -132,7 +133,10 @@ export function targetsForTicker(symbol: string | null): TickerFilterTargets {
   const ops = OPERATORS_BY_TICKER[symbol] ?? [];
   const clouds = CLOUD_PROVIDERS_BY_TICKER[symbol] ?? [];
   return {
-    operators: new Set(ops),
+    operators: new Set([
+      ...ops,
+      ...(ops.length && COMPANY_OPERATOR_IDS[symbol] ? [COMPANY_OPERATOR_IDS[symbol]!] : []),
+    ]),
     cloudProviders: new Set(clouds),
   };
 }
@@ -176,12 +180,18 @@ export function tickerForOperator(operatorDisplayName: string): string | null {
 
 /** Count direct operator matches in the current dataset, independent of the viewport. */
 export function countLinkedFacilities(
-  features: readonly { properties: { operator: string } }[],
+  features: readonly { properties: { operator: string; operator_id?: string | null } }[],
   symbol: string,
 ): number {
   const targets = targetsForTicker(symbol);
   return features.reduce(
-    (count, feature) => count + Number(targets.operators.has(feature.properties.operator)),
+    (count, feature) =>
+      count +
+      Number(
+        targets.operators.has(feature.properties.operator) ||
+          (!!feature.properties.operator_id &&
+            targets.operators.has(feature.properties.operator_id)),
+      ),
     0,
   );
 }
