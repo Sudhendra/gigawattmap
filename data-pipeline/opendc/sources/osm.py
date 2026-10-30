@@ -94,14 +94,14 @@ def _build_query(bbox: tuple[float, float, float, float] | None) -> str:
 
 
 @retry_network
-def _post_overpass(client: httpx.Client, query: str) -> bytes:
+def _post_overpass(client: httpx.Client, query: str, endpoint: str = OVERPASS_URL) -> bytes:
     """POST the Overpass QL and return raw bytes.
 
     We retry through ``retry_network`` so transient 504s/connection resets
     don't kill a long ingest run. Persistent 4xx (429 in particular)
     eventually escapes after the retry budget is spent.
     """
-    response = client.post(OVERPASS_URL, content=f"data={query}".encode())
+    response = client.post(endpoint, content=f"data={query}".encode())
     response.raise_for_status()
     return response.content
 
@@ -121,7 +121,17 @@ def fetch(
     out_dir.mkdir(parents=True, exist_ok=True)
     query = _build_query(bbox)
     with get_http_client(timeout=_FETCH_TIMEOUT_S) as client:
-        payload = _post_overpass(client, query)
+        try:
+            payload = _post_overpass(client, query, OVERPASS_URL)
+        except (httpx.TransportError, httpx.HTTPStatusError) as exc:
+            if isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code not in (
+                429, 500, 502, 503, 504,
+            ):
+                raise
+            fallback = "https://overpass.kumi.systems/api/interpreter"
+            if OVERPASS_URL == fallback:
+                raise
+            payload = _post_overpass(client, query, fallback)
     ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
     target = out_dir / f"osm-{ts}.json"
     target.write_bytes(payload)
