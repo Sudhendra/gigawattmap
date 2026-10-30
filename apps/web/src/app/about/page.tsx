@@ -7,7 +7,7 @@ import { SourcesTable } from './_components/sources-table';
  * deliberately avoid a build-time stamp so the timestamp reflects
  * editorial review, not deploy time.
  */
-const LAST_UPDATED = '2026-10-25';
+const LAST_UPDATED = '2026-10-30';
 
 export const metadata = {
   title: 'About — Gigawatt Map',
@@ -205,12 +205,25 @@ export default function AboutPage(): React.JSX.Element {
             contributions — a new source module, a methodology change — open an issue first.
           </p>
           <p>
-            Press and partnership inquiries:{' '}
+            Support and data corrections:{' '}
             <a
-              href="mailto:sudhendrakambhamettu@gmail.com"
+              href="mailto:support@gigawattmap.com"
               className="break-all font-mono text-text-primary underline decoration-text-subtle underline-offset-2 hover:decoration-text-primary"
             >
-              sudhendrakambhamettu@gmail.com
+              support@gigawattmap.com
+            </a>
+            .
+          </p>
+        </Section>
+
+        <Section id="contact" title="Contact">
+          <p>
+            General questions, press, partnerships and sponsorship inquiries:{' '}
+            <a
+              href="mailto:hello@gigawattmap.com"
+              className="break-all font-mono text-text-primary underline decoration-text-subtle underline-offset-2 hover:decoration-text-primary"
+            >
+              hello@gigawattmap.com
             </a>
             .
           </p>
@@ -221,6 +234,16 @@ export default function AboutPage(): React.JSX.Element {
             Sudhendra Kambhamettu, lead. The project is open to collaborators who want to own a
             data source, a region, or a methodology question — see the GitHub issues tagged{' '}
             <code className="font-mono text-sm text-text-muted">help-wanted</code>.
+          </p>
+          <p>
+            Contact Sudhendra directly:{' '}
+            <a
+              href="mailto:sudhendra@gigawattmap.com"
+              className="break-all font-mono text-text-primary underline decoration-text-subtle underline-offset-2 hover:decoration-text-primary"
+            >
+              sudhendra@gigawattmap.com
+            </a>
+            .
           </p>
         </Section>
 

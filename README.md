@@ -218,8 +218,17 @@ For code contributions, read [`AGENTS.md`](./AGENTS.md) before opening a PR —
 it covers conventions, commit format, testing requirements, and the dependency
 policy. One-task-card = one PR is the rule.
 
-Found a data error? Open an issue with a source URL. Found a licensing
+Found a data error? Open an issue with a source URL or email
+[support@gigawattmap.com](mailto:support@gigawattmap.com). Found a licensing
 problem? Flag it immediately — those get same-day fixes.
+
+---
+
+## Contact
+
+- **General, press, partnerships and sponsorship inquiries:** [hello@gigawattmap.com](mailto:hello@gigawattmap.com)
+- **Support and data corrections:** [support@gigawattmap.com](mailto:support@gigawattmap.com). Include the facility link and a source URL for corrections.
+- **Contact Sudhendra directly:** [sudhendra@gigawattmap.com](mailto:sudhendra@gigawattmap.com)
 
 ---
 
