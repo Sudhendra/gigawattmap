@@ -40,9 +40,9 @@ export function RecentChanges({
         className="max-h-[50dvh] overflow-y-auto border-t border-[var(--bg-elevated)] px-4 py-3 text-xs"
       >
         <p className="mb-3 text-[var(--text-muted)]">
-          Facility record edits, separate from news announcements below. A new article does not automatically change a facility record. Dates show when a refresh
-          detected a change. Latest 500 events within 90 days; only facilities still in the dataset
-          are listed.
+          Facility record edits, separate from news announcements below. A new article does not
+          automatically change a facility record. Dates show when a refresh detected a change.
+          Latest 500 events within 90 days; only facilities still in the dataset are listed.
         </p>
         {loading ? (
           <p role="status">Loading change history…</p>
@@ -52,11 +52,18 @@ export function RecentChanges({
           <>
             <p className="mb-3 text-[var(--text-muted)]">
               Tracking since {new Date(history.baseline_at).toLocaleDateString()}.
-              {history.compared_at && <> Last comparison: {new Date(history.compared_at).toLocaleString('en-US', { timeZone: 'UTC' })} UTC.</>}
+              {history.compared_at && (
+                <>
+                  {' '}
+                  Compared with snapshot from:{' '}
+                  {new Date(history.compared_at).toLocaleString('en-US', { timeZone: 'UTC' })} UTC.
+                </>
+              )}
             </p>
             {!history.compared_at ? (
               <p role="status">
-                Only the initial snapshot is available. No successful comparison has been published yet. News can still update independently.
+                Only the initial snapshot is available. No successful comparison has been published
+                yet. News can still update independently.
               </p>
             ) : history.events.length === 0 ? (
               <p role="status">

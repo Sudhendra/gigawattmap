@@ -50,9 +50,7 @@ from opendc.utils.http import get_http_client, retry_network
 # https://overpass.kumi.systems/api/interpreter or
 # https://lz4.overpass-api.de/api/interpreter is healthier. The chosen
 # URL is recorded in the manifest so provenance reflects reality.
-OVERPASS_URL = os.environ.get(
-    "OPENDC_OVERPASS_URL", "https://overpass-api.de/api/interpreter"
-)
+OVERPASS_URL = os.environ.get("OPENDC_OVERPASS_URL", "https://overpass-api.de/api/interpreter")
 
 # DFW metro bbox used by ``--sample`` — small enough to return in <30s,
 # large enough to cover several real datacenters (Equinix DA, Digital
@@ -65,12 +63,12 @@ SAMPLE_BBOX_DFW: tuple[float, float, float, float] = (32.5, -97.3, 33.2, -96.3)
 # after the tag selector, which is awkward to template; we build the
 # string explicitly to keep the query readable.
 _TAG_FILTERS = (
-    ('node', 'telecom', 'data_center'),
-    ('way', 'telecom', 'data_center'),
-    ('relation', 'telecom', 'data_center'),
-    ('node', 'building', 'data_center'),
-    ('way', 'building', 'data_center'),
-    ('relation', 'building', 'data_center'),
+    ("node", "telecom", "data_center"),
+    ("way", "telecom", "data_center"),
+    ("relation", "telecom", "data_center"),
+    ("node", "building", "data_center"),
+    ("way", "building", "data_center"),
+    ("relation", "building", "data_center"),
 )
 
 # Default to 5 minutes (matches the [timeout:300] in the query). Overpass
@@ -81,12 +79,9 @@ _FETCH_TIMEOUT_S = 360.0
 
 def _build_query(bbox: tuple[float, float, float, float] | None) -> str:
     """Render the Overpass QL string, optionally constrained to a bbox."""
-    bbox_clause = (
-        f"({bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]})" if bbox else ""
-    )
+    bbox_clause = f"({bbox[0]},{bbox[1]},{bbox[2]},{bbox[3]})" if bbox else ""
     selectors = "\n".join(
-        f'  {kind}["{key}"="{val}"]{bbox_clause};'
-        for kind, key, val in _TAG_FILTERS
+        f'  {kind}["{key}"="{val}"]{bbox_clause};' for kind, key, val in _TAG_FILTERS
     )
     # The 300s timeout is Overpass-side; the http client's timeout is set
     # separately above and is intentionally generous.
@@ -125,11 +120,15 @@ def fetch(
             payload = _post_overpass(client, query, OVERPASS_URL)
         except (httpx.TransportError, httpx.HTTPStatusError) as exc:
             if isinstance(exc, httpx.HTTPStatusError) and exc.response.status_code not in (
-                429, 500, 502, 503, 504,
+                429,
+                500,
+                502,
+                503,
+                504,
             ):
                 raise
             fallback = "https://overpass.kumi.systems/api/interpreter"
-            if OVERPASS_URL == fallback:
+            if fallback == OVERPASS_URL:
                 raise
             payload = _post_overpass(client, query, fallback)
     ts = datetime.now(UTC).strftime("%Y%m%dT%H%M%SZ")
@@ -170,9 +169,7 @@ def _relation_geometry(element: dict[str, Any]) -> BaseGeometry | None:
     for member in element.get("members", []):
         if member.get("type") != "way" or member.get("role") != "outer":
             continue
-        coords = [
-            (float(g["lon"]), float(g["lat"])) for g in member.get("geometry", [])
-        ]
+        coords = [(float(g["lon"]), float(g["lat"])) for g in member.get("geometry", [])]
         if len(coords) >= 4 and coords[0] == coords[-1]:
             polygons.append(Polygon(coords))
     if not polygons:
@@ -239,7 +236,10 @@ def _normalize_element(element: dict[str, Any]) -> Datacenter | None:
             id=_stable_id(element),
             name=_name(tags, element),
             operator_id=op_match.operator_id if op_match else None,
-            tier="hyperscale" if op_match and op_match.operator_id in {"amazon", "microsoft", "google", "meta", "oracle"} else "colo",
+            tier="hyperscale"
+            if op_match
+            and op_match.operator_id in {"amazon", "microsoft", "google", "meta", "oracle"}
+            else "colo",
             status="operational",  # OSM doesn't model lifecycle; assume live
             geometry=_to_centroid_geometry(geom),
             est_mw_low=mw.low,
@@ -288,9 +288,7 @@ def normalize(raw_path: Path, *, out_path: Path | None = None) -> Path:
         if dc is None:
             continue
         features.append(_feature(dc, geom))
-    out_path.write_text(
-        json.dumps({"type": "FeatureCollection", "features": features}, indent=2)
-    )
+    out_path.write_text(json.dumps({"type": "FeatureCollection", "features": features}, indent=2))
     return out_path
 
 
