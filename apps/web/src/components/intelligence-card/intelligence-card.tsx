@@ -4,6 +4,7 @@ import { useEffect, useMemo, useRef, useState } from 'react';
 import * as Dialog from '@radix-ui/react-dialog';
 import { motion, AnimatePresence, useReducedMotion } from 'motion/react';
 import { useQuery } from '@tanstack/react-query';
+import { CompareButton } from '@/components/comparison/compare-button';
 import { Share2, X } from 'lucide-react';
 import type { AiCampusFeature } from '@/components/map/layers/datacenters-layer';
 import {
@@ -158,6 +159,9 @@ function CardBody({
           <p className="mt-1 text-xs text-[var(--text-muted)] tabular">{locStr}</p>
           <div className="mt-2">
             <StatusBadge status={p.status} />
+            <div className="mt-3">
+              <CompareButton id={p.id} />
+            </div>
           </div>
         </div>
         <div className="flex items-center gap-1">

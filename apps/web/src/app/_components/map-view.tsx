@@ -359,6 +359,7 @@ function MapViewInner(): React.JSX.Element {
           {selectedCable && <CableCard feature={selectedCable} onClose={handleCloseCable} />}
         </div>
         <ResearchPanel
+          publishedAt={updatedAt}
           data={data}
           changes={changes}
           changesUnavailable={mapError || changesUnavailable}

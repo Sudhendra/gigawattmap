@@ -5,6 +5,7 @@ import type { ReactNode } from 'react';
 import type { MapChanges } from '@gigawattmap/types';
 import { ChevronDown, ChevronUp, PanelRightClose, PanelRightOpen } from 'lucide-react';
 import { TickerPanel } from '@/components/ticker-panel/ticker-panel';
+import { ComparisonTray } from '@/components/comparison/comparison-tray';
 import { ContextualActivity } from './contextual-activity';
 import { useMapStore } from '@/lib/store/map-store';
 import { LayerControls } from './layer-controls';
@@ -12,6 +13,7 @@ import type { AiCampusCollection } from './layers/datacenters-layer';
 
 type Props = {
   data: AiCampusCollection | null;
+  publishedAt: string | null;
   changes: MapChanges | null;
   changesUnavailable: boolean;
   detail: ReactNode;
@@ -25,6 +27,7 @@ type Size = 'collapsed' | 'preview' | 'expanded';
 
 export function ResearchPanel({
   data,
+  publishedAt,
   changes,
   changesUnavailable,
   detail,
@@ -204,6 +207,7 @@ export function ResearchPanel({
             </div>
           ))}
         </div>
+        <ComparisonTray data={data} publishedAt={publishedAt} />
       </div>
     </aside>
   );
