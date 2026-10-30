@@ -1,0 +1,12 @@
+{
+  "id": "2026-07-20-microsoft-fairwater-noise",
+  "date": "2026-07-20",
+  "title": "Microsoft reports continued noise mitigation at Mount Pleasant",
+  "operator_id": "microsoft",
+  "datacenter_id": "microsoft-mt-pleasant-wi",
+  "category": "opposition",
+  "source_name": "Microsoft Local",
+  "source_url": "https://local.microsoft.com/blog/testing-underway-to-understand-noise-at-our-mount-pleasant-datacenter/",
+  "amount_usd": null,
+  "summary": "Microsoft reported ongoing sound evaluation and mitigation at Fairwater 1. This is the operator’s account of community concerns, not an independent finding of compliance or resolution."
+}
